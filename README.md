@@ -103,7 +103,7 @@ Static resources *(aka assets)* are prevalent in web projects. Yet one could say
 
     ```shell
     $ ASSETS_PATH=<my-assets-dir>
-    $ docker run -it a7 \
+    $ docker run -it bouyguestelecom/a7 \
         -p 45537:45537 \
         -e A7_VOLUME_MOUNT_PATH=$ASSETS_PATH \
         -v $(pwd)/assets:$ASSETS_PATH
