@@ -1,3 +1,5 @@
+[![Docker Image CI](https://github.com/BouyguesTelecom/a7/actions/workflows/docker-image.yml/badge.svg)](https://github.com/BouyguesTelecom/a7/actions/workflows/docker-image.yml)
+
 <div align='center'>
 
 # A7
