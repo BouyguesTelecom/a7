@@ -19,9 +19,9 @@
  * under the License.
  */
 
-import { readFile } from '~/helpers/File'
-import StoredAsset from '~/assets/StoredAsset'
-import { VOLUME_MOUNT_PATH } from '~/helpers/Env'
+import { readFile } from '../helpers/File'
+import StoredAsset from '../assets/StoredAsset'
+import { VOLUME_MOUNT_PATH } from '../helpers/Env'
 
 export const SOURCE = `${VOLUME_MOUNT_PATH}/.catalog.json`
 

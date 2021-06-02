@@ -21,15 +21,15 @@
 
 /// <reference path="../../types/ngx_http_js_module.d.ts" />
 
-import Asset from '~/assets/Asset'
-import AssetComparator from '~/assets/AssetComparator'
-import AssetNameParser from '~/assets/AssetNameParser'
-import AssetNameSerializer from '~/assets/AssetNameSerializer'
-import AssetPredicate from '~/assets/AssetPredicate'
-import { allStoredAssets } from '~/datasource/datasource'
-import { VOLUME_MOUNT_PATH } from '~/helpers/Env'
-import { readFile } from '~/helpers/File'
-import { isVersionPreciseEnough } from '~/helpers/Version'
+import Asset from '../assets/Asset'
+import AssetComparator from '../assets/AssetComparator'
+import AssetNameParser from '../assets/AssetNameParser'
+import AssetNameSerializer from '../assets/AssetNameSerializer'
+import AssetPredicate from '../assets/AssetPredicate'
+import { allStoredAssets } from '../datasource/datasource'
+import { VOLUME_MOUNT_PATH } from '../helpers/Env'
+import { readFile } from '../helpers/File'
+import { isVersionPreciseEnough } from '../helpers/Version'
 
 /**
  * Given a requested asset, find out what locally available asset best matches the request.

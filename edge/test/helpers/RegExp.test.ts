@@ -22,7 +22,8 @@
 import { expect } from 'chai'
 import { parseRegexpTemplateString as regex } from '../../src/helpers/RegExp'
 
-const tests = [{
+
+const regxpTests = [{
   it: 'should handle a simple string',
   input: regex `simple string`,
   expected: 'simple string',
@@ -69,7 +70,7 @@ const tests = [{
 
 describe('RegExp', () => {
   describe('#parseRegexpTemplateString', () => {
-    tests.forEach(test => {
+    regxpTests.forEach(test => {
       it(test.it, () => {
         expect(test.input).to.equal(test.expected)
       })
