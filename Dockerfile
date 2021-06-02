@@ -30,7 +30,6 @@ RUN apk add --no-cache --virtual .build-deps \
 
 # Fetch sources
 RUN curl -Lo nginx.tar.gz $NGINX_SOURCE
-COPY ./image/mod_zip.tar.gz .
 
 # Reuse same cli arguments as the nginx:alpine image used to build
 RUN CONFARGS=$(nginx -V 2>&1 | sed -n -e 's/^.*arguments: //p') \
