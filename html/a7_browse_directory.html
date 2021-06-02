@@ -1,0 +1,104 @@
+<!--
+  ~ Copyright 2021 - Bouygues Telecom
+  ~
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<table class="table is-fullwidth is-narrow">
+  <tbody></tbody>
+</table>
+</script>
+
+<script>
+  // include content
+  var div = document.createElement('div');
+  div.innerHTML = document.querySelector('#data').innerHTML;
+  document.querySelector('#content').appendChild(div);
+
+  var iconMapping = {
+    directory: 'tri-ui-folder',
+    file: 'tri-file-list',
+    view: 'tri-ui-eye',
+    raw: 'tri-file-list',
+    download: 'tri-ui-download'
+  };
+
+  fetchJsonDirectoryThen(function (meta) {
+    meta.unshift({
+      name: '..',
+      type: 'directory',
+      root: true
+    });
+    meta.forEach(function (data) {
+      var link = data.name + (data.type === 'directory' ? '/' : '');
+      var rawLink = pathname.replace(/^\/browse\//, '/') + link;
+      var viewLink = pathname.replace(/^\/(browse\/)?/, '/browse/') + link;
+      var downloadLink = rawLink + '.zip';
+
+      var tr = document.createElement('tr');
+      var name = document.createElement('td');
+      var nameLink = document.createElement('a');
+      nameLink.className = 'icon-and-text';
+      nameLink.innerText = link;
+      nameLink.href = viewLink;
+      nameLink.innerHTML =
+        '<span class="icon is-small"><i class="' + iconMapping[data.type] + '"></i></span>'
+        + link;
+      name.appendChild(nameLink);
+      var size = document.createElement('td');
+      size.className = 'has-text-grey-dark has-text-right';
+      if (data.size) {
+        size.innerText = data.size;
+      }
+      var date = document.createElement('td');
+      if (data.mtime) {
+        date.innerText = new Date(data.mtime).toLocaleString();
+        date.title = new Date(data.mtime).toISOString();
+        date.className = 'has-text-grey-dark';
+      }
+      var actions = document.createElement('td');
+      actions.className = 'has-text-right';
+      actions.innerHTML = '';
+      actions.innerHTML += '<a class="button link is-plain is-small" href="'
+        + (data.type === 'directory' ? downloadLink : rawLink)
+        + '" title="Download"><span class="icon is-small"><i class="' + iconMapping.download + '"></i></span></a>';
+      // if (!data.root) {
+      //   actions.innerHTML += '<a class="button link is-plain is-small" href="' + viewLink + '" title="Browse ' + data.type + '"><span class="icon is-small"><i class="' + iconMapping.view + '"></i></span></a>';
+      //   if (data.type === 'directory') {
+      //     actions.innerHTML += '<a class="button link is-plain is-small" href="' + downloadLink + '" title="Download"><span class="icon is-small"><i class="' + iconMapping.download + '"></i></span></a>';
+      //   } else {
+      //     actions.innerHTML += '<a class="button link is-plain is-small" href="' + rawLink + '" title="Raw file"><span class="icon is-small"><i class="' + iconMapping.raw + '"></i></span></a>';
+      //   }
+      //   actions.innerHTML = '<span class="buttons">' + actions.innerHTML + '</span>';
+      // }
+      tr.appendChild(name);
+      tr.appendChild(size);
+      tr.appendChild(date);
+      tr.appendChild(actions);
+      document.querySelector('table.table > tbody').appendChild(tr);
+    });
+  });
+</script>
+<style>
+  /* hide the directory index title */
+  h1 { display: none; }
+  /* hide the directory index altogether */
+  title ~ :not(table) {
+    display: none;
+  }
+</style>

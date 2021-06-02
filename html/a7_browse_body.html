@@ -1,0 +1,263 @@
+<!--
+  ~ Copyright 2021 - Bouygues Telecom
+  ~
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>{{A7_ICON}}</text></svg>">
+<link rel="stylesheet" href="https://a7.bouyguestelecom.fr/trilogy-1.10.0/dist/trilogy.css">
+<style>
+.buttons .link.is-small {
+  margin: 0 1rem;
+}
+.box .box-content {
+  text-align: start;
+}
+#actions {
+  margin: 0;
+}
+pre {
+  padding: 0 !important;
+  background-color: transparent !important;
+}
+</style>
+<script>
+  // normalize the pathname
+  var pathname = window.location.pathname.replace(/^\/browse/, '');
+  var isdirectory = pathname.slice(pathname.length - 1) === '/';
+  var fileextension = !isdirectory && window.location.pathname.split('.').pop();
+
+  //
+  // Helpers
+  //
+
+  function injectScripts (sources, onload, timeout) {
+    sources.forEach(function (source) {
+      var scr = document.createElement('script');
+      scr.src = source;
+      document.body.appendChild(scr);
+    })
+    if (onload) {
+      setTimeout(onload, timeout || 150);
+    }
+  }
+
+  function injectStylesheet (href) {
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = href;
+    document.head.appendChild(link);
+  }
+
+  function fetchPackageMetaThen (fn) {
+    if (pathname === '/') {
+      return;
+    }
+    var metaURI = pathname.replace(/\/$/, '').replace(/@.+$/, '') + '?meta';
+    var req = fetch(metaURI).then(function (res) {
+      return res.json().then(function (json) {
+        return fn(json);
+      });
+    });
+  }
+
+  function fetchJsonDirectoryThen (fn) {
+    var jsonURI = (pathname.replace(/\/$/, '') || '/') + '?json';
+    var req = fetch(jsonURI).then(function (res) {
+      return res.json().then(function (json) {
+        return fn(json);
+      });
+    });
+  }
+
+  //
+  // Breadcrumb: Make them actionable
+  //
+
+  function beautifyBreadcrumb (path) {
+    var paths = path.replace(/^[^/]+/, '').replace(/\/$/, '').split('/');
+    return paths.map(function (fragment, i) {
+      var path = '/' + pathname.split('/').slice(1, 1 + i).join('/') + '/';
+      if (i === 0) {
+        return createBreadcrumbEntry('/', '{{A7_ICON}}');
+      }
+      if (i === paths.length - 1) {
+        return window.decodeURIComponent(fragment);
+      }
+      return createBreadcrumbEntry(path, fragment);
+    }).join(' ▸ ');
+  }
+
+  function createBreadcrumbEntry (path, text) {
+    return '<a class="has-text-white" href="/browse' + path + '">' + window.decodeURIComponent(text || path) + '</a>';
+  }
+
+  var breadcrumb = beautifyBreadcrumb(pathname);
+
+  //
+  // Actions panel
+  //
+
+  function addActionButton ({ label, title, onclick, dom, className }) {
+    var button = document.createElement('a');
+    button.className = className || 'link is-plain is-small is-inverted';
+    button.textContent = label;
+    if (title) {
+      button.title = title;
+    }
+    button.onclick = onclick;
+
+    document.querySelector(dom || '#actions').appendChild(button);
+  }
+
+  function addActionButtons (buttons) {
+    buttons.forEach(addActionButton);
+  }
+
+  //
+  // Metapanel: Create a dropdown to navigate to all available versions & access the JSON page
+  //
+
+  function createMetapanel () {
+    var actions = document.querySelector('#actions');
+
+    // JSON link
+    if (isdirectory) {
+      addActionButton ({
+        dom: '#footer',
+        className: 'button is-link is-small',
+        label: '{} API',
+        title: 'Navigate through the browsing API (JSON)',
+        onclick: function () {
+          window.location.href = pathname + '?json';
+        }
+      });
+    }
+
+    // if-env A7_AUTOINDEX
+    // catalog link
+    addActionButton ({
+      dom: '#footer',
+      className: 'button is-link is-small',
+      label: '{} Catalog',
+      title: 'Access the current asset catalog',
+      onclick: function () {
+        window.location.href = pathname.replace(/\/$/, '') + '?catalog';
+      }
+    });
+    ///if-env A7_AUTOINDEX
+
+    // if-env A7_ZIP_DIRECTORIES
+    // ZIP link
+    if (isdirectory && pathname != '/') {
+      addActionButton ({
+        dom: '#footer',
+        className: 'button is-link is-small',
+        label: '↓ Download as zip',
+        title: 'Download all the current directory content in a single zip',
+        onclick: function () {
+          window.location.href = pathname.replace(/\/$/, '') + '.zip';
+        }
+      });
+    }
+    ///if-env A7_ZIP_DIRECTORIES
+
+    // Versions dropdown
+    fetchPackageMetaThen(function (meta) {
+      // var currentVersion = meta.requested.package.version;
+      var currentVersion = pathname.replace(/^[^@]+@/, '').split('/')[0];
+      var versions = meta.available.versions;
+      if (!versions || versions.length === 0) {
+        return;
+      }
+      var control = document.createElement('div');
+      control.className = 'control has-dynamic-placeholder';
+      var select = document.createElement('div');
+      select.className = 'select';
+      select.title = 'Switch to a different version of the current asset';
+      var dropdown = document.createElement('select');
+      function option (text, value, selected) {
+        var opt = document.createElement('option');
+        opt.text = text;
+        opt.value = value;
+        opt.selected = selected;
+        return opt;
+      }
+      dropdown.options.add(
+        option('latest', versions[0], false)
+      );
+      versions.forEach(function (version) {
+        dropdown.options.add(
+          option(version, version, version === currentVersion)
+        );
+      });
+      dropdown.onchange = function (e) {
+        var version = e.target.value;
+        window.location.pathname = decodeURIComponent('/browse' + pathname).replace(/@[^\/]+/, '@' + version);
+      };
+
+      var label = document.createElement('label');
+      label.innerText = 'Version';
+
+      select.appendChild(dropdown);
+      select.appendChild(label);
+      control.appendChild(select);
+      actions.appendChild(control);
+    })
+  }
+
+
+  document.addEventListener('DOMContentLoaded', function () {
+    // templatization
+    var breadcrumbElement = document.querySelector('#breadcrumb');
+    breadcrumbElement.innerHTML = breadcrumb;
+
+    // metapanel
+    createMetapanel()
+  });
+</script>
+</head>
+<body>
+<nav aria-label="main navigation" class="navbar is-npm" role="navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item" href="/">
+      {{A7_ICON}} {{A7_TITLE}}
+    </a>
+  </div>
+</nav>
+<div class="section">
+<div class="container">
+<div class="box">
+  <header class="box-header">
+    <span id="breadcrumb"></span>
+    <div id="actions" class="buttons"></div>
+  </header>
+  <div class="box-content" id="content"></div>
+  <footer class="box-footer">
+    <div id="footer" class="buttons has-text-centered"></div>
+  </footer>
+</div>
+</div>
+</div>
+<script type="text/template" id="data">

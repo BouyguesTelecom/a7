@@ -1,0 +1,125 @@
+</script>
+<!--
+  ~ Copyright 2021 - Bouygues Telecom
+  ~
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<script>
+  // Instanciate the simple code editor
+  var textarea = document.createElement('textarea');
+  textarea.className = 'textarea';
+  textarea.rows = 20;
+  textarea.textContent = document.querySelector('#data').textContent;
+  document.querySelector('#content').appendChild(textarea);
+
+  // Add buttons
+  addActionButtons ([
+    ['yaml', 'yml', 'json'].includes(fileextension) && {
+      label: '😎 Swagger UI',
+      title: 'Enable Swagger UI documentation',
+      onclick: function () {
+        enableSwaggerUI();
+      }
+    },
+    {
+      label: 'Raw',
+      title: 'Display the raw file',
+      onclick: function () {
+        window.location.href = pathname;
+      }
+    },
+    {
+      label: 'WebIDE',
+      title: 'Activate an advanced editor',
+      onclick: function () {
+        enableMonacoEditor();
+      }
+    },
+    {
+      label: 'Save',
+      title: 'Save the current file',
+      onclick: function () {
+        var withEditor = Boolean(window.editor);
+        var body = withEditor ? window.editor.getValue() : document.querySelector('#content .textarea').value;
+        window.fetch('/__api/files' + pathname, { method: 'POST', body })
+          .then(function (response) {
+            if (response.ok) {
+              window.alert('🎉 File saved successfully.');
+            } else {
+              window.alert('щ（ﾟДﾟщ）The file was not saved.');
+              console.error('File not saved.', response);
+            }
+          });
+      }
+    }
+  ].map(function (e) { return e; }));
+</script>
+
+<script>
+  function enableMonacoEditor () {
+    injectScripts(['https://unpkg.com/monaco-editor@0.23.0/min/vs/loader.js'], function () {
+      require.config({ paths: { vs: 'https://unpkg.com/monaco-editor@0.23.0/min/vs' } });
+
+      require(['vs/editor/editor.main'], function () {
+        // hide the basic textarea
+        document.querySelector('.textarea').style.display = 'none';
+
+        // create the advanced editor
+        var container = document.querySelector('#container') || document.createElement('div');
+        container.id = 'container';
+        container.style = 'width: 100%; height: 600px';
+        document.querySelector('#content').appendChild(container);
+
+        var editor = monaco.editor.create(document.querySelector('#container'));
+
+        // set language dynamically according to the file extension
+        var fileextension = window.location.pathname.split('.').pop();
+        var model = monaco.editor.createModel(
+          document.querySelector('#data').textContent,
+          undefined,
+          monaco.Uri.file('file.' + fileextension)
+        );
+        editor.setModel(model);
+
+        window.editor = editor;
+      });
+    });
+  }
+</script>
+
+<script>
+  function enableSwaggerUI () {
+    injectStylesheet('https://unpkg.com/swagger-ui-dist@3.12.1/swagger-ui.css');
+    injectScripts([
+      'https://unpkg.com/swagger-ui-dist@3.12.1/swagger-ui-standalone-preset.js',
+      'https://unpkg.com/swagger-ui-dist@3.12.1/swagger-ui-bundle.js'
+    ], function () {
+      var swaggerui = document.querySelector('#swagger-ui') || document.createElement('div');
+      swaggerui.id = 'swagger-ui';
+      document.querySelector('#content').prepend(swaggerui);
+
+      var ui = SwaggerUIBundle({
+        url: pathname,
+        dom_id: '#swagger-ui',
+        deepLinking: true
+      });
+      window.ui = ui;
+    }, 300);
+  }
+</script>
