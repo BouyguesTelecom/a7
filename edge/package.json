@@ -2,7 +2,7 @@
   "name": "a7-edge",
   "version": "1.0.0",
   "description": "Content delivery server for your static assets",
-  "license": "Apache 2.0",
+  "license": "Apache-2.0",
   "scripts": {
     "test": "cross-env TS_NODE_PROJECT=tsconfig.testing.json nyc ts-mocha -r ts-node/register test/**/*.test.[jt]s",
     "build": "npx rollup -c rollup.config.js",
