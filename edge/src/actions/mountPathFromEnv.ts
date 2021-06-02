@@ -19,7 +19,7 @@
  * under the License.
  */
 
-import { VOLUME_MOUNT_PATH } from '~/helpers/Env'
+import { VOLUME_MOUNT_PATH } from '../helpers/Env'
 
 /**
  * Returns the `A7_VOLUME_MOUNT_PATH` environment variable. Defaults to "/assets".

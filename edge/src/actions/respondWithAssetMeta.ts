@@ -19,11 +19,11 @@
  * under the License.
  */
 
-import Asset from '~/assets/Asset'
-import AssetComparator from '~/assets/AssetComparator'
-import AssetNameParser from '~/assets/AssetNameParser'
-import { allStoredAssets } from '~/datasource/datasource'
-import { hash } from '~/helpers/String'
+import Asset from '../assets/Asset'
+import AssetComparator from '../assets/AssetComparator'
+import AssetNameParser from '../assets/AssetNameParser'
+import { allStoredAssets } from '../datasource/datasource'
+import { hash } from '../helpers/String'
 
 /**
  * List all the version numbers of an asset

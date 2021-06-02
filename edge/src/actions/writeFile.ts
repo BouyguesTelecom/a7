@@ -21,7 +21,7 @@
 
 /// <reference path="../../types/ngx_http_js_module.d.ts" />
 
-import { writeFile as actuallyWriteFile } from '~/helpers/File'
+import { writeFile as actuallyWriteFile } from '../helpers/File'
 
 /**
  * Write a file to disk.

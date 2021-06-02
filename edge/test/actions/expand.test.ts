@@ -51,8 +51,16 @@ describe('actions', () => {
           log: (...args: any[]): void => {
             console.log(...args)
           },
+          error: (...args: any[]): void => {
+            console.error(...args)
+          },
+          warn: (...args: any[]): void => {
+            console.warn(...args)
+          },
           variables: <NginxVariables><any>{
             serveFiles: true,
+          },
+          internalRedirect(uri: NjsStringLike) {
           },
           return: (status: number, body?: NjsStringLike): void => {
             const result = [status, body]

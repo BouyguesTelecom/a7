@@ -19,11 +19,11 @@
  * under the License.
  */
 
-import mountPathFromEnv from '~/actions/mountPathFromEnv'
-import expand from '~/actions/expand'
-import respondWithAssetMeta from '~/actions/respondWithAssetMeta'
-import respondWithCatalog from '~/actions/respondWithCatalog'
-import writeFile from '~/actions/writeFile'
+import mountPathFromEnv from './actions/mountPathFromEnv'
+import expand from './actions/expand'
+import respondWithAssetMeta from './actions/respondWithAssetMeta'
+import respondWithCatalog from './actions/respondWithCatalog'
+import writeFile from './actions/writeFile'
 
 export default {
   mountPathFromEnv,
