@@ -8,10 +8,8 @@ FROM node:14-alpine AS nginx-builder
 ARG NGINX_VERSION="1.20.1"
 ARG NGINX_SOURCE="http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz"
 
-# mod_zip version commit from Oct. 5, 2020:
-# <https://github.com/evanmiller/mod_zip/commit/90db8c37f1b1a22aa64d5174dec69c2ee483c445>
-ARG MOD_ZIP_VERSION="90db8c37f1b1a22aa64d5174dec69c2ee483c445"
-# ARG MOD_ZIP_SOURCE="https://github.com/evanmiller/mod_zip/archive/${MOD_ZIP_VERSION}.tar.gz"
+ARG MOD_ZIP_VERSION="1.2.0"
+ARG MOD_ZIP_SOURCE="https://github.com/evanmiller/mod_zip/archive/${MOD_ZIP_VERSION}.tar.gz"
 
 # For latest build deps, see https://github.com/nginxinc/docker-nginx/blob/master/mainline/alpine/Dockerfile
 RUN apk add --no-cache --virtual .build-deps \
@@ -30,6 +28,7 @@ RUN apk add --no-cache --virtual .build-deps \
 
 # Fetch sources
 RUN curl -Lo nginx.tar.gz $NGINX_SOURCE
+RUN curl -Lo mod_zip.tar.gz $MOD_ZIP_SOURCE
 
 # Reuse same cli arguments as the nginx:alpine image used to build
 RUN CONFARGS=$(nginx -V 2>&1 | sed -n -e 's/^.*arguments: //p') \
