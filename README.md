@@ -16,23 +16,23 @@
 
 Static resources *(aka assets)* are prevalent in web projects. Yet one could say they have been sidelined for a long time, as handling these assets present particular challenges:
 
-- **Naming:** For most, these resources are few: a bit of a css, fonts and images; for some, these resources are manifold, and teams have to leverage some cognitive ingeniosity to architect and name directories; and either drop files in ill-named folders 🙈 or reinvent the wheel by imagining new conventions.
+- **Naming:** For most, these resources are few- a bit of a css, fonts and images. For some, these resources are manifold, and teams have to leverage some cognitive ingeniosity to architect and name directories; and either drop files in ill-named folders 🙈 or reinvent the wheel by imagining new conventions.
 
   🔠 **A7 enforces naming conventions**, based on [semantic versioning](https://semver.org/) and [industry standards](#inspirations).
 
 - **Serving:** Serving these assets is currently handled by: **(a)** the application server itself; and/or **(b)** a static storage service; and/or **(c)** a <abbr title='Content Delivery Network'>CDN</abbr> for nearby-server delivery.
 
-  💁 **A7 is a Docker-ready application server dedicated to static resources**, that is portable and gives you the best of both worlds: use it locally as well as a remote service, integrated in a cloud.
+  💁 **A7 is a Docker-ready application server dedicated to static resources**, that is portable and gives you the best of both worlds: use it locally or as a remote service, integrated in a cloud.
 
-- **Caching:** Relying on static storage services or <abbr title='Content Delivery Network'>CDNs</abbr> services bring value to the table, part of which is fine-tuned caching mechanism; this is clearly not always the case with custom implementations.
+- **Caching:** Relying on static storage services or <abbr title='Content Delivery Network'>CDN</abbr> services brings value to the table, part of which is fine-tuned caching mechanism; this is clearly not always the case with custom implementations.
 
   🐦 **A7 serves assets with immutability as standard** [all through](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control#Extension_Cache-Control_directives).
 
-... to name a few. But also redirections (with [smart redirects](#adopt-smart-routing-conventions)), custom domains handling, CORS support, security, compressed directory download, resources discovery (with an [API](#api-mode)), centralized assets with a focus on reuse.
+... to name a few. A7 also addresses redirections (with [smart redirects](#adopt-smart-routing-conventions)), custom domains handling, CORS support, security, compressed directory download, resources discovery (with an [API](#api-mode)), centralized assets with a focus on reuse.
 
 ## Getting started
 
-1. Given a **directory of assets** `<my-assets-dir>` containing all the assets to serve;
+1. Given a **directory of assets** `<my-assets-dir>` containing all the assets to serve:
 
    <details id=assets-dir-guidelines><summary>Directory guidelines & structure example</summary><br>
 
@@ -48,15 +48,15 @@ Static resources *(aka assets)* are prevalent in web projects. Yet one could say
          - `@<package-scope>/<package-name>@<package-version>`; or
          - `<package-namespace>/<package-name>@<package-version>`.
 
-       When in the case of a scoped or namespaced package, the package directory is composed of two folders.
+       In the case of a scoped or namespaced package, the package directory is composed of two folders.
 
-    4. The organization of assets within the package directory is free; there can be subfolders up to the asset files;
+    4. The organization of assets within the package directory is free; there can be subfolders containing the asset files;
 
-    5. There can be a **default path** that refers to one asset as the resource fallback, for when a request does not specify it;
+    5. There can be a **default path** that refers to one asset as the resource fallback, for when a request does not specify one;
 
     **Directory structure example:**
 
-    The assets directory must be structured in such a manner:
+    The assets directory must be structured as follows:
 
     ```r
     <my-assets-dir>/
@@ -74,7 +74,7 @@ Static resources *(aka assets)* are prevalent in web projects. Yet one could say
 
    </details>
 
-2. Given an **assets catalog** file that references all the assets.
+2. Given an **assets catalog** file that references all the assets:
 
    <details id=assets-catalog><summary>Assets catalog example</summary><br>
 
@@ -112,26 +112,26 @@ Static resources *(aka assets)* are prevalent in web projects. Yet one could say
 
 4. Access it: **<http://localhost:45537>**
 
-*See the [integrations](#integrations) section for more use cases, with docker compose.*
+*See the [integrations](#integrations) section for more use cases, such as with docker compose.*
 
 ## Use cases
 
 - Host images, illustrations and logotypes;
-- Serve a common CSS framework, and its webfonts;
-- Serve [micro frontends](https://micro-frontends.org/) static applications;
+- Serve a common CSS framework and its webfonts;
+- Serve [micro frontend](https://micro-frontends.org/) static applications;
 - ... and more.
 
 ## Features
 
 ### Assets are immutable
 
-An asset is *immutable* as for a given version of the package its content won't change. ever.
+An asset is *immutable*: for a given version of the package its content won't change. Ever.
 
 In order to enforce this trait, the [`Cache-Control`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control#Extension_Cache-Control_directives) header is used extensively, with the [`immutable`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control#Extension_Cache-Control_directives) value, indicating that the response body will not change over time.
 
-### Handle every requests
+### Handle every request
 
-When requesting the unknown or the uncertain, A7 tries its best to handle requests by:
+When requesting unknown or uncertain content, A7 tries its best to handle requests by:
 
 1. directly serving the requested content (for fully-qualified URLs);
 2. indirectly serving the requested content (for URLs with special or missing parts) through a [smart redirect](#adopt-smart-routing-conventions);
@@ -141,7 +141,7 @@ When requesting the unknown or the uncertain, A7 tries its best to handle reques
 
 **Prerequisite:** Set the `A7_PATH_AUTO_EXPAND` environment variable to `true`.
 
-By relying on [semantic versioning](https://semver.org/) conventions, some [industry standards](#inspirations), and by extending them a bit, A7 supports all the following routing resolutions to the table:
+By relying on [semantic versioning](https://semver.org/) conventions, some [industry standards](#inspirations), and by extending them a bit, A7 supports all the following routing resolutions to the table.
 
 **Also:** Set the `A7_PATH_AUTO_EXPAND_INIT` environment variable to `true` in order to generate the metadata files in all the assets subdirectories.
 
@@ -150,7 +150,7 @@ By relying on [semantic versioning](https://semver.org/) conventions, some [indu
 > `/foo@1.3.0/path/to/file.js`
 > <br>➔ `Status: 200`
 
-Here, we request an URL with complete information about the requested asset (package name, version, and path).
+Here, we request a URL with complete information about the requested asset (package name, version, and path).
 
 #### URI with missing path
 
@@ -158,7 +158,7 @@ Here, we request an URL with complete information about the requested asset (pac
 > <br>➔ `Status: 302; Location: /foo@1.3.0/path/to/file.js`
 > <br>&nbsp; &nbsp; ➔ `Status: 200`
 
-Here, we request an URL with a package name, and a precise package version, but no path. In such a situation, the `"defaultPath"` of the matching catalog entry is used.
+Here, we request a URL with a package name, and a precise package version, but no path. In such a situation, the `"defaultPath"` of the matching catalog entry is used.
 
 #### URI with incomplete semver
 
@@ -174,7 +174,7 @@ Here, we request an URL with a package name, and a precise package version, but 
 > <br>➔ `Status: 302; Location: /foo@1.4.0-snapshot.20201203171530/path/to/file.js`
 > <br>&nbsp; &nbsp; ➔ `Status: 200`
 
-Here, we request an URL with a package name, and an imprecise package version, and no path. In such a situation, the `"defaultPath"` of the matching catalog entry is used to complete the path part. The version is also expanded into the latest version that best matches the request.
+Here, we request a URL with a package name, and an imprecise package version, and no path. In such a situation, the `"defaultPath"` of the matching catalog entry is used to complete the path part. The version is also expanded into the latest version that best matches the request.
 
 #### Latest version
 
@@ -211,9 +211,9 @@ When requesting something strange, or a missing asset, a 404 HTTP response is re
 > `/foo@1.3.0/path/`<br>
 > `/foo@1.3.0/path/to/`
 
-Any request finishing by the `/` character indexes its own resources and displays it in a browsable web page.
+Any request ending with the `/` character indexes its own resources and displays them in a browsable web page.
 
-Any request with the `?catalog` query string enables access to the corresponding assets catalog, in JSON mode and makes exploring resources possible through a basic API endpoint, dedicated to listing all the current directory assets.
+Any request with the `?catalog` query string enables access to the corresponding assets catalog (in JSON mode) and makes exploring resources possible through a basic API endpoint, dedicated to listing all the current directory assets.
 
 ### API mode
 
@@ -244,7 +244,7 @@ Make the service yours with two white-label features:
 - `A7_TITLE` lets you change the name of the service;
 - `A7_ICON` lets you change the icon of the service.
 
-These two variables have an impact to the browsing UI.
+These two properties will appear in the browsing UI.
 
 ### Restrict HTTP methods
 
@@ -256,7 +256,7 @@ With `A7_GET_REQUESTS_ONLY`, restrict the usage of HTTP methods to only `HEAD` a
 
 The `A7_INTERNAL_API` environment variable (true by default) lets you disable the write and search internal APIs used to enhance the browsing UI experience.
 
-Note: writing files to disk needs write permissions on the mounted volume.
+Note: writing files to disk requires write permissions on the mounted volume.
 
 ## Integrations
 
@@ -326,6 +326,6 @@ These two services have been a source of inspiration in the conceptual design of
 * A7 is released under Apache 2.0 licence
 
 ### Dependencies
-A7 rely on dependencies that are downloaded at build time. These dependency might have their own licenses, notably:
+A7 relies on dependencies that are downloaded at build time. These dependencies might have their own licenses, notably:
 * Nginx is released under BSD 2-clauses licence
 * mod_zip is released under BSD 3-clauses licence

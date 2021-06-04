@@ -14,7 +14,7 @@ The following is a set of guidelines for contributing to A7, which is hosted in 
 
 ## Code of Conduct
 
-This project and everyone participating in it is governed by the [Bouygues Telecom Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to [MBX_OPENSOURCE@bouyguestelecom.fr](mailto:MBX_OPENSOURCE@bouyguestelecom.fr).
+This project, and everyone participating in it, are governed by the [Bouygues Telecom Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to [MBX_OPENSOURCE@bouyguestelecom.fr](mailto:MBX_OPENSOURCE@bouyguestelecom.fr).
 
 ## How to contribute
 
