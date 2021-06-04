@@ -50,7 +50,7 @@ Static resources *(aka assets)* are prevalent in web projects. Yet one could say
 
        In the case of a scoped or namespaced package, the package directory is composed of two folders.
 
-    4. The organization of assets within the package directory is free; there can be subfolders containing the asset files;
+    4. The organization of assets within the package directory is free (the asset files can be contained in file structures of any depth and hierarchy);
 
     5. There can be a **default path** that refers to one asset as the resource fallback, for when a request does not specify one;
 
