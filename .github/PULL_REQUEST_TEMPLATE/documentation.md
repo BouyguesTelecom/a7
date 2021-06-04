@@ -14,7 +14,7 @@ We must be able to understand the purpose of your change from this description. 
 ### Release Notes
 
 <!--
-gi
+
 Please describe the changes in a single line that explains this improvement in
 terms that a user can understand.  This text will be used in the project's release notes.
 
