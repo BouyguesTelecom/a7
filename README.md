@@ -1,5 +1,7 @@
 [![Docker Image CI](https://github.com/BouyguesTelecom/a7/actions/workflows/docker-image.yml/badge.svg)](https://github.com/BouyguesTelecom/a7/actions/workflows/docker-image.yml)
 
+[![Unit tests](https://github.com/BouyguesTelecom/a7/actions/workflows/unit-tests.js.yml/badge.svg?branch=main)](https://github.com/BouyguesTelecom/a7/actions/workflows/unit-tests.js.yml)
+
 <div align='center'>
 
 # A7
