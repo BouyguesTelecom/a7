@@ -145,6 +145,9 @@ export default function expand (r: NginxHTTPRequest): void {
         return
       }
 
+      r.headersOut['access-control-allow-origin'] = '*'
+      r.headersOut['access-control-allow-headers'] = '*'
+
       r.log(`302: ${newPath}`)
       r.return(302, newPath)
 
@@ -158,6 +161,9 @@ export default function expand (r: NginxHTTPRequest): void {
       }
 
       const newPath = `/${requestedAsset.name}@${requestedAsset.version}/${assetPath}`
+
+      r.headersOut['access-control-allow-origin'] = '*'
+      r.headersOut['access-control-allow-headers'] = '*'
 
       r.log(`302: ${newPath}`)
       r.return(302, newPath)
