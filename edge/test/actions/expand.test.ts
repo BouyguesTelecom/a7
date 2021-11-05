@@ -28,6 +28,8 @@ const tests = [{
   expectedHeaders: {
     status: 302,
     location: '/foo@1.3.0/path/to/file.js',
+    'access-control-allow-origin': '*',
+    'access-control-allow-headers': '*',
   },
 }, {
   it: 'should handle URI with missing path: /foo@1.3.0',
@@ -35,6 +37,8 @@ const tests = [{
   expectedHeaders: {
     status: 302,
     location: '/foo@1.3.0/path/to/file.js',
+    'access-control-allow-origin': '*',
+    'access-control-allow-headers': '*',
   },
 }]
 

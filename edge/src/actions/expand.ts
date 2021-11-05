@@ -145,6 +145,11 @@ export default function expand (r: NginxHTTPRequest): void {
         return
       }
 
+      if (!!process.env.A7_CORS_ALL) {
+        r.headersOut['access-control-allow-origin'] = '*'
+        r.headersOut['access-control-allow-headers'] = '*'
+      }
+
       r.log(`302: ${newPath}`)
       r.return(302, newPath)
 
@@ -158,6 +163,11 @@ export default function expand (r: NginxHTTPRequest): void {
       }
 
       const newPath = `/${requestedAsset.name}@${requestedAsset.version}/${assetPath}`
+
+      if (!!process.env.A7_CORS_ALL) {
+        r.headersOut['access-control-allow-origin'] = '*'
+        r.headersOut['access-control-allow-headers'] = '*'
+      }
 
       r.log(`302: ${newPath}`)
       r.return(302, newPath)
