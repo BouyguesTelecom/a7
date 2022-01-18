@@ -17,3 +17,4 @@ jobs:
         with:
           push: false
           tags: bouyguestelecom/a7:snapshot
+          platforms: linux/amd64,linux/arm64
