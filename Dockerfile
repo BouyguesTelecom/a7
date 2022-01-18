@@ -5,7 +5,7 @@
 ## Because we're special, ain't we? ʕ♥ᴥ♥ʔ
 FROM node:14-alpine AS nginx-builder
 
-ARG NGINX_VERSION="1.20.1"
+ARG NGINX_VERSION="1.20.2"
 ARG NGINX_SOURCE="http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz"
 
 ARG MOD_ZIP_VERSION="1.2.0"
