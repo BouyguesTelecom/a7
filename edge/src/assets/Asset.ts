@@ -19,7 +19,7 @@
  * under the License.
  */
 
-import { VersionLevel } from './VersionLevel'
+import {VersionLevel} from './VersionLevel'
 
 export default interface Asset {
 
@@ -28,35 +28,35 @@ export default interface Asset {
    */
   name?: string
 
-    /**
-     * Scope of the asset.
-     */
-    scope?: string
+  /**
+   * Scope of the asset.
+   */
+  scope?: string
 
-    /**
-     * Namespace of the asset.
-     */
-    namespace?: string
+  /**
+   * Namespace of the asset.
+   */
+  namespace?: string
 
-    /**
-     * Name of the asset project, without its scope and namespace.
-     */
-    subname?: string
+  /**
+   * Name of the asset project, without its scope and namespace.
+   */
+  subname?: string
 
   /**
    * Version of the asset. Contains it all.
    */
   version?: string
 
-    major?: number
+  major?: number
 
-    minor?: number
+  minor?: number
 
-    patch?: number
+  patch?: number
 
-    prerelease?: string
+  prerelease?: string
 
-    build?: string
+  build?: string
 
   path?: string
 
