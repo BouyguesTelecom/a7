@@ -39,7 +39,7 @@ const evaluatePackageVersion = function (request: NginxHTTPRequest): string {
   return assetNameParser.parseFromUrl(request.uri.toString()).version || ''
 }
 
-const evaluatePath = function (request: NginxHTTPRequest): string {
+const evaluatePackagePath = function (request: NginxHTTPRequest): string {
   return assetNameParser.parseFromUrl(request.uri.toString()).path || ''
 }
 
@@ -49,7 +49,7 @@ const evaluators = {
   evaluatePackageNamespace,
   evaluatePackageScope,
   evaluatePackageVersion,
-  evaluatePath,
+  evaluatePackagePath,
 }
 
 export { evaluators }
