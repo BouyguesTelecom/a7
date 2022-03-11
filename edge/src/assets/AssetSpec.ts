@@ -134,7 +134,8 @@ export const FULLY_QUALIFIED_NAME = regex `
     # optional: namespace
     # NOTE: This is a simplified implementation, with a lot less steps for the regexp engine to work with.
     (?:
-      [^@]+/                        # capture a namespace ("mynamespace") of even sub-folders ("my/sub/folder")
+      (?<namespace>[^@]+)           # capture a namespace ("mynamespace") of even sub-folders ("my/sub/folder")
+      /
     )?                              # < make it optional
 
     # optional: scope

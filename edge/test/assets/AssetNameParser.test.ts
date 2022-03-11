@@ -220,5 +220,16 @@ describe('AssetNameParser', () => {
 
       expect(parsedVersion.valid).to.equal(false)
     })
+
+    it('should accept /foo/bar@1.4.0/baz.js', () => {
+      const parsedVersion = assetNameParser.parseFromUrl('/foo/bar@1.4.0/baz.js')
+
+      expect(parsedVersion.valid).to.equal(true)
+      expect(parsedVersion.name).to.equal('foo/bar')
+      expect(parsedVersion.namespace).to.equal('foo')
+      expect(parsedVersion.subname).to.equal('bar')
+      expect(parsedVersion.version).to.equal('1.4.0')
+      expect(parsedVersion.path).to.equal('/baz.js')
+    })
   })
 })
