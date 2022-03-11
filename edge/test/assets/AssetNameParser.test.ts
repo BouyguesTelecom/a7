@@ -220,5 +220,14 @@ describe('AssetNameParser', () => {
 
       expect(parsedVersion.valid).to.equal(false)
     })
+
+    it('should accept /toto/foo@1.4.0/main.js', () => {
+      const parsedVersion = assetNameParser.parseFromUrl('/toto/foo@1.4.0/main.js')
+
+      expect(parsedVersion.valid).to.equal(true)
+      expect(parsedVersion.subname).to.equal('foo')
+      expect(parsedVersion.namespace).to.equal('toto')
+      expect(parsedVersion.version).to.equal('1.4.0')
+    })
   })
 })
