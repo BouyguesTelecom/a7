@@ -231,5 +231,16 @@ describe('AssetNameParser', () => {
       expect(parsedVersion.version).to.equal('1.4.0')
       expect(parsedVersion.path).to.equal('/baz.js')
     })
+
+    it('should accept multiple prereleases', () => {
+      const parsedVersion = assetNameParser.parseFromUrl('/foo/bar@1.2.3-prerelease1-prerelease2')
+
+      expect(parsedVersion.valid).to.equal(true)
+      expect(parsedVersion.name).to.equal('foo/bar')
+      expect(parsedVersion.namespace).to.equal('foo')
+      expect(parsedVersion.subname).to.equal('bar')
+      expect(parsedVersion.version).to.equal('1.2.3-prerelease1-prerelease2')
+      expect(parsedVersion.path).to.equal(undefined)
+    })
   })
 })

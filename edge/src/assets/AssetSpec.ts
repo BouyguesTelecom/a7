@@ -40,11 +40,11 @@ export const PRERELEASE = regex `
   \\-                           # hyphen
 
   (?<prerelease>
-    [a-zA-Z\\d]+                  # alphanumerical chars
+    [a-zA-Z\\d-]+                 # alphanumerical chars
 
     (?:                           # optional:
       \\.                         # <dot>
-      [a-zA-Z\\d]+                # alphanumerical chars
+      [a-zA-Z\\d-]+               # alphanumerical chars
     )*
 
   )
