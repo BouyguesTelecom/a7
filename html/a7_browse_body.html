@@ -86,7 +86,10 @@ pre {
     var jsonURI = (pathname.replace(/\/$/, '') || '/') + '?json';
     var req = fetch(jsonURI).then(function (res) {
       return res.json().then(function (json) {
-        return fn(json);
+        const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+        return fn(
+          json.sort((a, b) => collator.compare(a.name, b.name))
+        );
       });
     });
   }
