@@ -265,23 +265,9 @@ Note: writing files to disk requires write permissions on the mounted volume.
 ### with `Docker` from sources
 
 ```shell
-$ docker build -t a7 .
-$ ASSETS_PATH=<my-assets-dir>
-$ docker run -it a7 --name a7 \
-    -p 45537:45537 \
-    -e A7_VOLUME_MOUNT_PATH=$ASSETS_PATH \
-    -e A7_AUTOINDEX=true \
-    -e A7_ZIP_DIRECTORIES=true \
-    -e A7_META_QUERIES=true \
-    -e A7_CORS_ALL=true \
-    -e A7_PATH_AUTO_EXPAND=true \
-    -e A7_PATH_AUTO_EXPAND_INIT=true \
-    -e A7_RUN_SCRIPTS_ONLY=false \
-    -e A7_GET_REQUESTS_ONLY=true \
-    -e A7_INTERNAL_API=true \
-    -e A7_TITLE=A7 \
-    -e A7_ICON=📦
-    -v $(pwd)/assets:$ASSETS_PATH
+docker build -t a7 .
+docker run -p 45537:45537 -v $(pwd)/assets:/assets -it a7
+open http://localhost:45537
 ```
 
 ### with `docker-compose`
