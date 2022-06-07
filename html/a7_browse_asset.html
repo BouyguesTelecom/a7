@@ -163,26 +163,26 @@
 </script>
 
 <script>
+  function enableApiDocumentation () {
+    injectScripts([
+      'https://unpkg.com/rapidoc@9'
+    ], function () {
+      const doc = document.createElement('div');
+      doc.innerHTML = document.querySelector('#apidoc').innerHTML;
+      document.querySelector('#preview').appendChild(doc);
+
+      const docEl = document.getElementById("thedoc");
+      docEl.loadSpec(pathname);
+    }, 200);
+  }
+
   try {
     var jsonDocument = JSON.parse(content);
     var isSwagger = Boolean(jsonDocument.openapi) || Boolean(jsonDocument.swagger);
 
-    function enableSwaggerUI () {
-      injectScripts([
-        'https://unpkg.com/rapidoc@9'
-      ], function () {
-        const doc = document.createElement('div');
-        doc.innerHTML = document.querySelector('#apidoc').innerHTML;
-        document.querySelector('#preview').appendChild(doc);
-
-        const docEl = document.getElementById("thedoc");
-        docEl.loadSpec(pathname);
-      }, 200);
-    }
-
     // Auto-trigger the swagger UI
     if (isSwagger) {
-      enableSwaggerUI();
+      enableApiDocumentation();
     }
   } catch (e) {
     console.warn('Failed attempt to enable API documentation.');
