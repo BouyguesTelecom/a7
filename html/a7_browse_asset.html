@@ -185,8 +185,8 @@
 
     // Auto-trigger the swagger UI
     if (isSwagger) {
-      enableApiDocumentation();
-      enableMonacoEditor();
+      setTimeout(enableApiDocumentation, 100);
+      setTimeout(enableMonacoEditor, 300);
     }
   } catch (e) {
     console.warn('Failed attempt to enable API documentation.');
