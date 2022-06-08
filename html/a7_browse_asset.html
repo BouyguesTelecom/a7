@@ -167,13 +167,16 @@
     injectScripts([
       'https://unpkg.com/rapidoc@9'
     ], function () {
+      const preview = document.querySelector('#preview');
+
+      waitForElement('#thedoc', preview).then(function (docEl) {
+        docEl.loadSpec(pathname);
+      });
+
       const doc = document.createElement('div');
       doc.innerHTML = document.querySelector('#apidoc').innerHTML;
-      document.querySelector('#preview').appendChild(doc);
-
-      const docEl = document.getElementById("thedoc");
-      docEl.loadSpec(pathname);
-    }, 200);
+      preview.appendChild(doc);
+    });
   }
 
   try {
@@ -183,6 +186,7 @@
     // Auto-trigger the swagger UI
     if (isSwagger) {
       enableApiDocumentation();
+      enableMonacoEditor();
     }
   } catch (e) {
     console.warn('Failed attempt to enable API documentation.');
