@@ -51,15 +51,14 @@ pre {
   // Helpers
   //
 
-  function injectScripts (sources, onload, timeout = 150) {
-    sources.forEach(function (source) {
-      var scr = document.createElement('script');
-      scr.src = source;
-      document.body.appendChild(scr);
-    })
+  function injectScript (source, onload = function () {}, timeout = 150) {
+    var scr = document.createElement('script');
     if (onload) {
-      setTimeout(onload, timeout);
+      scr.onload = onload;
     }
+    scr.async = true;
+    scr.src = source;
+    document.body.appendChild(scr);
   }
 
   function injectStylesheet (href) {
