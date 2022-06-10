@@ -132,7 +132,9 @@
 
 <script>
   function enableMonacoEditor () {
-    injectScripts(['https://unpkg.com/monaco-editor@0.23.0/min/vs/loader.js'], function () {
+    injectScript('https://unpkg.com/monaco-editor@0.23.0/min/vs/loader.js', function (event) {
+      console.debug('Monaco editor scripts loaded', { event });
+
       require.config({ paths: { vs: 'https://unpkg.com/monaco-editor@0.23.0/min/vs' } });
 
       require(['vs/editor/editor.main'], function () {
@@ -160,20 +162,21 @@
       });
     });
   }
-</script>
 
-<script>
   function enableApiDocumentation () {
-    injectScripts([
-      'https://unpkg.com/rapidoc@9'
-    ], function () {
+    injectScript('https://unpkg.com/rapidoc@9', function (event) {
+      console.debug('Api documentation scripts loaded', { event });
+
+      const preview = document.querySelector('#preview');
+
+      waitForElement('#thedoc', preview).then(function (docEl) {
+        docEl.loadSpec(pathname);
+      });
+
       const doc = document.createElement('div');
       doc.innerHTML = document.querySelector('#apidoc').innerHTML;
-      document.querySelector('#preview').appendChild(doc);
-
-      const docEl = document.getElementById("thedoc");
-      docEl.loadSpec(pathname);
-    }, 200);
+      preview.appendChild(doc);
+    });
   }
 
   try {
@@ -182,7 +185,8 @@
 
     // Auto-trigger the swagger UI
     if (isSwagger) {
-      enableApiDocumentation();
+      setTimeout(enableApiDocumentation, 100);
+      setTimeout(enableMonacoEditor, 300);
     }
   } catch (e) {
     console.warn('Failed attempt to enable API documentation.');
