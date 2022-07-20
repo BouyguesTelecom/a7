@@ -164,7 +164,7 @@
   }
 
   function enableApiDocumentation () {
-    injectScript('https://unpkg.com/rapidoc@9', function (event) {
+    injectScript('https://unpkg.com/rapidoc@9.3.3/dist/rapidoc-min.js', function (event) {
       console.debug('Api documentation scripts loaded', { event });
 
       const preview = document.querySelector('#preview');
