@@ -31,11 +31,11 @@
   document.querySelector('#content').appendChild(div);
 
   var iconMapping = {
-    directory: 'tri-ui-folder',
+    directory: 'tri-folder',
     file: 'tri-file-list',
-    view: 'tri-ui-eye',
+    view: 'tri-eye',
     raw: 'tri-file-list',
-    download: 'tri-ui-download'
+    download: 'tri-download'
   };
 
   fetchJsonDirectoryThen(function (meta) {
@@ -74,7 +74,7 @@
       var actions = document.createElement('td');
       actions.className = 'has-text-right';
       actions.innerHTML = '';
-      actions.innerHTML += '<a class="button link is-plain is-small" href="'
+      actions.innerHTML += '<a href="'
         + (data.type === 'directory' ? downloadLink : rawLink)
         + '" title="Download"><span class="icon is-small"><i class="' + iconMapping.download + '"></i></span></a>';
       // if (!data.root) {
