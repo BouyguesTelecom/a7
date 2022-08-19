@@ -244,7 +244,8 @@ Access-Control-Allow-Origin: *
 Make the service yours with two white-label features:
 
 - `A7_TITLE` lets you change the name of the service;
-- `A7_ICON` lets you change the icon of the service.
+- `A7_ICON` lets you change the icon of the service;
+- `A7_BRAND_COLOR` lets you change the color of the top hero banner.
 
 These two properties will appear in the browsing UI.
 

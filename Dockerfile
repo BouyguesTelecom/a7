@@ -73,6 +73,7 @@ ENV A7_GET_REQUESTS_ONLY      true
 ENV A7_INTERNAL_API           true
 ENV A7_TITLE                  A7
 ENV A7_ICON                   📦
+ENV A7_BRAND_COLOR            tertiary
 
 EXPOSE $PORT
 
