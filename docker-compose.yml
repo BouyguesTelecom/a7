@@ -29,7 +29,7 @@ services:
       # - A7_TITLE=Clown
       # Set the service icon (displayed in the browsing UI)
       # - A7_ICON=🤡
-      # Set the main brand color (used in the top hero banner) (values: primary, secondary, tertiary, info, warning, danger, grey, grey-dark) (default: tertiary)
+      # Set the main brand color (used in the top hero banner) (values: primary, secondary, tertiary, info, warning, danger, grey, grey-dark or any CSS-compatible color code) (default: tertiary)
       # - A7_BRAND_COLOR=primary
     ports:
       # ASSET:ASSET ↓
