@@ -321,22 +321,29 @@ pre {
                 var words = value.split(/\s+/);
                 var processedQuery = words.join(".*");
 
-                var data = (await (await fetch("/?catalog")).json()).assets
-                  .map((a) => a.path)
-                  .filter((t) => new RegExp(processedQuery, "i").test(t));
+                // Rely on the search endpoint
+                var data = (await (await fetch('/__api/search')).text())
+                  .split('\n').filter(Boolean)
+                  .map((res) => res.split(' '))
+                  .map((o) => ({ hash: o[0], size: o[1], path: o[2], name: o[3] }));
 
-                var results = data.map((value) => ({
+                // Identify the 40 best results
+                var matches = data
+                  .filter((e) => new RegExp(processedQuery, "i").test(e.path))
+                  .slice(0, 40);
+
+                var results = matches.map((e) => ({
                   // searched words are highlighted with `<strong>` tags
                   text: words.reduce(
                     (a, b) => a.replace(new RegExp(b, "ig"), `<strong>${b}</strong>`),
-                    value
+                    e.path
                   ),
-                  value,
+                  value: e.path,
                 }));
 
                 console.debug(results);
 
-                list.innerHTML = results.map((res) => `<a role="listitem" class="autocomplete-item" href="${res.value}" style="display: block;">${res.text}</a>`).join('');
+                list.innerHTML = results.map((e) => `<a role="listitem" class="autocomplete-item" href="${e.value}" style="display: block;">${e.text}</a>`).join('');
                 document.querySelector('[data-autocomplete-context]').classList.add('is-active');
               });
             </script>
