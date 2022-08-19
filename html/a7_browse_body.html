@@ -282,15 +282,17 @@ pre {
               <div data-autocomplete-context="" class="is-autocomplete">
                 <div class="autocomplete-trigger">
                   <div class="field">
-                    <div class="control has-icons-right">
+                    <div class="control has-icons-left">
                       <input id="search" autocomplete="off" data-autocomplete-input="" name="search" class="input has-text-white" type="search"
-                        placeholder="Search assets…"
+                        placeholder="Search"
                         style="border-color: white; background: rgba(255, 255, 255, 0.07);"
                       >
                       <span class="icon has-password-discover has-text-white">
                         <i class="tri-search"></i>
                       </span>
                     </div>
+                    <kbd>⌘</kbd>
+                    <kbd>F</kbd>
                   </div>
                   <div role="list" data-autocomplete-menu="" class="autocomplete-menu"></div>
                   <style>
@@ -304,6 +306,21 @@ pre {
                       right: 0;
                       z-index: 10;
                     }
+                    kbd {
+                      display: flex;
+                      justify-content: center;
+                      width: 1.4em;
+                      background: linear-gradient(-225deg,#d5dbe4,#f8f8f8);
+                      border-radius: 3px;
+                      box-shadow: inset 0 -2px 0 0 #cdcde6,inset 0 0 1px 1px #fff,0 1px 2px 1px rgba(30,35,90,0.4);;
+                      color: #969faf;
+                      margin-right: 0.4em;
+                      position: relative;
+                      top: -2.3em;
+                      right: 0.3em;
+                      float: right;
+                      pointer-events: none;
+                    }
                   </style>
                 </div>
               </div>
@@ -311,6 +328,14 @@ pre {
             <script src="https://assets.bouyguestelecom.fr/TRILOGY/trilogy-vanilla@3/trilogy-vanilla.min.js"></script>
             <script>
               var list = document.querySelector('[data-autocomplete-menu]');
+
+              // Listen for Cmd F and Cmd K to open the search bar
+              window.addEventListener("keydown", async (e) => {
+                if ((e.ctrlKey || e.metaKey) && (e.keyCode === 70 || e.keyCode === 75)) {
+                  e.preventDefault();
+                  document.querySelector('#search').focus();
+                }
+              });
 
               document.querySelector("#search").addEventListener("keyup", async (event) => {
                 console.debug(1);
