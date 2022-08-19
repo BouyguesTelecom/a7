@@ -298,10 +298,11 @@ pre {
                       border-color: white;
                       background: rgba(255, 255, 255, 0.07);
                       max-width: 60vw;
-                      width: 15em;
+                      width: 12em;
                       transition: width 150ms ease-in-out;
                     }
-                    .is-active #search {
+                    .is-active #search,
+                    #search:focus {
                       width: 20em;
                     }
                     #search::placeholder {
@@ -345,6 +346,7 @@ pre {
                 }
               });
 
+              // Auto-complete the search input
               document.querySelector("#search").addEventListener("keyup", async (event) => {
                 console.debug(1);
                 var value = event.target.value;
