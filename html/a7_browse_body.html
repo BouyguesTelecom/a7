@@ -368,7 +368,7 @@ pre {
 
                 console.debug(results);
 
-                list.innerHTML = results.map((e) => `<a role="listitem" class="autocomplete-item" href="${e.value}" style="display: block;">${e.text}</a>`).join('');
+                list.innerHTML = results.map((e) => `<a role="listitem" class="autocomplete-item" href="/browse${e.value}" style="display: block;">${e.text}</a>`).join('');
                 document.querySelector('[data-autocomplete-context]').classList.add('is-active');
               });
             </script>
