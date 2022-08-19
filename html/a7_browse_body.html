@@ -265,14 +265,84 @@ pre {
 <section class="hero has-background-tertiary is-overlapped">
   <div class="hero-body">
     <div class="container">
-      <a href="/">
-        <h1 class="headline is-level-3 is-inverted">
-          <span class="icon is-medium">
-            <span aria-hidden="true">{{A7_ICON}}</span>
-          </span>
-          {{A7_TITLE}}
-        </h1>
-      </a>
+      <div class="columns is-mobile">
+        <div class="column is-narrow">
+          <a href="/">
+            <h1 class="headline is-level-3 is-inverted">
+              <span class="icon is-medium">
+                <span aria-hidden="true">{{A7_ICON}}</span>
+              </span>
+              {{A7_TITLE}}
+            </h1>
+          </a>
+        </div>
+        <div class="column">
+          <div class="field">
+            <div class="control is-pulled-right">
+              <div data-autocomplete-context="" class="is-autocomplete">
+                <div class="autocomplete-trigger">
+                  <div class="field">
+                    <div class="control has-icons-right">
+                      <input id="search" autocomplete="off" data-autocomplete-input="" name="search" class="input has-text-white" type="search"
+                        placeholder="Search assets…"
+                        style="border-color: white; background: rgba(255, 255, 255, 0.07);"
+                      >
+                      <span class="icon has-password-discover has-text-white">
+                        <i class="tri-search"></i>
+                      </span>
+                    </div>
+                  </div>
+                  <div role="list" data-autocomplete-menu="" class="autocomplete-menu"></div>
+                  <style>
+                    #search::placeholder {
+                      color: #fff;
+                    }
+                    [role="list"] {
+                      position: absolute;
+                      top: 3em;
+                      left: 0;
+                      right: 0;
+                      z-index: 10;
+                    }
+                  </style>
+                </div>
+              </div>
+            </div>
+            <script src="https://assets.bouyguestelecom.fr/TRILOGY/trilogy-vanilla@3/trilogy-vanilla.min.js"></script>
+            <script>
+              var list = document.querySelector('[data-autocomplete-menu]');
+
+              document.querySelector("#search").addEventListener("keyup", async (event) => {
+                console.debug(1);
+                var value = event.target.value;
+                if (value.length <= 1) {
+                  return;
+                }
+                var words = value.split(/\s+/);
+                var processedQuery = words.join(".*");
+
+                var data = (await (await fetch("/?catalog")).json()).assets
+                  .map((a) => a.path)
+                  .filter((t) => new RegExp(processedQuery, "i").test(t));
+
+                var results = data.map((value) => ({
+                  // searched words are highlighted with `<strong>` tags
+                  text: words.reduce(
+                    (a, b) => a.replace(new RegExp(b, "ig"), `<strong>${b}</strong>`),
+                    value
+                  ),
+                  value,
+                }));
+
+                console.debug(results);
+
+                list.innerHTML = results.map((res) => `<a role="listitem" class="autocomplete-item" href="${res.value}" style="display: block;">${res.text}</a>`).join('');
+                document.querySelector('[data-autocomplete-context]').classList.add('is-active');
+              });
+            </script>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
