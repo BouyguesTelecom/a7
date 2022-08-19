@@ -217,7 +217,7 @@ pre {
       var control = document.createElement('div');
       control.className = 'control has-dynamic-placeholder';
       var select = document.createElement('div');
-      select.className = 'select';
+      select.className = 'select is-pulled-right';
       select.title = 'Switch to a different version of the current asset';
       var dropdown = document.createElement('select');
       function option (text, value, selected) {
@@ -277,25 +277,33 @@ pre {
           </a>
         </div>
         <div class="column">
+          <!-- SEARCH -->
           <div class="field">
             <div class="control is-pulled-right">
-              <div data-autocomplete-context="" class="is-autocomplete">
+              <div data-autocomplete-context class="is-autocomplete">
                 <div class="autocomplete-trigger">
                   <div class="field">
                     <div class="control has-icons-left">
-                      <input id="search" autocomplete="off" data-autocomplete-input="" name="search" class="input has-text-white" type="search"
-                        placeholder="Search"
-                        style="border-color: white; background: rgba(255, 255, 255, 0.07);"
-                      >
+                      <input id="search" autocomplete="off" data-autocomplete-input name="search" class="input has-text-white" type="search" placeholder="Search">
                       <span class="icon has-password-discover has-text-white">
-                        <i class="tri-search"></i>
+                        <i class="tri-search" aria-hidden="true"></i>
                       </span>
                     </div>
-                    <kbd>F</kbd>
-                    <kbd>⌘</kbd>
+                    <kbd aria-hidden="true">F</kbd>
+                    <kbd aria-hidden="true">⌘</kbd>
                   </div>
-                  <div role="list" data-autocomplete-menu="" class="autocomplete-menu"></div>
+                  <div role="list" data-autocomplete-menu class="autocomplete-menu"></div>
                   <style>
+                    #search {
+                      border-color: white;
+                      background: rgba(255, 255, 255, 0.07);
+                      max-width: 60vw;
+                      width: 15em;
+                      transition: width 150ms ease-in-out;
+                    }
+                    .is-active #search {
+                      width: 20em;
+                    }
                     #search::placeholder {
                       color: #fff;
                     }
@@ -373,6 +381,7 @@ pre {
               });
             </script>
           </div>
+          <!-- /SEARCH -->
         </div>
       </div>
     </div>
