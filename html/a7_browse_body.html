@@ -133,7 +133,7 @@ pre {
   }
 
   function createBreadcrumbEntry (path, text) {
-    return '<a href="/browse' + path + '">' + window.decodeURIComponent(text || path) + '</a>';
+    return '<a href="/browse' + path + '" class="link is-plain">' + window.decodeURIComponent(text || path) + '</a>';
   }
 
   var breadcrumb = beautifyBreadcrumb(pathname);
