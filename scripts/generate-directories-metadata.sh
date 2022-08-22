@@ -59,7 +59,7 @@ for directory in $(find /assets -type d); do
 
   # if the metadata file doesn't exist yet
   if [ ! -e "$metadata_filepath" ]; then
-    # prepare it's folder (if need be)
+    # prepare its folder (when needed)
     mkdir -p "$root_dir$directory"
     # and generate the file
     directoryEntries "$directory" > "$metadata_filepath"

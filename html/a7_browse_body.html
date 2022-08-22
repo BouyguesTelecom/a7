@@ -217,7 +217,7 @@ pre {
       var control = document.createElement('div');
       control.className = 'control has-dynamic-placeholder';
       var select = document.createElement('div');
-      select.className = 'select';
+      select.className = 'select is-pulled-right';
       select.title = 'Switch to a different version of the current asset';
       var dropdown = document.createElement('select');
       function option (text, value, selected) {
@@ -262,17 +262,130 @@ pre {
 </script>
 </head>
 <body>
-<section class="hero has-background-tertiary is-overlapped">
+<section class="hero has-background-{{A7_BRAND_COLOR}} is-overlapped" style="background: {{A7_BRAND_COLOR}};">
   <div class="hero-body">
     <div class="container">
-      <a href="/">
-        <h1 class="headline is-level-3 is-inverted">
-          <span class="icon is-medium">
-            <span aria-hidden="true">{{A7_ICON}}</span>
-          </span>
-          {{A7_TITLE}}
-        </h1>
-      </a>
+      <div class="columns is-mobile">
+        <div class="column is-narrow">
+          <a href="/">
+            <h1 class="headline is-level-3 is-inverted">
+              <span class="icon is-medium">
+                <span aria-hidden="true">{{A7_ICON}}</span>
+              </span>
+              {{A7_TITLE}}
+            </h1>
+          </a>
+        </div>
+        <div class="column">
+          <!-- SEARCH -->
+          <div class="field">
+            <div class="control is-pulled-right">
+              <div data-autocomplete-context class="is-autocomplete">
+                <div class="autocomplete-trigger">
+                  <div class="field">
+                    <div class="control has-icons-left">
+                      <input id="search" autocomplete="off" data-autocomplete-input name="search" class="input has-text-white" type="search" placeholder="Search">
+                      <span class="icon has-password-discover has-text-white">
+                        <i class="tri-search" aria-hidden="true"></i>
+                      </span>
+                    </div>
+                    <kbd aria-hidden="true">F</kbd>
+                    <kbd aria-hidden="true">⌘</kbd>
+                  </div>
+                  <div role="list" data-autocomplete-menu class="autocomplete-menu"></div>
+                  <style>
+                    #search {
+                      border-color: white;
+                      background: rgba(255, 255, 255, 0.07);
+                      max-width: 60vw;
+                      width: 12em;
+                      transition: width 150ms ease-in-out;
+                    }
+                    .is-active #search,
+                    #search:focus {
+                      width: 20em;
+                    }
+                    #search::placeholder {
+                      color: #fff;
+                    }
+                    [role="list"] {
+                      position: absolute;
+                      top: 3em;
+                      left: 0;
+                      right: 0;
+                      z-index: 10;
+                    }
+                    kbd {
+                      display: flex;
+                      justify-content: center;
+                      width: 1.4em;
+                      background: linear-gradient(-225deg,#d5dbe4,#f8f8f8);
+                      border-radius: 3px;
+                      box-shadow: inset 0 -2px 0 0 #cdcde6,inset 0 0 1px 1px #fff,0 1px 2px 1px rgba(30,35,90,0.4);;
+                      color: #969faf;
+                      margin-right: 0.4em;
+                      position: relative;
+                      top: -2.3em;
+                      right: 0.3em;
+                      float: right;
+                      pointer-events: none;
+                    }
+                  </style>
+                </div>
+              </div>
+            </div>
+            <script src="https://assets.bouyguestelecom.fr/TRILOGY/trilogy-vanilla@3/trilogy-vanilla.min.js"></script>
+            <script>
+              var list = document.querySelector('[data-autocomplete-menu]');
+
+              // Listen for Cmd F and Cmd K to open the search bar
+              window.addEventListener("keydown", async (e) => {
+                if ((e.ctrlKey || e.metaKey) && (e.keyCode === 70 || e.keyCode === 75)) {
+                  e.preventDefault();
+                  document.querySelector('#search').focus();
+                }
+              });
+
+              // Auto-complete the search input
+              document.querySelector("#search").addEventListener("keyup", async (event) => {
+                console.debug(1);
+                var value = event.target.value;
+                if (value.length <= 1) {
+                  return;
+                }
+                var words = value.split(/\s+/);
+                var processedQuery = words.join(".*");
+
+                // Rely on the search endpoint
+                var data = (await (await fetch('/__api/search')).text())
+                  .split('\n').filter(Boolean)
+                  .map((res) => res.split(' '))
+                  .map((o) => ({ hash: o[0], size: o[1], path: o[2], name: o[3] }));
+
+                // Identify the 40 best results
+                var matches = data
+                  .filter((e) => new RegExp(processedQuery, "i").test(e.path))
+                  .slice(0, 40);
+
+                var results = matches.map((e) => ({
+                  // searched words are highlighted with `<strong>` tags
+                  text: words.reduce(
+                    (a, b) => a.replace(new RegExp(b, "ig"), `<strong>${b}</strong>`),
+                    e.path
+                  ),
+                  value: e.path,
+                }));
+
+                console.debug(results);
+
+                list.innerHTML = results.map((e) => `<a role="listitem" class="autocomplete-item" href="/browse${e.value}" style="display: block;">${e.text}</a>`).join('');
+                document.querySelector('[data-autocomplete-context]').classList.add('is-active');
+              });
+            </script>
+          </div>
+          <!-- /SEARCH -->
+        </div>
+      </div>
     </div>
   </div>
 </section>
