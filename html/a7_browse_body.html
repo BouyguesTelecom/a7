@@ -133,7 +133,7 @@ pre {
   }
 
   function createBreadcrumbEntry (path, text) {
-    return '<a href="/browse' + path + '">' + window.decodeURIComponent(text || path) + '</a>';
+    return '<a href="/browse' + path + '" class="link is-plain">' + window.decodeURIComponent(text || path) + '</a>';
   }
 
   var breadcrumb = beautifyBreadcrumb(pathname);
@@ -144,7 +144,7 @@ pre {
 
   function addActionButton ({ label, title, onclick, dom, className }) {
     var button = document.createElement('a');
-    button.className = className || 'link is-plain is-small is-inverted';
+    button.className = className || 'link is-plain is-small';
     button.textContent = label;
     if (title) {
       button.title = title;
@@ -357,7 +357,11 @@ pre {
                 var processedQuery = words.join(".*");
 
                 // Rely on the search endpoint
-                var data = (await (await fetch('/__api/search')).text())
+                var resp = await fetch('/__api/search');
+                if (!resp.ok) {
+                  return;
+                }
+                var data = await resp.text()
                   .split('\n').filter(Boolean)
                   .map((res) => res.split(' '))
                   .map((o) => ({ hash: o[0], size: o[1], path: o[2], name: o[3] }));
