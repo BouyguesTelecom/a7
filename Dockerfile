@@ -5,7 +5,7 @@
 ## Because we're special, ain't we? ʕ♥ᴥ♥ʔ
 FROM node:14-alpine AS nginx-builder
 
-ARG NGINX_VERSION="1.20.2"
+ARG NGINX_VERSION="1.22.0"
 ARG NGINX_SOURCE="http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz"
 
 ARG MOD_ZIP_VERSION="1.2.0"
@@ -55,7 +55,7 @@ COPY edge /build/edge
 RUN npm run build
 
 ## STEP 3: Create the final image.
-FROM nginx:1.20-alpine
+FROM nginx:1.22-alpine
 
 # Port used for the service
 ENV PORT 45537
@@ -63,8 +63,10 @@ ENV PORT 45537
 # Volume mount path used to access the assets root directory
 ENV A7_VOLUME_MOUNT_PATH      /assets
 ENV A7_AUTOINDEX              true
+ENV A7_AUTOINDEX_CORS_ALL     true
 ENV A7_ZIP_DIRECTORIES        true
 ENV A7_META_QUERIES           true
+ENV A7_META_QUERIES_CORS_ALL  true
 ENV A7_CORS_ALL               true
 ENV A7_PATH_AUTO_EXPAND       true
 ENV A7_PATH_AUTO_EXPAND_INIT  true

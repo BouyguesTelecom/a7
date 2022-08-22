@@ -231,7 +231,7 @@ Directories can be downloaded in a singled `zip` file. Any request to a director
 
 ### CORS
 
-**Prerequisite:** Set the `A7_CORS_ALL` environment variable to `true`.
+**Prerequisite:** Set the `A7_CORS_ALL` environment variable to `true`. Optionally: set the `A7_META_QUERIES_CORS_ALL` environment variable to `true`.
 
 Make the resources available for use by any domain by relying on the following Cross-Origin Resource Sharing (CORS) configuration:
 
@@ -255,7 +255,7 @@ With `A7_GET_REQUESTS_ONLY`, restrict the usage of HTTP methods to only `HEAD` a
 
 ### Internal APIs
 
-**Prerequisite:** Set the `A7_AUTOINDEX` environment variable to `true`.
+**Prerequisite:** Set the `A7_AUTOINDEX` environment variable to `true`. Optionally: set the `A7_AUTOINDEX_CORS_ALL` environment variable to `true`.
 
 The `A7_INTERNAL_API` environment variable (true by default) lets you disable the write and search internal APIs used to enhance the browsing UI experience.
 
@@ -285,8 +285,10 @@ open http://localhost:45537
         environment:
           - A7_VOLUME_MOUNT_PATH=<my-assets-dir>
           - A7_AUTOINDEX=true
+          - A7_AUTOINDEX_CORS_ALL=true
           - A7_ZIP_DIRECTORIES=true
           - A7_META_QUERIES=true
+          - A7_META_QUERIES_CORS_ALL=true
           - A7_CORS_ALL=true
           - A7_PATH_AUTO_EXPAND=true
           - A7_PATH_AUTO_EXPAND_INIT=true

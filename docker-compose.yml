@@ -9,10 +9,14 @@ services:
       - A7_VOLUME_MOUNT_PATH=/assets
       # Allow to navigate through the indexed assets (default: true)
       # - A7_AUTOINDEX=false
+      # Apply a CORS <*> rule for API catalog queries (default: true)
+      # - A7_AUTOINDEX_CORS_ALL=false
       # Allow the directories and subdirectories download as a single zip file (default: true)
       # - A7_ZIP_DIRECTORIES=false
       # Allow for API meta queries (default: true)
       # - A7_META_QUERIES=false
+      # Apply a CORS <*> rule for API meta queries (default: true)
+      # - A7_META_QUERIES_CORS_ALL=false
       # Apply a CORS <*> rule for assets to be accessed from whatever origin (default: true)
       # - A7_CORS_ALL=false
       # Apply semantic-versioning-aware smart redirects (default: true)

@@ -23,7 +23,7 @@ import mountPathFromEnv from './actions/mountPathFromEnv'
 import expand from './actions/expand'
 import respondWithAssetMeta from './actions/respondWithAssetMeta'
 import respondWithCatalog from './actions/respondWithCatalog'
-import writeFile from './actions/writeFile'
+import manageFile from './actions/manageFile'
 import {evaluators} from '~/log/logEvaluations'
 
 export default {
@@ -31,6 +31,6 @@ export default {
   expand,
   respondWithAssetMeta,
   respondWithCatalog,
-  writeFile,
+  manageFile,
   evaluators,
 }
