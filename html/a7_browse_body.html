@@ -357,7 +357,11 @@ pre {
                 var processedQuery = words.join(".*");
 
                 // Rely on the search endpoint
-                var data = (await (await fetch('/__api/search')).text())
+                var resp = await fetch('/__api/search');
+                if (!resp.ok) {
+                  return;
+                }
+                var data = await resp.text()
                   .split('\n').filter(Boolean)
                   .map((res) => res.split(' '))
                   .map((o) => ({ hash: o[0], size: o[1], path: o[2], name: o[3] }));
