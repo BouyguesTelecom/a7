@@ -353,7 +353,7 @@ pre {
                 if (value.length <= 1) {
                   return;
                 }
-                var words = value.split(/\s+/);
+                var words = value.split(/\s+/).filter(Boolean);
                 var processedQuery = words.join(".*");
 
                 // Rely on the search endpoint
