@@ -25,7 +25,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>{{A7_ICON}}</text></svg>">
-<link rel="stylesheet" href="https://a7.bouyguestelecom.fr/trilogy-1.10.0/dist/trilogy.css">
+<link rel="stylesheet" href="https://assets.bouyguestelecom.fr/TRILOGY/trilogy-framework@1/trilogy.css">
+<title>{{A7_TITLE}}</title>
 <style>
 .buttons .link.is-small {
   margin: 0 1rem;
@@ -132,7 +133,7 @@ pre {
   }
 
   function createBreadcrumbEntry (path, text) {
-    return '<a class="has-text-white" href="/browse' + path + '">' + window.decodeURIComponent(text || path) + '</a>';
+    return '<a href="/browse' + path + '">' + window.decodeURIComponent(text || path) + '</a>';
   }
 
   var breadcrumb = beautifyBreadcrumb(pathname);
@@ -261,17 +262,24 @@ pre {
 </script>
 </head>
 <body>
-<nav aria-label="main navigation" class="navbar is-npm" role="navigation">
-  <div class="navbar-brand">
-    <a class="navbar-item" href="/">
-      {{A7_ICON}} {{A7_TITLE}}
-    </a>
+<section class="hero has-background-tertiary is-overlapped">
+  <div class="hero-body">
+    <div class="container">
+      <a href="/">
+        <h1 class="headline is-level-3 is-inverted">
+          <span class="icon is-medium">
+            <span aria-hidden="true">{{A7_ICON}}</span>
+          </span>
+          {{A7_TITLE}}
+        </h1>
+      </a>
+    </div>
   </div>
-</nav>
+</section>
 <div class="section">
 <div class="container">
 <div class="box">
-  <header class="box-header" style="position: sticky; top: 0; z-index: 1;">
+  <header class="box-header has-background-white has-text-grey" style="position: sticky; top: 0; z-index: 1; box-shadow: rgb(238 238 238) 0px -1px 0px inset;">
     <span id="breadcrumb"></span>
     <div id="actions" class="buttons"></div>
   </header>
