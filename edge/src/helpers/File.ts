@@ -32,9 +32,30 @@ export function readFile (r: NginxHTTPRequest, path: string, options: object = {
 
 export function writeFile (r: NginxHTTPRequest, path: string, content: string, options: object = {}): void {
   try {
+    // create the directory if it does not exist
+    fs.mkdirSync(path.replace(/[^/]*$/, ''), { recursive: true })
+    // write the file
     fs.writeFileSync(path, content, options)
   } catch (e) {
     r.error(`Could not write file <${path}>: ${e.message}`)
+    throw e
+  }
+}
+
+export function rmdir (r: NginxHTTPRequest, path: string, options: object = {}): void {
+  try {
+    fs.rmdirSync(path, options)
+  } catch (e) {
+    r.error(`Could not remove directory <${path}>: ${e.message}`)
+    throw e
+  }
+}
+
+export function unlink (r: NginxHTTPRequest, path: string): void {
+  try {
+    fs.unlinkSync(path)
+  } catch (e) {
+    r.error(`Could not remove file <${path}>: ${e.message}`)
     throw e
   }
 }
