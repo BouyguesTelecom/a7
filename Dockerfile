@@ -63,8 +63,10 @@ ENV PORT 45537
 # Volume mount path used to access the assets root directory
 ENV A7_VOLUME_MOUNT_PATH      /assets
 ENV A7_AUTOINDEX              true
+ENV A7_AUTOINDEX_CORS_ALL     true
 ENV A7_ZIP_DIRECTORIES        true
 ENV A7_META_QUERIES           true
+ENV A7_META_QUERIES_CORS_ALL  true
 ENV A7_CORS_ALL               true
 ENV A7_PATH_AUTO_EXPAND       true
 ENV A7_PATH_AUTO_EXPAND_INIT  true
