@@ -289,7 +289,7 @@ pre {
                         <i class="tri-search" aria-hidden="true"></i>
                       </span>
                     </div>
-                    <kbd aria-hidden="true">F</kbd>
+                    <kbd aria-hidden="true">K</kbd>
                     <kbd aria-hidden="true">⌘</kbd>
                   </div>
                   <div role="list" data-autocomplete-menu class="autocomplete-menu"></div>
@@ -338,9 +338,9 @@ pre {
             <script>
               var list = document.querySelector('[data-autocomplete-menu]');
 
-              // Listen for Cmd F and Cmd K to open the search bar
+              // Listen for Ctrl/Cmd K to open the search bar
               window.addEventListener("keydown", async (e) => {
-                if ((e.ctrlKey || e.metaKey) && (e.keyCode === 70 || e.keyCode === 75)) {
+                if ((e.ctrlKey || e.metaKey) && e.keyCode === 75) {
                   e.preventDefault();
                   document.querySelector('#search').focus();
                 }
