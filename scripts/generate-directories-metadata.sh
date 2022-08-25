@@ -21,7 +21,7 @@
 # under the License.
 #
 
-if [ "$A7_PATH_AUTO_EXPAND_INIT" != "true" ]; then
+if [ "$A7_PATH_AUTO_EXPAND_INIT" != "true" ] && [ "$A7_PATH_AUTO_EXPAND_INIT" != "always" ]; then
   echo "ENV A7_PATH_AUTO_EXPAND_INIT set to '$A7_PATH_AUTO_EXPAND_INIT'; Let's bypass the directories metadata generation step KTHXBYE."
   return
 fi
@@ -36,7 +36,7 @@ fileEntry () {
   filepath=$2
   hash=$(sha1sum "$filepath" | head -c8)
   size=$(cat "$filepath" | wc -c | sed -e 's/^[[:space:]]*//')
-  servicepath=${filepath#/assets}
+  servicepath=${filepath#$A7_VOLUME_MOUNT_PATH}
   compressedpath=${filepath#$directory/}
   echo "$hash $size $servicepath $compressedpath"
 }
@@ -54,11 +54,12 @@ directoryEntries () {
 
 # For each directory, recursively generate its `.directory.txt` metadata file
 #
-for directory in $(find /assets -type d); do
+for directory in $(find "$A7_VOLUME_MOUNT_PATH" -type d); do
+  echo $directory
   metadata_filepath="$root_dir$directory/.directory.txt"
 
-  # if the metadata file doesn't exist yet
-  if [ ! -e "$metadata_filepath" ]; then
+  # if 👇 we either want to force the metadata generation or 👇 the metadata file doesn't exist yet
+  if [ "$A7_PATH_AUTO_EXPAND_INIT" = "always" ] || [ ! -e "$metadata_filepath" ]; then
     # prepare its folder (when needed)
     mkdir -p "$root_dir$directory"
     # and generate the file

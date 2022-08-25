@@ -145,7 +145,7 @@ When requesting unknown or uncertain content, A7 tries its best to handle reques
 
 By relying on [semantic versioning](https://semver.org/) conventions, some [industry standards](#inspirations), and by extending them a bit, A7 supports all the following routing resolutions to the table.
 
-**Also:** Set the `A7_PATH_AUTO_EXPAND_INIT` environment variable to `true` in order to generate the metadata files in all the assets subdirectories.
+**Also:** Set the `A7_PATH_AUTO_EXPAND_INIT` environment variable to `true` or `always` in order to generate the metadata files in all the assets subdirectories (`true` will generate metadata files if a prior existing file; `always` will generate metadata files systematically and overwrite any prior existing file).
 
 #### Fully qualified URI
 

@@ -21,7 +21,7 @@ services:
       # - A7_CORS_ALL=false
       # Apply semantic-versioning-aware smart redirects (default: true)
       # - A7_PATH_AUTO_EXPAND=false
-      # Initialize/generate the .directory.txt metadata files in every assets subfolders (default: true)
+      # Initialize/generate the .directory.txt metadata files in every assets subfolders (default: true) (values: true, false, always)
       # - A7_PATH_AUTO_EXPAND_INIT=false
       # Only run scripts; do not start the server (default: false)
       # - A7_RUN_SCRIPTS_ONLY=true
