@@ -41,7 +41,7 @@ function fetchAssets (r: NginxHTTPRequest, requestedAsset: Asset): AssetCatalog[
   const filteredAndSortedAssets = allStoredAssets(r)
     .filter(nameIsInCurrentDirectoryFilter)
     .sort(orderByVersion)
-  const enrichedAssets = enrichAssetsWithParsedVersions(filteredAndSortedAssets)
+  const enrichedAssets = enrichAssetsWithParsedVersions(r, filteredAndSortedAssets)
   const assetsWithLatest = assetCatalogWithLatestMarked(enrichedAssets)
 
   return assetsWithLatest
@@ -64,6 +64,7 @@ export default function respondWithCatalog (r: NginxHTTPRequest): void {
     r.return(200, JSON.stringify(result))
   } catch (e) {
     r.error(`Could not load the catalog: ${e.message}`)
+    r.error(e.stack)
     r.internalRedirect('/404.html')
   }
 }
@@ -97,14 +98,23 @@ function groupByArray (array: AssetCatalog[], predicate: Function): KeyValue[] {
  * Enrich the asset objects with their parsed versions
  * @param assets Assets
  */
-function enrichAssetsWithParsedVersions (assets: Asset[]): AssetCatalog[] {
+function enrichAssetsWithParsedVersions (r: NginxHTTPRequest, assets: Asset[]): AssetCatalog[] {
   const assetNameParser = new AssetNameParser()
 
-  return assets.map(asset => ({
-    ...asset,
-    path: `/${asset.name}`,
-    data: assetNameParser.parseFromStorageName(asset.name),
-  }))
+  const result: AssetCatalog[] = []
+
+  assets.forEach(asset => {
+    try {
+      result.push({
+        path: `/${asset.name}`,
+        data: assetNameParser.parseFromStorageName(asset.name),
+      })
+    } catch (e) {
+      r.warn(`Error while parsing asset: ${asset.name} / ${e.message}`)
+    }
+  })
+
+  return result
 }
 
 /**
