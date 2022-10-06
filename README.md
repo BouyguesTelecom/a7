@@ -291,7 +291,7 @@ open http://localhost:45537
           - A7_META_QUERIES_CORS_ALL=true
           - A7_CORS_ALL=true
           - A7_PATH_AUTO_EXPAND=true
-          - A7_PATH_AUTO_EXPAND_INIT=true
+          - A7_PATH_AUTO_EXPAND_INIT=false
           - A7_RUN_SCRIPTS_ONLY=false
           - A7_GET_REQUESTS_ONLY=true
           - A7_INTERNAL_API=true
