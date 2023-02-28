@@ -112,7 +112,7 @@ export const NAME_PART = regex `
   # continues with letters, digits, hyphens, underscores, but:
   # - no consecutive hyphens
   # - no trailing hyphen
-  (?:[-_]?[a-zA-Z\\d])+
+  (?:[-_]?[a-zA-Z\\d]+)*
 `
 
 /**
@@ -181,7 +181,7 @@ export const PATH = regex `
 
 export const URI_VERSION = new RegExp(URI_VERSIONS)
 
-export const URI = new RegExp(`^/${FULLY_QUALIFIED_NAME}(?:@${URI_VERSIONS})?${PATH}`)
+export const URI = new RegExp(`^/${FULLY_QUALIFIED_NAME}(?:@${URI_VERSIONS})?${PATH}?$`)
 
 // a folder name is standardized: "my-asset@3.19.2"
 export const NAME_AND_VERSION = new RegExp(`^${FULLY_QUALIFIED_NAME}@${URI_VERSIONS}$`)
