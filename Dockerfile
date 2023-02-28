@@ -55,7 +55,7 @@ COPY edge /build/edge
 RUN npm run build
 
 ## STEP 3: Create the final image.
-FROM nginx:1.22-alpine
+FROM nginx:1.23-alpine
 
 # Port used for the service
 ENV PORT 45537
