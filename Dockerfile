@@ -5,10 +5,10 @@
 ## Because we're special, ain't we? ʕ♥ᴥ♥ʔ
 FROM node:14-alpine AS nginx-builder
 
-ARG NGINX_VERSION="1.22.0"
+ARG NGINX_VERSION="1.23.3"
 ARG NGINX_SOURCE="http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz"
 
-ARG MOD_ZIP_VERSION="1.2.0"
+ARG MOD_ZIP_VERSION="1.3.0"
 ARG MOD_ZIP_SOURCE="https://github.com/evanmiller/mod_zip/archive/${MOD_ZIP_VERSION}.tar.gz"
 
 # For latest build deps, see https://github.com/nginxinc/docker-nginx/blob/master/mainline/alpine/Dockerfile
@@ -33,7 +33,7 @@ RUN curl -Lo mod_zip.tar.gz $MOD_ZIP_SOURCE
 # Reuse same cli arguments as the nginx:alpine image used to build
 RUN CONFARGS=$(nginx -V 2>&1 | sed -n -e 's/^.*arguments: //p') \
   mkdir -p /usr/src && \
-	tar -zxC /usr/src -f nginx.tar.gz && \
+  tar -zxC /usr/src -f nginx.tar.gz && \
   tar -xzvf "mod_zip.tar.gz" && \
   MOD_ZIP_DIR="$(pwd)/mod_zip-${MOD_ZIP_VERSION}" && \
   cd /usr/src/nginx-$NGINX_VERSION && \
