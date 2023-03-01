@@ -111,7 +111,7 @@ export const NAME_PART = regex `
 
   # continues with letters, digits, hyphens, underscores, but:
   # - no consecutive hyphens
-  # - no trailng hyphen
+  # - no trailing hyphen
   (?:[-_]?[a-zA-Z\\d]+)*
 `
 
@@ -175,7 +175,7 @@ export const URI_VERSIONS = regex `
  */
 export const PATH = regex `
   (?<path>
-    /.+                       # a path must start with a "/"
+    /.*                       # a path must start with a "/"
   )
 `
 
