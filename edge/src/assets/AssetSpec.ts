@@ -19,24 +19,24 @@
  * under the License.
  */
 
-import { parseRegexpTemplateString as regex } from "../helpers/RegExp";
+import { parseRegexpTemplateString as regex } from '../helpers/RegExp'
 
 /**
  * Numeric identifiers are non-negative integers, and CANNOT have leading zeroes.
  * @see https://semver.org/#spec-item-2
  */
-export const NUMERIC_IDENTIFIER = regex`
+export const NUMERIC_IDENTIFIER = regex `
   0             # either a 0
   |             # or
   [1-9]\\d*     # any number starting with a non-0 digit
-`;
+`
 
 /**
  * A pre-release version MAY be denoted by appending a hyphen and a series of dot separated
  * identifiers immediately following the patch version.
  * @see https://semver.org/#spec-item-9
  */
-export const PRERELEASE = regex`
+export const PRERELEASE = regex `
   \\-                           # hyphen
 
   (?<prerelease>
@@ -48,14 +48,14 @@ export const PRERELEASE = regex`
     )*
 
   )
-`;
+`
 
 /**
  * Build metadata MAY be denoted by appending a plus sign and a series of dot separated
  * identifiers immediately following the patch or pre-release version.
  * @see https://semver.org/#spec-item-10
  */
-export const BUILD = regex`
+export const BUILD = regex `
   \\+                           # plus sign
 
   (?<build>
@@ -67,13 +67,13 @@ export const BUILD = regex`
     )*
 
   )
-`;
+`
 
 /**
  * Version core (X.Y.Z) with X being required, Y and Z being optional
  * @see https://semver.org/#spec-item-2
  */
-export const VERSION_CORE_OPTIONAL = regex`
+export const VERSION_CORE_OPTIONAL = regex `
   (?<major>${NUMERIC_IDENTIFIER})   # X
 
   (?:                                 # optional:
@@ -86,13 +86,13 @@ export const VERSION_CORE_OPTIONAL = regex`
     )?
 
   )?
-`;
+`
 
 /**
  * Version core (X.Y.Z) with all parts required
  * @see https://semver.org/#spec-item-2
  */
-export const VERSION_CORE_REQUIRED = regex`
+export const VERSION_CORE_REQUIRED = regex `
   (?<major>${NUMERIC_IDENTIFIER})   # X
 
   \\.                               # <dot>
@@ -100,20 +100,20 @@ export const VERSION_CORE_REQUIRED = regex`
 
   \\.                               # <dot>
   (?<patch>${NUMERIC_IDENTIFIER})   # Z
-`;
+`
 
 /**
  * Part of a name
  */
-export const NAME_PART = regex`
+export const NAME_PART = regex `
   # leads with a letter
   [a-zA-Z]
 
   # continues with letters, digits, hyphens, underscores, but:
   # - no consecutive hyphens
   # - no trailing hyphen
-  (?:[-_]?[a-zA-Z\\d])+
-`;
+  (?:[-_]?[a-zA-Z\\d]+)*
+`
 
 /**
  * Fully qualified name, in its entire form.
@@ -128,7 +128,7 @@ export const NAME_PART = regex`
  *    )+
  *  )?                              # < make it optional
  */
-export const FULLY_QUALIFIED_NAME = regex`
+export const FULLY_QUALIFIED_NAME = regex `
   (?<name>                          # capture the whole name ("@myscope/project" or "mynamespace/project" or "project")
 
     # optional: namespace
@@ -147,9 +147,9 @@ export const FULLY_QUALIFIED_NAME = regex`
     # required:
     (?<subname>${NAME_PART})        # capture the subname ("project")
   )
-`;
+`
 
-export const VERSION = (coreRequired = true): string => regex`
+export const VERSION = (coreRequired = true): string => regex `
   ${coreRequired ? VERSION_CORE_REQUIRED : VERSION_CORE_OPTIONAL}
   (?:
     ${PRERELEASE}           # optional: pre-release
@@ -157,37 +157,33 @@ export const VERSION = (coreRequired = true): string => regex`
   (?:
     ${BUILD}                # optional: build
   )?
-`;
+`
 
 /**
  * An URI version can either be in the X.Y.Z semver format, or "latest".
  */
-export const URI_VERSIONS = regex`
+export const URI_VERSIONS = regex `
   (?<version>
     ${VERSION(false)}
     |                         # or
     latest                    # latest
   )
-`;
+`
 
 /**
  * A path must start with a "/"
  */
-export const PATH = regex`
+export const PATH = regex `
   (?<path>
     /.*                       # a path must start with a "/"
   )
-`;
+`
 
-export const URI_VERSION = new RegExp(URI_VERSIONS);
+export const URI_VERSION = new RegExp(URI_VERSIONS)
 
-export const URI = new RegExp(`^/${FULLY_QUALIFIED_NAME}(?:@${URI_VERSIONS})?${PATH}?$`);
+export const URI = new RegExp(`^/${FULLY_QUALIFIED_NAME}(?:@${URI_VERSIONS})?${PATH}?$`)
 
 // a folder name is standardized: "my-asset@3.19.2"
-export const NAME_AND_VERSION = new RegExp(
-  `^${FULLY_QUALIFIED_NAME}@${URI_VERSIONS}$`
-);
+export const NAME_AND_VERSION = new RegExp(`^${FULLY_QUALIFIED_NAME}@${URI_VERSIONS}$`)
 
-export const STORAGE_VERSION = `^${FULLY_QUALIFIED_NAME}@(?<version>${VERSION(
-  true
-)})$`;
+export const STORAGE_VERSION = `^${FULLY_QUALIFIED_NAME}@(?<version>${VERSION(true)})$`
