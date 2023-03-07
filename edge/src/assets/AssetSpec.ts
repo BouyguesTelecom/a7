@@ -175,7 +175,7 @@ export const URI_VERSIONS = regex `
  */
 export const PATH = regex `
   (?<path>
-    /.*                       # a path must start with a "/"
+    /.+                       # a path must start with a "/"
   )
 `
 
