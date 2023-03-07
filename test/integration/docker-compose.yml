@@ -1,0 +1,42 @@
+name: a7
+
+services:
+  default:
+    extends:
+      file: ./docker-compose.common.yml
+      service: a7
+    ports:
+      - 45540:45537
+
+  without-autoindex:
+    extends:
+      file: ./docker-compose.common.yml
+      service: a7
+    environment:
+      - A7_TITLE=A7 without autoindex
+      # Allow to navigate through the indexed assets (default: true)
+      - A7_AUTOINDEX=false
+    ports:
+      - 45541:45537
+
+  without-zip-directories:
+    extends:
+      file: ./docker-compose.common.yml
+      service: a7
+    environment:
+      - A7_TITLE=A7 without zip directories
+      # Allow the directories and subdirectories download as a single zip file (default: true)
+      - A7_ZIP_DIRECTORIES=false
+    ports:
+      - 45542:45537
+
+  without-meta-queries:
+    extends:
+      file: ./docker-compose.common.yml
+      service: a7
+    environment:
+      - A7_TITLE=A7 without meta queries
+      # Allow for API meta queries (default: true)
+      - A7_META_QUERIES=false
+    ports:
+      - 45543:45537

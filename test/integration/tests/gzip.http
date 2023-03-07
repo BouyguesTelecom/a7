@@ -1,0 +1,14 @@
+/*
+## Gzip
+*/
+# @name Files of size <256Ko should not be served with gzip compression
+GET /namespace/package@1.23.4/file.js
+
+?? status == 200
+?? header content-encoding isFalse
+###
+# @name Files of size >=256Ko should be served with gzip compression
+GET /namespace/package@1.23.4/big-file.js
+
+?? status == 200
+?? header content-encoding == gzip

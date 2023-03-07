@@ -1,0 +1,15 @@
+/*
+## Meta queries
+*/
+# @name Catalog API at main path should be enabled
+GET /?meta
+
+?? status == 200
+?? header content-type startsWith application/json
+###
+# @name Catalog API at main path should be disabled (A7_META_QUERIES=false)
+GET {{without_meta_queries}}/?meta
+
+# An error status code would be a nicer fit
+?? status == 200
+?? header content-type startsWith text/html
