@@ -1,4 +1,5 @@
 module.exports = {
+  cookieJarEnabled: false,
   environments: {
     $shared: {
       host: "http://localhost:45540",
