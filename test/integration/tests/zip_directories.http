@@ -8,6 +8,11 @@ GET /.zip
 ?? header content-type startsWith application/zip
 ?? header content-length >= 1000
 ###
+# @name Edge case: _zip should not be downloadable as a .zip file
+GET /_zip
+
+?? status == 404
+###
 # @name Sub-directory should be downloadable as a .zip file
 GET /namespace/package@1.23.4/.zip
 
