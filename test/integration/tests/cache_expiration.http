@@ -1,0 +1,14 @@
+/*
+## Cache expiration
+*/
+# @name Assets should be immutable and cached for 1 year
+GET /namespace/package@1.23.4/file.js
+
+?? status == 200
+?? header cache-control == max-age=31536000, public, immutable
+###
+# @name HTML assets should not be cached
+GET /namespace/package@1.23.4/file.html
+
+?? status == 200
+?? header cache-control == max-age=0, public, immutable

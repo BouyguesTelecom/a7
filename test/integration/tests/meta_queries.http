@@ -1,0 +1,46 @@
+/*
+## Meta queries
+*/
+# @name Catalog API at main path should be enabled
+GET /?meta
+
+?? status == 200
+?? header content-type startsWith application/json
+###
+# @name Catalog API at main path should be disabled (A7_META_QUERIES=false)
+GET {{without_meta_queries}}/?meta
+
+# An error status code would be a nicer fit
+?? status == 200
+?? header content-type startsWith text/html
+###
+# @name Catalog API should list available package versions
+GET /package?meta
+
+?? status == 200
+?? header content-type startsWith application/json
+# ?? response.parsedBody.requested.asset.name == package
+{{
+  const { equal, ok } = require('assert')
+  const out = JSON.parse(response.body)
+  test('test', () => {
+    equal(out.requested.asset.name, 'package')
+    ok(out.available.versions.indexOf('1.3.0') >= 0)
+    ok(out.available.versions.indexOf('1.3.0-snapshot.20201203171530') >= 0)
+    ok(out.available.versions.indexOf('1.2.3') >= 0)
+    ok(out.available.versions.indexOf('1.2.1') >= 0)
+  })
+}}
+###
+# @name Catalog API should not list versions of an unknown package
+GET /unknown?meta
+
+?? status == 200
+{{
+  const { equal } = require('assert')
+  const out = JSON.parse(response.body)
+  test('test', () => {
+    equal(out.requested.asset.name, 'unknown')
+    equal(out.available.versions.length, 0)
+  })
+}}

@@ -1,0 +1,43 @@
+/*
+## Zip directories
+*/
+# @name Main directory should be downloadable as a .zip file
+GET /.zip
+
+?? status == 200
+?? header content-type startsWith application/zip
+?? header content-length >= 1000
+###
+# @name Edge case: _zip should not be downloadable as a .zip file
+GET /_zip
+
+?? status == 404
+###
+# @name Sub-directory should be downloadable as a .zip file
+GET /namespace/package@1.23.4/.zip
+
+?? status == 200
+?? header content-type startsWith application/zip
+?? header content-length >= 1000
+###
+# @name Main directory should not be downloadable as a .zip file
+GET {{without_zip_directories}}/.zip
+
+?? status == 404
+###
+# @name Sub-directory should not be downloadable as a .zip file
+GET {{without_zip_directories}}/namespace/package@1.23.4/.zip
+
+?? status == 404
+###
+# @name Actual .zip asset file should be downloadable
+GET /namespace/package@1.23.4/file.zip
+
+?? status == 200
+?? header content-type startsWith application/zip
+###
+# @name Actual .zip asset file should be downloadable (A7_ZIP_DIRECTORIES=false)
+GET {{without_zip_directories}}/namespace/package@1.23.4/file.zip
+
+?? status == 200
+?? header content-type startsWith application/zip

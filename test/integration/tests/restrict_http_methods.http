@@ -1,0 +1,32 @@
+/*
+## Restrict HTTP methods
+*/
+# @name Accept GET requests
+GET /namespace/package@1.23.4/file.js
+
+?? status == 200
+
+# @name Accept HEAD requests
+HEAD /namespace/package@1.23.4/file.js
+
+?? status == 200
+
+# @name Disallow POST requests
+POST /namespace/package@1.23.4/file.js
+
+?? status == 405
+
+# @name Disallow PUT requests
+PUT /namespace/package@1.23.4/file.js
+
+?? status == 405
+
+# @name Disallow PATCH requests
+PATCH /namespace/package@1.23.4/file.js
+
+?? status == 405
+
+# @name Disallow DELETE requests
+DELETE /namespace/package@1.23.4/file.js
+
+?? status == 405

@@ -1,0 +1,7 @@
+/*
+## Health
+*/
+# @name Support health check endpoint
+GET /_health
+
+?? status == 200
