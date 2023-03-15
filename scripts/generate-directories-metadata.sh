@@ -35,7 +35,7 @@ fileEntry () {
   directory=$1
   filepath=$2
   hash=$(sha1sum "$filepath" | head -c8)
-  size=$(cat "$filepath" | wc -c | sed -e 's/^[[:space:]]*//')
+  size=$(stat -c "%s" "$filepath")
   servicepath=${filepath#$A7_VOLUME_MOUNT_PATH}
   compressedpath=${filepath#$directory/}
   echo "$hash $size $servicepath $compressedpath"
@@ -45,8 +45,10 @@ fileEntry () {
 #
 directoryEntries () {
   directory=$1
-  for file in $(find "$directory" -type f -not -name ".directory.txt"); do
-    fileEntry "$directory" "$file"
+  metadata_filepath=$2
+  echo -n "" > "$metadata_filepath"
+  find "$directory" -type f -not -name ".directory.txt" | while read -r file; do
+    fileEntry "$directory" "$file" >> "$metadata_filepath"
   done
 }
 
@@ -54,7 +56,7 @@ directoryEntries () {
 
 # For each directory, recursively generate its `.directory.txt` metadata file
 #
-for directory in $(find "$A7_VOLUME_MOUNT_PATH" -type d); do
+find "$A7_VOLUME_MOUNT_PATH" -type d | while read -r directory; do
   echo $directory
   metadata_filepath="$root_dir$directory/.directory.txt"
 
@@ -63,6 +65,6 @@ for directory in $(find "$A7_VOLUME_MOUNT_PATH" -type d); do
     # prepare its folder (when needed)
     mkdir -p "$root_dir$directory"
     # and generate the file
-    directoryEntries "$directory" > "$metadata_filepath"
+    directoryEntries "$directory" "$metadata_filepath" &
   fi
 done
