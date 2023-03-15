@@ -35,7 +35,7 @@ fileEntry () {
   directory=$1
   filepath=$2
   hash=$(sha1sum "$filepath" | head -c8)
-  size=$(cat "$filepath" | wc -c | sed -e 's/^[[:space:]]*//')
+  size=$(stat -c "%s" "$filepath")
   servicepath=${filepath#$A7_VOLUME_MOUNT_PATH}
   compressedpath=${filepath#$directory/}
   echo "$hash $size $servicepath $compressedpath"
