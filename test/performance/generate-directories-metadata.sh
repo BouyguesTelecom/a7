@@ -18,12 +18,12 @@ if [ ! -d "$ROOT_FOLDER" ]; then
   for i in {b..z}; do
     cp -R "$ROOT_FOLDER"/folder-a "$ROOT_FOLDER"/folder-$i
   done
-fi
 
-# stats
-echo "folders: $(find "$ROOT_FOLDER" -mindepth 1 -type d | wc -l)"
-echo "files:   $(find "$ROOT_FOLDER" -mindepth 1 -type f | wc -l)"
-echo "size:       $(du -chs "$ROOT_FOLDER" | head -1)"
+  # stats
+  echo "folders: $(find "$ROOT_FOLDER" -mindepth 1 -type d | wc -l)"
+  echo "files:   $(find "$ROOT_FOLDER" -mindepth 1 -type f | wc -l)"
+  echo "size:       $(du -chs "$ROOT_FOLDER" | head -1)"
+fi
 
 # run the script
 export A7_PATH_AUTO_EXPAND_INIT=always
