@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 #
 # Copyright 2021 - Bouygues Telecom
@@ -32,39 +32,52 @@ fi
 #   4dc8bcdc 20 /assets/bob@1.3.3/dist/index.css index.css
 #
 fileEntry () {
-  directory=$1
-  filepath=$2
-  hash=$(sha1sum "$filepath" | head -c8)
-  size=$(stat -c "%s" "$filepath")
-  servicepath=${filepath#$A7_VOLUME_MOUNT_PATH}
-  compressedpath=${filepath#$directory/}
+  local directory="$1"
+  local filepath="$2"
+  local hash=$(sha1sum "$filepath" | head -c8)
+  local size=$(stat -f%p "$filepath")
+  local servicepath=${filepath#$A7_VOLUME_MOUNT_PATH}
+  local compressedpath=${filepath#$directory/}
   echo "$hash $size $servicepath $compressedpath"
 }
 
 # Given a root directory, outputs all of its mod_zip-compatible file entries
 #
 directoryEntries () {
-  directory=$1
-  metadata_filepath=$2
+  local directory="$1"
+  local metadata_filepath="$2"
   echo -n "" > "$metadata_filepath"
-  find "$directory" -type f -not -name ".directory.txt" | while read -r file; do
+  find "$directory" -maxdepth 1 -type f -not -name ".directory.txt" | while read -r file; do
     fileEntry "$directory" "$file" >> "$metadata_filepath"
   done
 }
 
-# root_dir=/compressed
-
 # For each directory, recursively generate its `.directory.txt` metadata file
 #
+echo "⏹ Generating metadata files…"
 find "$A7_VOLUME_MOUNT_PATH" -type d | while read -r directory; do
-  echo $directory
+  echo -ne "   $directory\033[0K\r"
   metadata_filepath="$root_dir$directory/.directory.txt"
 
   # if 👇 we either want to force the metadata generation or 👇 the metadata file doesn't exist yet
   if [ "$A7_PATH_AUTO_EXPAND_INIT" = "always" ] || [ ! -e "$metadata_filepath" ]; then
-    # prepare its folder (when needed)
-    mkdir -p "$root_dir$directory"
-    # and generate the file
+    # generate the file
     directoryEntries "$directory" "$metadata_filepath" &
   fi
 done
+echo "✔ All metadata files generated."
+
+# Wait for all background tasks completion
+#
+echo "⏹ Waiting for all background tasks completion…"
+while [ 1 ]; do fg 2> /dev/null; [ $? == 1 ] && break; done
+echo "✔ All background tasks completed."
+
+# Deep merge metadata files into their parents
+#
+echo "⏹ Deep merge metadata files into their parents…"
+find -s "$A7_VOLUME_MOUNT_PATH" -type d | tail -r | while read -r path; do
+  echo -ne "  $path\033[0K\r"
+  cat $path/*/.directory.txt >> "$path/.directory.txt" 2> /dev/null
+done
+echo "✔ All metadata files merged."
