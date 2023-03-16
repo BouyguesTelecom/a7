@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 #
 # Copyright 2021 - Bouygues Telecom
@@ -25,9 +25,6 @@ if [ "$A7_PATH_AUTO_EXPAND_INIT" != "true" ] && [ "$A7_PATH_AUTO_EXPAND_INIT" !=
   echo "ENV A7_PATH_AUTO_EXPAND_INIT set to '$A7_PATH_AUTO_EXPAND_INIT'; Let's bypass the directories metadata generation step KTHXBYE."
   return
 fi
-
-# Parallelization
-N="${A7_PATH_AUTO_EXPAND_INIT_PARALLEL:-8}"
 
 # Given a file path, outputs a mod_zip-compatible file entry
 #
@@ -59,7 +56,7 @@ directoryEntries () {
   local directory="$1"
   local metadata_filepath="$2"
 
-  echo -n "" > "$metadata_filepath"
+  truncate -s 0 "$metadata_filepath"
   find "$directory" -type f -not -name ".directory.txt" | while read -r file; do
     fileEntry "$directory" "$file" >> "$metadata_filepath"
   done
@@ -68,16 +65,14 @@ directoryEntries () {
 # For each directory, recursively generate its `.directory.txt` metadata file
 #
 echo "⏹ Generating metadata files…"
-find -s "$A7_VOLUME_MOUNT_PATH" -type d | tail -r | while read -r directory; do
-  echo -ne "   $directory\033[0K\r"
+find "$A7_VOLUME_MOUNT_PATH" -type d | while read -r directory; do
+  echo "   $directory"
   metadata_filepath="$root_dir$directory/.directory.txt"
 
   # if 👇 we either want to force the metadata generation or 👇 the metadata file doesn't exist yet
   if [ "$A7_PATH_AUTO_EXPAND_INIT" = "always" ] || [ ! -e "$metadata_filepath" ]; then
     # generate the file
     directoryEntries "$directory" "$metadata_filepath" &
-    # limit the parallel jobs to N
-    if [[ $(jobs -r -p | wc -l) -ge $N ]]; then wait; fi
   fi
 done
 echo "✔ All metadata files generated."
