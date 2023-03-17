@@ -26,46 +26,30 @@ if [ "$A7_PATH_AUTO_EXPAND_INIT" != "true" ] && [ "$A7_PATH_AUTO_EXPAND_INIT" !=
   return
 fi
 
-# Given a file path, outputs a mod_zip-compatible file entry
-#
-# Example output for a 20b file:
-#   - 20 /assets/bob@1.3.3/dist/index.css index.css
-#
-fileEntry () {
-  local directory="$1"
-  local filepath="$2"
-
-  local hash="-"
-  # local hash=$(sha1sum "$filepath" | head -c8)
-  # local hash=$(cksum -o 3 "$filepath")
-
-  # mac:
-  # local size=$(stat -f%z "$filepath")
-  # linux:
-  local size=$(stat -c "%s" "$filepath")
-
-  local servicepath=${filepath#$A7_VOLUME_MOUNT_PATH}
-  local compressedpath=${filepath#$directory/}
-
-  echo "$hash $size $servicepath $compressedpath"
-}
-
 # Given a root directory, outputs all of its mod_zip-compatible file entries
+# Outputs mod_zip-compatible file entries
+#
+# Example output:
+#   - 20 /assets/bob@1.3.3/dist/index.css index.css
+#   - 45 /assets/bob@1.3.3/dist/index.js index.js
 #
 directoryEntries () {
   local directory="$1"
   local metadata_filepath="$2"
+  local subdir=${directory#"$A7_VOLUME_MOUNT_PATH"}
 
-  truncate -s 0 "$metadata_filepath"
-  find "$directory" -type f -not -name ".directory.txt" | while read -r file; do
-    fileEntry "$directory" "$file" >> "$metadata_filepath"
-  done
+  # find all files in the currenty directory, recursively
+  find "$directory" -type f \
+    -not -name ".directory.txt" \
+    -exec du -b {} + | \
+    awk '{gsub("'$A7_VOLUME_MOUNT_PATH'","",$2); printf ("- %i %s", $1, $2); gsub("'$subdir'/","",$2); printf (" %s\n", $2);}' \
+    > "$metadata_filepath"
 }
 
 # For each directory, recursively generate its `.directory.txt` metadata file
 #
 echo "⏹ Generating metadata files…"
-find "$A7_VOLUME_MOUNT_PATH" -type d | while read -r directory; do
+find "$A7_VOLUME_MOUNT_PATH" -type d -mindepth 1 | while read -r directory; do
   echo "   $directory"
   metadata_filepath="$root_dir$directory/.directory.txt"
 
