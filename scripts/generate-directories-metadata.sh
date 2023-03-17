@@ -27,13 +27,13 @@ if [ "$A7_PATH_AUTO_EXPAND_INIT" != "true" ] && [ "$A7_PATH_AUTO_EXPAND_INIT" !=
 fi
 
 # Given a root directory, outputs all of its mod_zip-compatible file entries
-# Outputs mod_zip-compatible file entries
+# Outputs mod_zip-compatible file entries into a `.directory.txt` file
 #
 # Example output:
 #   - 20 /assets/bob@1.3.3/dist/index.css index.css
 #   - 45 /assets/bob@1.3.3/dist/index.js index.js
 #
-directoryEntries () {
+generateDirectoryMetadataFile () {
   local directory="$1"
   local metadata_filepath="$2"
   local subdir=${directory#"$A7_VOLUME_MOUNT_PATH"}
@@ -56,7 +56,7 @@ find "$A7_VOLUME_MOUNT_PATH" -type d -mindepth 1 | while read -r directory; do
   # if 👇 we either want to force the metadata generation or 👇 the metadata file doesn't exist yet
   if [ "$A7_PATH_AUTO_EXPAND_INIT" = "always" ] || [ ! -e "$metadata_filepath" ]; then
     # generate the file
-    directoryEntries "$directory" "$metadata_filepath" &
+    generateDirectoryMetadataFile "$directory" "$metadata_filepath" &
   fi
 done
 echo "✔ All metadata files generated."
