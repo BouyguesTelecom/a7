@@ -32,7 +32,7 @@ fi
 # Example output:
 #   - 20 /assets/bob@1.3.3/dist/index.css index.css
 #   - 45 /assets/bob@1.3.3/dist/index.js index.js
-#   - 1 /assets/file+with+spaces.txt file with spaces.txt
+#   - 1 /assets/file%20with%20spaces.txt file with spaces.txt
 #
 generateDirectoryMetadataFile () {
   local directory="$1"
