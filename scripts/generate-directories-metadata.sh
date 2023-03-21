@@ -61,7 +61,7 @@ generateDirectoryMetadataFile () {
       sub("'$subdir'/", "", file);
 
       # encode spaces in location
-      gsub(/ /, "+", location);
+      gsub(/ /, "%20", location);
 
       # output the mod_zip-compatible entry
       printf ("- %i %s %s\n", size, location, file);
