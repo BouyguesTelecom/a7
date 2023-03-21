@@ -32,6 +32,7 @@ fi
 # Example output:
 #   - 20 /assets/bob@1.3.3/dist/index.css index.css
 #   - 45 /assets/bob@1.3.3/dist/index.js index.js
+#   - 1 /assets/file%20with%20spaces.txt file with spaces.txt
 #
 generateDirectoryMetadataFile () {
   local directory="$1"
@@ -42,7 +43,29 @@ generateDirectoryMetadataFile () {
   find "$directory" -type f \
     -not -name ".directory.txt" \
     -exec du -b {} + | \
-    awk '{gsub("'$A7_VOLUME_MOUNT_PATH'","",$2); printf ("- %i %s", $1, $2); gsub("'$subdir'/","",$2); printf (" %s\n", $2);}' \
+    awk '{
+      # ensure the root path is the same one nginx-wise
+      sub("'$A7_VOLUME_MOUNT_PATH'", "", $2);
+
+      # put the size aside
+      size=$1;
+
+      # keep all but the first column (size)
+      $1="";
+      # as the remaining columns will assemble into a location
+      location=$0;
+      sub(/^ +/, "", location);
+
+      # the file name is computed from the location
+      file=location;
+      sub("'$subdir'/", "", file);
+
+      # encode spaces in location
+      gsub(/ /, "%20", location);
+
+      # output the mod_zip-compatible entry
+      printf ("- %i %s %s\n", size, location, file);
+    }' \
     > "$metadata_filepath"
 }
 
@@ -56,7 +79,7 @@ find "$A7_VOLUME_MOUNT_PATH" -type d -mindepth 1 | while read -r directory; do
   # if 👇 we either want to force the metadata generation or 👇 the metadata file doesn't exist yet
   if [ "$A7_PATH_AUTO_EXPAND_INIT" = "always" ] || [ ! -e "$metadata_filepath" ]; then
     # generate the file
-    generateDirectoryMetadataFile "$directory" "$metadata_filepath" &
+    generateDirectoryMetadataFile "$directory" "$metadata_filepath" # &
   fi
 done
 echo "✔ All metadata files generated."
