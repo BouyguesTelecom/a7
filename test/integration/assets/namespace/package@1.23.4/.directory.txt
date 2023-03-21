@@ -1,7 +1,7 @@
-50952385 6148 /namespace/package@1.23.4/.DS_Store .DS_Store
-4b5d9984 377 /namespace/package@1.23.4/big-file.js big-file.js
-c3ba314e 14 /namespace/package@1.23.4/dist/bundle.js dist/bundle.js
-12b36964 11 /namespace/package@1.23.4/file.html file.html
-c3ba314e 14 /namespace/package@1.23.4/file.js file.js
-f20933f4 6 /namespace/package@1.23.4/file.md file.md
-7f2bdbf3 208 /namespace/package@1.23.4/file.zip file.zip
+- 377 /namespace/package@1.23.4/big-file.js big-file.js
+- 14 /namespace/package@1.23.4/dist/bundle.js dist/bundle.js
+- 6 /namespace/package@1.23.4/file.md file.md
+- 11 /namespace/package@1.23.4/file.html file.html
+- 208 /namespace/package@1.23.4/file.zip file.zip
+- 13 /namespace/package@1.23.4/file%20with%20spaces.txt file with spaces.txt
+- 14 /namespace/package@1.23.4/file.js file.js

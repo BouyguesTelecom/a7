@@ -1,8 +1,8 @@
-d223f7b1 4 /namespace/@scope/package@1.5.0/file.txt @scope/package@1.5.0/file.txt
-50952385 6148 /namespace/package@1.23.4/.DS_Store package@1.23.4/.DS_Store
-4b5d9984 377 /namespace/package@1.23.4/big-file.js package@1.23.4/big-file.js
-c3ba314e 14 /namespace/package@1.23.4/dist/bundle.js package@1.23.4/dist/bundle.js
-12b36964 11 /namespace/package@1.23.4/file.html package@1.23.4/file.html
-c3ba314e 14 /namespace/package@1.23.4/file.js package@1.23.4/file.js
-f20933f4 6 /namespace/package@1.23.4/file.md package@1.23.4/file.md
-7f2bdbf3 208 /namespace/package@1.23.4/file.zip package@1.23.4/file.zip
+- 4 /namespace/@scope/package@1.5.0/file.txt @scope/package@1.5.0/file.txt
+- 377 /namespace/package@1.23.4/big-file.js package@1.23.4/big-file.js
+- 14 /namespace/package@1.23.4/dist/bundle.js package@1.23.4/dist/bundle.js
+- 6 /namespace/package@1.23.4/file.md package@1.23.4/file.md
+- 11 /namespace/package@1.23.4/file.html package@1.23.4/file.html
+- 208 /namespace/package@1.23.4/file.zip package@1.23.4/file.zip
+- 13 /namespace/package@1.23.4/file%20with%20spaces.txt package@1.23.4/file with spaces.txt
+- 14 /namespace/package@1.23.4/file.js package@1.23.4/file.js
