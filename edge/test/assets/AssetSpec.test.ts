@@ -101,18 +101,13 @@ describe('AssetSpec', () => {
         .to.be.undefined
     })
 
-    it('should handle invalid names (has a trailing hyphen)', () => {
-      expect(extractStrict(spec.NAME_PART, 'has-trailing-hyphen-'))
-        .to.be.undefined
-    })
-
-    it('should handle invalid names', () => {
-      expect(extractStrict(spec.NAME_PART, 'with--double-hyphen'))
-        .to.be.undefined
-    })
-
     it('should handle invalid names (has a leading underscore)', () => {
       expect(extractStrict(spec.NAME_PART, '_leading-underscore'))
+        .to.be.undefined
+    })
+
+    it('should handle tralala', () => {
+      expect(extractStrict(spec.STORAGE_VERSION, '_leading-underscore'))
         .to.be.undefined
     })
   })

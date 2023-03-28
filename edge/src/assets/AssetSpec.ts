@@ -109,10 +109,8 @@ export const NAME_PART = regex `
   # leads with a letter
   [a-zA-Z]
 
-  # continues with letters, digits, hyphens, underscores, but:
-  # - no consecutive hyphens
-  # - no trailing hyphen
-  (?:[-_]?[a-zA-Z\\d]+)*
+  # continues with letters, digits, hyphens, underscores
+  [-_a-zA-Z\\d]*
 `
 
 /**

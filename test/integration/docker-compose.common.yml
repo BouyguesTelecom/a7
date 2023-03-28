@@ -1,6 +1,6 @@
 services:
   a7:
-    image: bouyguestelecom/a7
+    image: bouyguestelecom/a7:1.7.9
     environment:
       # Path to the assets root directory path (default: /assets)
       - A7_VOLUME_MOUNT_PATH=/assets
@@ -42,3 +42,8 @@ services:
       - ../../etc/nginx/mime.types:/etc/nginx/mime.types:ro
       - ../../etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./assets:/assets:ro
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 256M

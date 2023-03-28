@@ -121,12 +121,6 @@ describe('AssetNameParser', () => {
       expect(parsedVersion.valid).to.equal(false)
     })
 
-    it('should not accept input ending with a dash', () => {
-      const parsedVersion = assetNameParser.parseFromStorageName('trilogy-@0.8.1')
-
-      expect(parsedVersion.valid).to.equal(false)
-    })
-
     it('should accept input ending with a number', () => {
       const parsedVersion = assetNameParser.parseFromStorageName('trilogy2@0.8.1')
 
