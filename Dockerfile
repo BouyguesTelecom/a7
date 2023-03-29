@@ -5,7 +5,7 @@
 ## Because we're special, ain't we? ʕ♥ᴥ♥ʔ
 FROM node:14-alpine AS nginx-builder
 
-ARG NGINX_VERSION="1.23.3"
+ARG NGINX_VERSION="1.23.4"
 ARG NGINX_SOURCE="http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz"
 
 ARG MOD_ZIP_VERSION="1.3.0"
@@ -55,7 +55,7 @@ COPY edge /build/edge
 RUN npm run build
 
 ## STEP 3: Create the final image.
-FROM nginx:1.23-alpine
+FROM nginx:1.23.4-alpine
 
 # Port used for the service
 ENV PORT 45537
