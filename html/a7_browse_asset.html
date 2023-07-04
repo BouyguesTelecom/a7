@@ -1,4 +1,4 @@
---><!]]></template>
+</template>
 <!--
   ~ Copyright 2021 - Bouygues Telecom
   ~
@@ -84,7 +84,10 @@
 </template>
 
 <script>
-  var content = document.querySelector('#data').content.childNodes[1].textContent;
+  // var serializer = new XMLSerializer();
+  // var dataFragment = document.querySelector('#data').content;
+  // var content = serializer.serializeToString(dataFragment);
+  var content = document.querySelector('#data').content.textContent.replace(/█\[\[█/g, '<');
 
   // Instanciate the simple code editor
   var contentNode = document.createElement('div');
