@@ -1,3 +1,3 @@
 #!/bin/sh
 
-npx httpyac ./tests/*.http --all -e dev
+npx httpyac@6.2 ./tests/*.http --all -e dev
