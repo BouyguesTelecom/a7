@@ -19,8 +19,6 @@
  * under the License.
  */
 
-/// <reference path="../../types/ngx_http_js_module.d.ts" />
-
 import {
   rmdir as actuallyRemoveDirectory,
   unlink as actuallyRemoveFile,
@@ -30,7 +28,7 @@ import {
 /**
  * Get the full path of a file.
  */
-function getFullPath (r: NginxHTTPRequest): string {
+function getFullPath(r: NginxHTTPRequest): string {
   const path = r.uri.replace(/^\/__api\/files/, '')
   const fullPath = `/assets${path}`
 

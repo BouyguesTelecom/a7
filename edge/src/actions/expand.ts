@@ -19,8 +19,7 @@
  * under the License.
  */
 
-/// <reference path="../../types/ngx_http_js_module.d.ts" />
-
+import etag from 'etag'
 import Asset from '../assets/Asset'
 import AssetComparator from '../assets/AssetComparator'
 import AssetNameParser from '../assets/AssetNameParser'
@@ -29,28 +28,29 @@ import AssetPredicate from '../assets/AssetPredicate'
 import { allStoredAssets } from '../datasource/datasource'
 import { VOLUME_MOUNT_PATH } from '../helpers/Env'
 import { readFile } from '../helpers/File'
+import { isCssURI, isJsURI, minifyCSS, minifyJS, resolveNonMinifiedURI } from '~/helpers/Minify'
 import { isVersionPreciseEnough } from '../helpers/Version'
 
 /**
  * Given a requested asset, find out what locally available asset best matches the request.
  */
-function findBestMatchingCandidate (r: NginxHTTPRequest, requestedAsset: Asset): Asset {
+function findBestMatchingCandidate(r: NginxHTTPRequest, requestedAsset: Asset): Asset {
   const assetNameParser = new AssetNameParser()
   const assetComparator = new AssetComparator()
   const assetPredicate = new AssetPredicate(requestedAsset)
 
   const all = allStoredAssets(r)
-  const assets = all.map(p => p.name).map(name => assetNameParser.parseFromStorageName(name))
+  const assets = all.map((p) => p.name).map((name) => assetNameParser.parseFromStorageName(name))
 
   const eligibleAssetNamesOrdered = assets
     // only grab assets whose name correspond
-    .filter(p => p.name === requestedAsset.name)
+    .filter((p) => p.name === requestedAsset.name)
     // order by version
     .sort(assetComparator.compare)
 
   const candidates = eligibleAssetNamesOrdered
     // filter matching asset versions and take the first result
-    .filter(asset => assetPredicate.matches(asset))
+    .filter((asset) => assetPredicate.matches(asset))
 
   const bestMatch = candidates[0]
 
@@ -66,13 +66,12 @@ function findBestMatchingCandidate (r: NginxHTTPRequest, requestedAsset: Asset):
  * Given a requested asset (that can have a path) and a best matching candidate asset (that may have a default path),
  * find out what the final target URI is.
  */
-function computeUriPath (r: NginxHTTPRequest, requestedAsset: Asset, candidateAsset: Asset): string {
+function computeUriPath(r: NginxHTTPRequest, requestedAsset: Asset, candidateAsset: Asset): string {
   const assetNameSerializer = new AssetNameSerializer()
   const assetStorageName = assetNameSerializer.serializeAssetName(candidateAsset)
   const all = allStoredAssets(r)
 
-  const defaultPath = all.find(p => p.name === assetStorageName)
-    ?.defaultPath
+  const defaultPath = all.find((p) => p.name === assetStorageName)?.defaultPath
 
   const hasPath = Boolean(requestedAsset.path) || Boolean(defaultPath)
 
@@ -80,25 +79,26 @@ function computeUriPath (r: NginxHTTPRequest, requestedAsset: Asset, candidateAs
     return ''
   }
 
-  return `/${assetStorageName}${(requestedAsset.path || `/${defaultPath}`)}`
+  return `/${assetStorageName}${requestedAsset.path || `/${defaultPath}`}`
 }
 
 /**
  * Find out the path of a given asset
  */
-function assetDefaultPath (r: NginxHTTPRequest, requestedAsset: Asset): string {
+function assetDefaultPath(r: NginxHTTPRequest, requestedAsset: Asset): string {
   if (!requestedAsset.name || !requestedAsset.version) {
     // cannot find an asset without these information
     return ''
   }
 
-  return allStoredAssets(r)
-    // find an exact match
-    .find(p => p.name === `${requestedAsset.name}@${requestedAsset.version}`)
+  return (
     // if found, grab its default path
-    ?.defaultPath
+    allStoredAssets(r)
+      // find an exact match
+      .find((p) => p.name === `${requestedAsset.name}@${requestedAsset.version}`)?.defaultPath ||
     // if no default path is set
-    || ''
+    ''
+  )
 }
 
 /**
@@ -106,10 +106,12 @@ function assetDefaultPath (r: NginxHTTPRequest, requestedAsset: Asset): string {
  *
  * Optional: depends on the `serveFiles` boolean variable that can be set in the nginx configuration. (defaults to false)
  */
-export default function expand (r: NginxHTTPRequest): void {
+export default function expand(r: NginxHTTPRequest): void {
   r.log(`----- expand: ${r.uri} -----`)
 
-  function handleNotFound (r: NginxHTTPRequest): void {
+  const isMinificationRequested = r.uri.toString().match(/\.min\.(?:js|mjs|css)$/)
+
+  function handleNotFound(r: NginxHTTPRequest): void {
     r.warn('internal 404')
     r.internalRedirect('/404.html')
   }
@@ -125,6 +127,41 @@ export default function expand (r: NginxHTTPRequest): void {
     r.log('DEBUG: ' + JSON.stringify({ isVersionPrecise, needsRedirect, isURIComplete }))
 
     if (!needsRedirect) {
+      // Handle minification cases
+      if (isMinificationRequested) {
+        r.log('Minification requested')
+
+        let source: string | void = undefined
+        try {
+          source = readFile(r, `${VOLUME_MOUNT_PATH}${r.uri}`)
+        } catch (e) {
+          // ignore
+        }
+
+        if (source) {
+          r.return(200, source)
+        } else {
+          try {
+            const sourceFilePath = resolveNonMinifiedURI(r.uri.toString())
+            source = readFile(r, `${VOLUME_MOUNT_PATH}${sourceFilePath}`)
+          } catch (e) {
+            // ignore
+          }
+
+          // minify
+          let minified = (source || '').toString()
+          if (isJsURI(r.uri.toString())) {
+            minified = minifyJS(minified)
+          } else if (isCssURI(r.uri.toString())) {
+            minified = minifyCSS(minified)
+          }
+
+          r.headersOut['cache-tag'] = 'minified asset'
+          r.headersOut.etag = etag(minified)
+
+          r.return(200, minified)
+        }
+      }
       // This should not happen, as this nominal case is handled in `nginx.conf` with `try_files $uri`
       if (r.variables.serveFiles) {
         // return what's asked
@@ -136,7 +173,6 @@ export default function expand (r: NginxHTTPRequest): void {
     }
 
     if (!isVersionPrecise) {
-
       const candidateAsset = findBestMatchingCandidate(r, requestedAsset) // <- this is it
       const newPath = computeUriPath(r, requestedAsset, candidateAsset)
 
@@ -152,9 +188,7 @@ export default function expand (r: NginxHTTPRequest): void {
 
       r.log(`302: ${newPath}`)
       r.return(302, newPath)
-
     } else if (!requestedAsset.path) {
-
       const assetPath = assetDefaultPath(r, requestedAsset)
 
       if (!assetPath) {
@@ -171,7 +205,6 @@ export default function expand (r: NginxHTTPRequest): void {
 
       r.log(`302: ${newPath}`)
       r.return(302, newPath)
-
     } else {
       handleNotFound(r)
     }

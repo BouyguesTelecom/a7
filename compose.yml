@@ -39,4 +39,4 @@ services:
       # ASSET:ASSET ↓
       - 45537:45537
     volumes:
-      - ./assets:/assets
+      - ./test/integration/assets:/assets
