@@ -9,7 +9,6 @@
     "lint": "eslint src --ext .js,.ts"
   },
   "dependencies": {
-    "esbuild": "^0.19.2",
     "etag": "^1.8.1"
   },
   "engines": {
