@@ -16,16 +16,17 @@ export const minifyCSS = (code: string): string =>
     .replace(/\n+/g, '')
     // - trim spaces
     .replace(/\s*([,;{}])\s*/gm, '$1')
+    .replace(/^\s+/gm, '')
     // - remove ";" before "}"
     .replace(/;}/g, '}')
     // - remove spaces after ":"
-    .replace(/: /g, ':')
+    .replace(/:\s+/g, ':')
     // Floats
     //-  replace 0.5 with .5
     .replace(/([: ])0\./g, '$1.')
     // Colors
     // - replace #333333 with #333 and #333333ff with #333
-    .replace(/([: ])#(0-9a-f){6}(?:ff)?(?!\w)/gi, '$1#$1$1$1')
+    .replace(/([: ])#([0-9a-f]){6}(?:ff)?(?!\w)/gi, '$1#$2$2$2')
     // - replace named colors with hex
     .replace(/([: ])black(?!\w)/g, '$1#000')
     .replace(/([: ])white(?!\w)/g, '$1#fff')
@@ -37,10 +38,15 @@ export const minifyJS = (code: string): string =>
   code
     // remove comments
     .replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, '')
-    .replace(/;\n */g, ';')
+    // trim spaces
+    .replace(/^[\s\n]+/, '')
+    .replace(/[\s\n]+$/, '')
     // remove newlines
-    .replace(/\n+/g, '')
+    .replace(/,\s*\n[\s\n]*([}\]])/g, '$1')
+    .replace(/\s*\n[\s\n]*/g, ' ')
+    .replace(/;\s*}/g, '}')
     // remove tabs
     .replace(/\t+/g, ' ')
-    // remove spaces
+    // trim spaces
     .replace(/\s+(?= )/g, '')
+    .replace(/^\s+/gm, '')

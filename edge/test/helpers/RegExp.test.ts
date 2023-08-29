@@ -22,55 +22,61 @@
 import { expect } from 'chai'
 import { parseRegexpTemplateString as regex } from '../../src/helpers/RegExp'
 
-
-const regxpTests = [{
-  it: 'should handle a simple string',
-  input: regex `simple string`,
-  expected: 'simple string',
-}, {
-  it: 'should handle multiline template strings',
-  input: regex `
+const regxpTests = [
+  {
+    it: 'should handle a simple string',
+    input: regex`simple string`,
+    expected: 'simple string',
+  },
+  {
+    it: 'should handle multiline template strings',
+    input: regex`
     multi
     line
     template string
   `,
-  expected: 'multilinetemplate string',
-}, {
-  it: 'should handle a template string with variables',
-  input: regex `
+    expected: 'multilinetemplate string',
+  },
+  {
+    it: 'should handle a template string with variables',
+    input: regex`
     template string
-    ${`variable ${true}`}
+    ${`variable ${'true'}`}
   `,
-  expected: 'template stringvariable true',
-}, {
-  it: 'should handle inline comments',
-  input: regex `
+    expected: 'template stringvariable true',
+  },
+  {
+    it: 'should handle inline comments',
+    input: regex`
     something   # this is an auto-removed inline comment
   `,
-  expected: 'something',
-}, {
-  it: 'should block comments',
-  input: regex `
+    expected: 'something',
+  },
+  {
+    it: 'should block comments',
+    input: regex`
     # this is a
     # block comment
     something
   `,
-  expected: 'something',
-}, {
-  it: 'should handle (and preserve) regular expressions syntax',
-  input: regex `
+    expected: 'something',
+  },
+  {
+    it: 'should handle (and preserve) regular expressions syntax',
+    input: regex`
     (?:
       this is the rythm of the\\s
       [night|day|dance]
       ([^/]\\)$\\w\\d)
     )
   `,
-  expected: '(?:this is the rythm of the\\s[night|day|dance]([^/]\\)$\\w\\d))',
-}]
+    expected: '(?:this is the rythm of the\\s[night|day|dance]([^/]\\)$\\w\\d))',
+  },
+]
 
 describe('RegExp', () => {
   describe('#parseRegexpTemplateString', () => {
-    regxpTests.forEach(test => {
+    regxpTests.forEach((test) => {
       it(test.it, () => {
         expect(test.input).to.equal(test.expected)
       })

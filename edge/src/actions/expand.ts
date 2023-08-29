@@ -27,8 +27,8 @@ import AssetNameSerializer from '../assets/AssetNameSerializer'
 import AssetPredicate from '../assets/AssetPredicate'
 import { allStoredAssets } from '../datasource/datasource'
 import { VOLUME_MOUNT_PATH } from '../helpers/Env'
+import { isCssURI, isJsURI, minifyCSS, minifyJS, resolveNonMinifiedURI } from '../helpers/Minify'
 import { readFile } from '../helpers/File'
-import { isCssURI, isJsURI, minifyCSS, minifyJS, resolveNonMinifiedURI } from '~/helpers/Minify'
 import { isVersionPreciseEnough } from '../helpers/Version'
 
 /**
