@@ -1,9 +1,6 @@
-version: "2.0"
-
 services:
   a7:
-    build:
-      context: .
+    image: bouyguestelecom/a7:1.7.9
     environment:
       # Path to the assets root directory path (default: /assets)
       - A7_VOLUME_MOUNT_PATH=/assets
@@ -30,13 +27,23 @@ services:
       # Activate A7 internal API (note: writing files to disk needs write permissions) (default: true)
       # - A7_INTERNAL_API=false
       # Set the service title (displayed in the browsing UI)
-      # - A7_TITLE=Clown
+      - A7_TITLE=A7 integration service
       # Set the service icon (displayed in the browsing UI)
-      # - A7_ICON=🤡
+      - A7_ICON=🧪
       # Set the main brand color (used in the top hero banner) (values: primary, secondary, tertiary, info, warning, danger, grey, grey-dark or any CSS-compatible color code) (default: tertiary)
-      # - A7_BRAND_COLOR=primary
-    ports:
-      # ASSET:ASSET ↓
-      - 45537:45537
+      - A7_BRAND_COLOR=success
+    # ports:
+    #   # ASSET:ASSET ↓
+    #   - 45537:45537
     volumes:
-      - ./assets:/assets
+      # - ../../etc/nginx/conf.d:/etc/nginx/conf.d:rw
+      - ../../etc/nginx/edge:/etc/nginx/edge:ro
+      - ../../etc/nginx/includes:/etc/nginx/includes:ro
+      - ../../etc/nginx/mime.types:/etc/nginx/mime.types:ro
+      - ../../etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./assets:/assets:ro
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 256M

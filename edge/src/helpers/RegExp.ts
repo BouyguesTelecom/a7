@@ -22,14 +22,16 @@
 /**
  * Strip down superfluous spaces and comments from a regular-expression-ready multi-line string.
  */
-function cleanRegexPart (str: string): string {
-  return str
-    // for each line
-    .split(/(\n\s)+/)
-    // remove all (inline and block) comments, and trim the result
-    .map(line => line.replace(/\s+#\s+.+$/m, '').trim())
-    // merge all the parts
-    .join('')
+function cleanRegexPart(str: string): string {
+  return (
+    str
+      // for each line
+      .split(/(\n\s)+/)
+      // remove all (inline and block) comments, and trim the result
+      .map((line) => line.replace(/\s+#\s+.+$/m, '').trim())
+      // merge all the parts
+      .join('')
+  )
 }
 
 /**
@@ -37,9 +39,14 @@ function cleanRegexPart (str: string): string {
  * @param literals      Literals of the template string
  * @param placeholders  Placeholders of the template string
  */
-export function parseRegexpTemplateString (literals: TemplateStringsArray, ...placeholders: string[]): string {
-  return placeholders.map((placeholder, i) => (
-    // interleave the literals with the placeholders
-    cleanRegexPart(literals[i]) + placeholder
-  )).join('') + cleanRegexPart(literals[literals.length - 1])
+export function parseRegexpTemplateString(literals: TemplateStringsArray, ...placeholders: unknown[]): string {
+  return (
+    placeholders
+      .map(
+        (placeholder, i) =>
+          // interleave the literals with the placeholders
+          `${cleanRegexPart(literals[i])}${placeholder}`
+      )
+      .join('') + cleanRegexPart(literals[literals.length - 1])
+  )
 }

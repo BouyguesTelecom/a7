@@ -273,7 +273,7 @@ open http://localhost:45537
 
 ### with `docker-compose`
 
-1. Prepare your `docker-compose.yml`:
+1. Prepare your `compose.yml`:
 
     ```yaml
     version: "2.0"
