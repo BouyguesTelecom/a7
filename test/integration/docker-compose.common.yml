@@ -20,6 +20,8 @@ services:
       # - A7_PATH_AUTO_EXPAND=false
       # Initialize/generate the .directory.txt metadata files in every assets subfolders (default: false) (values: true, false, always)
       # - A7_PATH_AUTO_EXPAND_INIT=true
+      # For incomplete versions, resolve the resource instead of redirecting ot its location (requires A7_PATH_AUTO_EXPAND=true) (default: false)
+      # - A7_PATH_AUTO_RESOLVE=true
       # Only run scripts; do not start the server (default: false)
       # - A7_RUN_SCRIPTS_ONLY=true
       # Only respond to HEAD and GET requests (default: true)

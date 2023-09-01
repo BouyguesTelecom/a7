@@ -103,6 +103,14 @@ function assetDefaultPath(r: NginxHTTPRequest, requestedAsset: Asset): string {
 
 /**
  * Given a requested URI, expand it into a target URI to redirect to, that corresponds to the best match.
+ * The expansion supports:
+ * - auto-minification of not-already minified JS and CSS
+ * - versioning
+ * - default path
+ * - CORS headers
+ * - 404 response handling
+ * - 302 response handling
+ * - 200 response handling
  *
  * Optional: depends on the `serveFiles` boolean variable that can be set in the nginx configuration. (defaults to false)
  */
@@ -110,11 +118,6 @@ export default function expand(r: NginxHTTPRequest): void {
   r.log(`----- expand: ${r.uri} -----`)
 
   const isMinificationRequested = r.uri.toString().match(/\.min\.(?:js|mjs|css)$/)
-
-  function handleNotFound(r: NginxHTTPRequest): void {
-    r.warn('internal 404')
-    r.internalRedirect('/404.html')
-  }
 
   try {
     const assetNameParser = new AssetNameParser()
@@ -181,13 +184,7 @@ export default function expand(r: NginxHTTPRequest): void {
         return
       }
 
-      if (!!process.env.A7_CORS_ALL) {
-        r.headersOut['access-control-allow-origin'] = '*'
-        r.headersOut['access-control-allow-headers'] = '*'
-      }
-
-      r.log(`302: ${newPath}`)
-      r.return(302, newPath)
+      redirectOrResolve(r, newPath)
     } else if (!requestedAsset.path) {
       const assetPath = assetDefaultPath(r, requestedAsset)
 
@@ -198,18 +195,32 @@ export default function expand(r: NginxHTTPRequest): void {
 
       const newPath = `/${requestedAsset.name}@${requestedAsset.version}/${assetPath}`
 
-      if (!!process.env.A7_CORS_ALL) {
-        r.headersOut['access-control-allow-origin'] = '*'
-        r.headersOut['access-control-allow-headers'] = '*'
-      }
-
-      r.log(`302: ${newPath}`)
-      r.return(302, newPath)
+      redirectOrResolve(r, newPath)
     } else {
       handleNotFound(r)
     }
   } catch (e) {
     r.error(e)
     handleNotFound(r)
+  }
+}
+
+const handleNotFound = (r: NginxHTTPRequest) => {
+  r.warn('internal 404')
+  r.internalRedirect('/404.html')
+}
+
+const redirectOrResolve = (r: NginxHTTPRequest, path: string) => {
+  if (!!process.env.A7_CORS_ALL) {
+    r.headersOut['access-control-allow-origin'] = '*'
+    r.headersOut['access-control-allow-headers'] = '*'
+  }
+
+  if (!!process.env.A7_PATH_AUTO_RESOLVE) {
+    r.log(`internal redirect: ${path}`)
+    r.internalRedirect(path)
+  } else {
+    r.log(`302: ${path}`)
+    r.return(302, path)
   }
 }
