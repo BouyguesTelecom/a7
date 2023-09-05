@@ -20,6 +20,7 @@
  */
 
 import Asset from './Asset'
+import { localeCompare } from '../helpers/String'
 
 /**
  * Compare which one of two assets has priority
@@ -51,11 +52,11 @@ export default class AssetComparator {
     }
 
     if (asset1.prerelease !== asset2.prerelease) {
-      return asset2.prerelease?.localeCompare(asset1.prerelease)
+      return localeCompare(asset2.prerelease, asset1.prerelease)
     }
 
     if (asset1.build !== asset2.build) {
-      return asset2.build?.localeCompare(asset1.build)
+      return localeCompare(asset2.build, asset1.build)
     }
 
     return 0

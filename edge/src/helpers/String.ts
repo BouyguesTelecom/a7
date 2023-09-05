@@ -23,12 +23,53 @@
  * Hash a string
  * @param input string to hash
  */
-export function hash (input: string): string {
+export function hash(input: string): string {
   let resultHash = 0
   for (let i = 0; i < input.length; i++) {
     const currentCharCode = input.charCodeAt(i)
-    resultHash = ((resultHash << 5) - resultHash) + currentCharCode
+    resultHash = (resultHash << 5) - resultHash + currentCharCode
     resultHash |= 0 // Convert to 32bit integer
   }
   return resultHash.toString()
+}
+
+/**
+ * We have to reimplement the localeCompare function because it is not available in NJS.
+ * @param str1 String
+ * @param str2 String
+ * @returns -1, 0, 1
+ */
+export function localeCompare(str1: string | undefined, str2: string | undefined) {
+  if (str1 === undefined && str2 === undefined) {
+    return 0
+  }
+
+  if (str1 === undefined) {
+    return 1
+  }
+
+  if (str2 === undefined) {
+    return -1
+  }
+
+  const minLength = Math.min(str1.length, str2.length)
+
+  for (let i = 0; i < minLength; i++) {
+    const char1 = str1.charCodeAt(i)
+    const char2 = str2.charCodeAt(i)
+
+    if (char1 < char2) {
+      return -1
+    } else if (char1 > char2) {
+      return 1
+    }
+  }
+
+  if (str1.length < str2.length) {
+    return -1
+  } else if (str1.length > str2.length) {
+    return 1
+  }
+
+  return 0
 }
