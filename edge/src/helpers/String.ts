@@ -34,16 +34,12 @@ export function hash(input: string): string {
 }
 
 /**
- * We have to reimplement the localeCompare function because it is not available in NJS.
+ * As the localeCompare function is not available in NJS, we reimplemnt it in a simpler way.
  * @param str1 String
  * @param str2 String
  * @returns -1, 0, 1
  */
-export function localeCompare(str1: string | undefined, str2: string | undefined) {
-  if (str1 === undefined && str2 === undefined) {
-    return 0
-  }
-
+export function compare(str1: string | undefined, str2: string | undefined) {
   if (str1 === undefined) {
     return 1
   }
@@ -52,24 +48,5 @@ export function localeCompare(str1: string | undefined, str2: string | undefined
     return -1
   }
 
-  const minLength = Math.min(str1.length, str2.length)
-
-  for (let i = 0; i < minLength; i++) {
-    const char1 = str1.charCodeAt(i)
-    const char2 = str2.charCodeAt(i)
-
-    if (char1 < char2) {
-      return -1
-    } else if (char1 > char2) {
-      return 1
-    }
-  }
-
-  if (str1.length < str2.length) {
-    return -1
-  } else if (str1.length > str2.length) {
-    return 1
-  }
-
-  return 0
+  return str1 < str2 ? -1 : str1 > str2 ? 1 : 0
 }
