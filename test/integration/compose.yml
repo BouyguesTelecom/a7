@@ -3,14 +3,14 @@ name: a7
 services:
   default:
     extends:
-      file: ./docker-compose.common.yml
+      file: ./compose.common.yml
       service: a7
     ports:
       - 45540:45537
 
   without-autoindex:
     extends:
-      file: ./docker-compose.common.yml
+      file: ./compose.common.yml
       service: a7
     environment:
       - A7_TITLE=A7 without autoindex
@@ -21,7 +21,7 @@ services:
 
   without-zip-directories:
     extends:
-      file: ./docker-compose.common.yml
+      file: ./compose.common.yml
       service: a7
     environment:
       - A7_TITLE=A7 without zip directories
@@ -32,7 +32,7 @@ services:
 
   without-meta-queries:
     extends:
-      file: ./docker-compose.common.yml
+      file: ./compose.common.yml
       service: a7
     environment:
       - A7_TITLE=A7 without meta queries
@@ -40,3 +40,13 @@ services:
       - A7_META_QUERIES=false
     ports:
       - 45543:45537
+
+  resolve-and-return:
+    extends:
+      file: ./compose.common.yml
+      service: a7
+    environment:
+      # Resolve and return the resource in case of incomplete version (default: false)
+      - A7_PATH_AUTO_RESOLVE=true
+    ports:
+      - 45544:45537
