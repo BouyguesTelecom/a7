@@ -69,7 +69,7 @@ export default class AssetNameParser {
     const version = this.parseVersionFromURIString(asset.version)
     Object.assign(asset, version)
 
-    asset.versionLevel = this.calculateVersionLevel(version)
+    asset.versionLevel = AssetNameParser.calculateVersionLevel(version)
 
     return asset
   }
@@ -102,7 +102,7 @@ export default class AssetNameParser {
    *
    * @param version The version
    */
-  private calculateVersionLevel (version: Version): VersionLevel {
+  public static calculateVersionLevel (version: Version): VersionLevel {
     if (version.latest) {
       return VersionLevel.LATEST
     }

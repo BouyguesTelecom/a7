@@ -36,7 +36,7 @@ export default class AssetNameSerializer {
     return null
   }
 
-  private serializeVersion (asset: Asset): string | null {
+  private serializeVersion(asset: Asset): string | null {
     if (asset.major !== undefined && asset.minor !== undefined && asset.patch !== undefined) {
       const prerelease = asset.prerelease ? `-${asset.prerelease}` : ''
       const build = asset.build ? `+${asset.build}` : ''

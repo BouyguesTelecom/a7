@@ -55,7 +55,8 @@ function findBestMatchingCandidate(r: NginxHTTPRequest, requestedAsset: Asset): 
   const bestMatch = candidates[0]
 
   if (bestMatch) {
-    r.log(`Found best match: ${JSON.stringify(bestMatch)}`)
+    const versionLevel = AssetNameParser.calculateVersionLevel(bestMatch)
+    r.log(`Found best match: ${bestMatch.name}@${bestMatch.version} (${versionLevel})`)
     return bestMatch
   } else {
     r.warn('Did not find best match')
@@ -66,7 +67,11 @@ function findBestMatchingCandidate(r: NginxHTTPRequest, requestedAsset: Asset): 
  * Given a requested asset (that can have a path) and a best matching candidate asset (that may have a default path),
  * find out what the final target URI is.
  */
-function computeUriPath(r: NginxHTTPRequest, requestedAsset: Asset, candidateAsset: Asset): string {
+function computeUriPath(r: NginxHTTPRequest, requestedAsset: Asset, candidateAsset: Asset | undefined): string {
+  if (!candidateAsset) {
+    return ''
+  }
+
   const assetNameSerializer = new AssetNameSerializer()
   const assetStorageName = assetNameSerializer.serializeAssetName(candidateAsset)
   const all = allStoredAssets(r)
@@ -148,7 +153,8 @@ export default function expand(r: NginxHTTPRequest): void {
             const sourceFilePath = resolveNonMinifiedURI(r.uri.toString())
             source = readFile(r, `${VOLUME_MOUNT_PATH}${sourceFilePath}`)
           } catch (e) {
-            // ignore
+            handleNotFound(r)
+            return
           }
 
           // minify
@@ -163,21 +169,37 @@ export default function expand(r: NginxHTTPRequest): void {
           r.headersOut.etag = etag(minified)
 
           r.return(200, minified)
+          return
         }
       }
       // This should not happen, as this nominal case is handled in `nginx.conf` with `try_files $uri`
-      if (r.variables.serveFiles) {
-        // return what's asked
-        r.return(200, readFile(r, `${VOLUME_MOUNT_PATH}${r.uri}`) as string)
-      } else {
-        handleNotFound(r)
-      }
+      r.return(200, readFile(r, `${VOLUME_MOUNT_PATH}${r.uri}`) as string)
+      // if (r.variables.serveFiles) {
+      //   // return what's asked
+      // } else {
+      //   handleNotFound(r)
+      // }
       return
     }
 
     if (!isVersionPrecise) {
-      const candidateAsset = findBestMatchingCandidate(r, requestedAsset) // <- this is it
+      const candidateAsset = findBestMatchingCandidate(r, requestedAsset)
+
+      if (!candidateAsset) {
+        try {
+          const raw = readFile(r, `${VOLUME_MOUNT_PATH}${r.uri}`)
+          r.return(200, raw as string)
+          return
+        } catch (e) {
+          // ignore
+        }
+      }
+
       const newPath = computeUriPath(r, requestedAsset, candidateAsset)
+      if (isDirectory(r)) {
+        handleExternalRedirect(r, newPath)
+        return
+      }
 
       if (!newPath) {
         handleNotFound(r)
@@ -224,3 +246,10 @@ const redirectOrResolve = (r: NginxHTTPRequest, path: string) => {
     r.return(302, path)
   }
 }
+
+const handleExternalRedirect = (r: NginxHTTPRequest, path: string) => {
+  r.log(`302: ${path}`)
+  r.return(302, path)
+}
+
+const isDirectory = (r: NginxHTTPRequest) => r.uri.toString().endsWith('/')
