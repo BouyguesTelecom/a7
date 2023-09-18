@@ -20,10 +20,10 @@
  */
 
 export enum VersionLevel {
-  LATEST,
-  MAJOR,
-  MINOR,
-  PATCH,
-  PRERELEASE,
-  BUILD,
+  LATEST = 'latest',
+  MAJOR = 'major',
+  MINOR = 'minor',
+  PATCH = 'patch',
+  PRERELEASE = 'prerelease',
+  BUILD = 'build',
 }

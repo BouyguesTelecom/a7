@@ -147,6 +147,9 @@ By relying on [semantic versioning](https://semver.org/) conventions, some [indu
 
 **Also:** Set the `A7_PATH_AUTO_EXPAND_INIT` environment variable to `true` or `always` in order to generate the metadata files in all the assets subdirectories (`true` will generate metadata files if a prior existing file; `always` will generate metadata files systematically and overwrite any prior existing file).
 
+Set the `A7_PATH_AUTO_RESOLVE` environment variable to `true` in order to resolve the path part of the URI to the actual file path on disk, instead of relying on default client-side redirections.
+This is useful in performance-sensitive environments, where the client-side redirections are not desirable.
+
 #### Fully qualified URI
 
 > `/foo@1.3.0/path/to/file.js`

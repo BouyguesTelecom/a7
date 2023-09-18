@@ -55,7 +55,8 @@ function findBestMatchingCandidate(r: NginxHTTPRequest, requestedAsset: Asset): 
   const bestMatch = candidates[0]
 
   if (bestMatch) {
-    r.log(`Found best match: ${JSON.stringify(bestMatch)}`)
+    const versionLevel = AssetNameParser.calculateVersionLevel(bestMatch)
+    r.log(`Found best match: ${bestMatch.name}@${bestMatch.version} (${versionLevel})`)
     return bestMatch
   } else {
     r.warn('Did not find best match')
@@ -66,7 +67,11 @@ function findBestMatchingCandidate(r: NginxHTTPRequest, requestedAsset: Asset): 
  * Given a requested asset (that can have a path) and a best matching candidate asset (that may have a default path),
  * find out what the final target URI is.
  */
-function computeUriPath(r: NginxHTTPRequest, requestedAsset: Asset, candidateAsset: Asset): string {
+function computeUriPath(r: NginxHTTPRequest, requestedAsset: Asset, candidateAsset: Asset | undefined): string {
+  if (!candidateAsset) {
+    return ''
+  }
+
   const assetNameSerializer = new AssetNameSerializer()
   const assetStorageName = assetNameSerializer.serializeAssetName(candidateAsset)
   const all = allStoredAssets(r)
@@ -103,6 +108,14 @@ function assetDefaultPath(r: NginxHTTPRequest, requestedAsset: Asset): string {
 
 /**
  * Given a requested URI, expand it into a target URI to redirect to, that corresponds to the best match.
+ * The expansion supports:
+ * - auto-minification of not-already minified JS and CSS
+ * - versioning
+ * - default path
+ * - CORS headers
+ * - 404 response handling
+ * - 302 response handling
+ * - 200 response handling
  *
  * Optional: depends on the `serveFiles` boolean variable that can be set in the nginx configuration. (defaults to false)
  */
@@ -110,11 +123,6 @@ export default function expand(r: NginxHTTPRequest): void {
   r.log(`----- expand: ${r.uri} -----`)
 
   const isMinificationRequested = r.uri.toString().match(/\.min\.(?:js|mjs|css)$/)
-
-  function handleNotFound(r: NginxHTTPRequest): void {
-    r.warn('internal 404')
-    r.internalRedirect('/404.html')
-  }
 
   try {
     const assetNameParser = new AssetNameParser()
@@ -145,7 +153,8 @@ export default function expand(r: NginxHTTPRequest): void {
             const sourceFilePath = resolveNonMinifiedURI(r.uri.toString())
             source = readFile(r, `${VOLUME_MOUNT_PATH}${sourceFilePath}`)
           } catch (e) {
-            // ignore
+            handleNotFound(r)
+            return
           }
 
           // minify
@@ -160,34 +169,44 @@ export default function expand(r: NginxHTTPRequest): void {
           r.headersOut.etag = etag(minified)
 
           r.return(200, minified)
+          return
         }
       }
       // This should not happen, as this nominal case is handled in `nginx.conf` with `try_files $uri`
-      if (r.variables.serveFiles) {
-        // return what's asked
-        r.return(200, readFile(r, `${VOLUME_MOUNT_PATH}${r.uri}`) as string)
-      } else {
-        handleNotFound(r)
-      }
+      r.return(200, readFile(r, `${VOLUME_MOUNT_PATH}${r.uri}`) as string)
+      // if (r.variables.serveFiles) {
+      //   // return what's asked
+      // } else {
+      //   handleNotFound(r)
+      // }
       return
     }
 
     if (!isVersionPrecise) {
-      const candidateAsset = findBestMatchingCandidate(r, requestedAsset) // <- this is it
+      const candidateAsset = findBestMatchingCandidate(r, requestedAsset)
+
+      if (!candidateAsset) {
+        try {
+          const raw = readFile(r, `${VOLUME_MOUNT_PATH}${r.uri}`)
+          r.return(200, raw as string)
+          return
+        } catch (e) {
+          // ignore
+        }
+      }
+
       const newPath = computeUriPath(r, requestedAsset, candidateAsset)
+      if (isDirectory(r)) {
+        handleExternalRedirect(r, newPath)
+        return
+      }
 
       if (!newPath) {
         handleNotFound(r)
         return
       }
 
-      if (!!process.env.A7_CORS_ALL) {
-        r.headersOut['access-control-allow-origin'] = '*'
-        r.headersOut['access-control-allow-headers'] = '*'
-      }
-
-      r.log(`302: ${newPath}`)
-      r.return(302, newPath)
+      redirectOrResolve(r, newPath)
     } else if (!requestedAsset.path) {
       const assetPath = assetDefaultPath(r, requestedAsset)
 
@@ -198,13 +217,7 @@ export default function expand(r: NginxHTTPRequest): void {
 
       const newPath = `/${requestedAsset.name}@${requestedAsset.version}/${assetPath}`
 
-      if (!!process.env.A7_CORS_ALL) {
-        r.headersOut['access-control-allow-origin'] = '*'
-        r.headersOut['access-control-allow-headers'] = '*'
-      }
-
-      r.log(`302: ${newPath}`)
-      r.return(302, newPath)
+      redirectOrResolve(r, newPath)
     } else {
       handleNotFound(r)
     }
@@ -213,3 +226,30 @@ export default function expand(r: NginxHTTPRequest): void {
     handleNotFound(r)
   }
 }
+
+const handleNotFound = (r: NginxHTTPRequest) => {
+  r.warn('internal 404')
+  r.internalRedirect('/404.html')
+}
+
+const redirectOrResolve = (r: NginxHTTPRequest, path: string) => {
+  if (!!process.env.A7_CORS_ALL) {
+    r.headersOut['access-control-allow-origin'] = '*'
+    r.headersOut['access-control-allow-headers'] = '*'
+  }
+
+  if (!!process.env.A7_PATH_AUTO_RESOLVE) {
+    r.log(`internal redirect: ${path}`)
+    r.internalRedirect(path)
+  } else {
+    r.log(`302: ${path}`)
+    r.return(302, path)
+  }
+}
+
+const handleExternalRedirect = (r: NginxHTTPRequest, path: string) => {
+  r.log(`302: ${path}`)
+  r.return(302, path)
+}
+
+const isDirectory = (r: NginxHTTPRequest) => r.uri.toString().endsWith('/')
