@@ -26,9 +26,17 @@ import AssetNameParser from '../assets/AssetNameParser'
 import AssetNameSerializer from '../assets/AssetNameSerializer'
 import AssetPredicate from '../assets/AssetPredicate'
 import { allStoredAssets } from '../datasource/datasource'
-import { VOLUME_MOUNT_PATH } from '../helpers/Env'
-import { isCssURI, isJsURI, minifyCSS, minifyJS, resolveNonMinifiedURI } from '../helpers/Minify'
+import { A7_CORS_ALL, A7_PATH_AUTO_RESOLVE, VOLUME_MOUNT_PATH } from '../helpers/Env'
+import {
+  isCssURI,
+  isJsURI,
+  isMinificationRequested,
+  minifyCSS,
+  minifyJS,
+  resolveNonMinifiedURI,
+} from '../helpers/Minify'
 import { readFile } from '../helpers/File'
+import { commentedSource } from '../helpers/Source'
 import { isVersionPreciseEnough } from '../helpers/Version'
 
 /**
@@ -122,8 +130,6 @@ function assetDefaultPath(r: NginxHTTPRequest, requestedAsset: Asset): string {
 export default function expand(r: NginxHTTPRequest): void {
   r.log(`----- expand: ${r.uri} -----`)
 
-  const isMinificationRequested = r.uri.toString().match(/\.min\.(?:js|mjs|css)$/)
-
   try {
     const assetNameParser = new AssetNameParser()
     const requestedAsset = assetNameParser.parseFromUrl(r.uri.toString())
@@ -136,7 +142,7 @@ export default function expand(r: NginxHTTPRequest): void {
 
     if (!needsRedirect) {
       // Handle minification cases
-      if (isMinificationRequested) {
+      if (isMinificationRequested(r.uri.toString())) {
         r.log('Minification requested')
 
         let source: string | void = undefined
@@ -147,7 +153,12 @@ export default function expand(r: NginxHTTPRequest): void {
         }
 
         if (source) {
-          r.return(200, source)
+          const body = commentedSource(r, requestedAsset, source, 'raw')
+          r.headersOut['Cache-Tag'] = 'asset'
+          r.headersOut['Cache-Control'] = 'public, immutable'
+          r.headersOut['Content-Length'] = body.length.toString()
+          r.headersOut.etag = etag(body.toString())
+          r.return(200, body)
         } else {
           try {
             const sourceFilePath = resolveNonMinifiedURI(r.uri.toString())
@@ -165,20 +176,22 @@ export default function expand(r: NginxHTTPRequest): void {
             minified = minifyCSS(minified)
           }
 
-          r.headersOut['cache-tag'] = 'minified asset'
-          r.headersOut.etag = etag(minified)
-
-          r.return(200, minified)
+          const body = commentedSource(r, requestedAsset, minified, 'minified')
+          r.headersOut['Cache-Tag'] = 'minified asset'
+          r.headersOut['Cache-Control'] = 'public'
+          r.headersOut['Content-Length'] = body.length.toString()
+          r.headersOut.etag = etag(body.toString())
+          r.return(200, body)
           return
         }
       }
-      // This should not happen, as this nominal case is handled in `nginx.conf` with `try_files $uri`
-      r.return(200, readFile(r, `${VOLUME_MOUNT_PATH}${r.uri}`) as string)
-      // if (r.variables.serveFiles) {
-      //   // return what's asked
-      // } else {
-      //   handleNotFound(r)
-      // }
+
+      const body = commentedSource(r, requestedAsset, readFile(r, `${VOLUME_MOUNT_PATH}${r.uri}`) as string, 'raw')
+      r.headersOut['Cache-Tag'] = 'asset'
+      r.headersOut['Cache-Control'] = 'public, immutable'
+      r.headersOut['Content-Length'] = body.length.toString()
+      r.headersOut.etag = etag(body.toString())
+      r.return(200, body)
       return
     }
 
@@ -233,12 +246,12 @@ const handleNotFound = (r: NginxHTTPRequest) => {
 }
 
 const redirectOrResolve = (r: NginxHTTPRequest, path: string) => {
-  if (!!process.env.A7_CORS_ALL) {
+  if (A7_CORS_ALL) {
     r.headersOut['access-control-allow-origin'] = '*'
     r.headersOut['access-control-allow-headers'] = '*'
   }
 
-  if (!!process.env.A7_PATH_AUTO_RESOLVE) {
+  if (A7_PATH_AUTO_RESOLVE) {
     r.log(`internal redirect: ${path}`)
     r.internalRedirect(path)
   } else {

@@ -5,6 +5,9 @@ services:
     extends:
       file: ./compose.common.yml
       service: a7
+    environment:
+      # Public origin of the exposed service
+      - A7_PUBLIC_ORIGIN=http://localhost:45540
     ports:
       - 45540:45537
 
@@ -16,6 +19,8 @@ services:
       - A7_TITLE=A7 without autoindex
       # Allow to navigate through the indexed assets (default: true)
       - A7_AUTOINDEX=false
+      # Public origin of the exposed service
+      - A7_PUBLIC_ORIGIN=http://localhost:45541
     ports:
       - 45541:45537
 
@@ -27,6 +32,8 @@ services:
       - A7_TITLE=A7 without zip directories
       # Allow the directories and subdirectories download as a single zip file (default: true)
       - A7_ZIP_DIRECTORIES=false
+      # Public origin of the exposed service
+      - A7_PUBLIC_ORIGIN=http://localhost:45542
     ports:
       - 45542:45537
 
@@ -38,6 +45,8 @@ services:
       - A7_TITLE=A7 without meta queries
       # Allow for API meta queries (default: true)
       - A7_META_QUERIES=false
+      # Public origin of the exposed service
+      - A7_PUBLIC_ORIGIN=http://localhost:45543
     ports:
       - 45543:45537
 
@@ -48,5 +57,7 @@ services:
     environment:
       # Resolve and return the resource in case of incomplete version (default: false)
       - A7_PATH_AUTO_RESOLVE=true
+      # Public origin of the exposed service
+      - A7_PUBLIC_ORIGIN=http://localhost:45544
     ports:
       - 45544:45537

@@ -77,6 +77,7 @@ ENV A7_INTERNAL_API           true
 ENV A7_TITLE                  A7
 ENV A7_ICON                   📦
 ENV A7_BRAND_COLOR            tertiary
+ENV A7_PUBLIC_ORIGIN          http://localhost:45537
 
 EXPOSE $PORT
 

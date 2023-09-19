@@ -300,6 +300,7 @@ open http://localhost:45537
           - A7_INTERNAL_API=true
           - A7_TITLE=A7
           - A7_ICON=📦
+          - A7_PUBLIC_ORIGIN=https://my.domain.tld
         ports:
           - 45537:45537
         volumes:

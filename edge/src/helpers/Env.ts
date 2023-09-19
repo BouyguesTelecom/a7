@@ -23,3 +23,18 @@
  * Returns the `A7_VOLUME_MOUNT_PATH` environment variable. Defaults to "/assets".
  */
 export const VOLUME_MOUNT_PATH = process.env.A7_VOLUME_MOUNT_PATH || '/assets'
+
+/**
+ * Returns the `A7_PUBLIC_ORIGIN` environment variable. Defaults to "http://localhost:45537".
+ */
+export const PUBLIC_ORIGIN = process.env.A7_PUBLIC_ORIGIN || 'http://localhost:45537'
+
+/**
+ * Returns the `A7_CORS_ALL` environment variable.
+ */
+export const A7_CORS_ALL = process.env.A7_CORS_ALL === 'true'
+
+/**
+ * Returns the `A7_PATH_AUTO_RESOLVE` environment variable.
+ */
+export const A7_PATH_AUTO_RESOLVE = process.env.A7_PATH_AUTO_RESOLVE === 'true'

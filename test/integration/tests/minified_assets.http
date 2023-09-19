@@ -1,0 +1,9 @@
+/*
+## Minified assets
+*/
+# @name Missing minified assets should 404
+# @no-redirect
+GET /namespace/package@1.23.4/missing.min.js
+
+?? status == 404
+?? duration < 100

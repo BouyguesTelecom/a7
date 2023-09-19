@@ -35,6 +35,8 @@ services:
       - A7_ICON=🧪
       # Set the main brand color (used in the top hero banner) (values: primary, secondary, tertiary, info, warning, danger, grey, grey-dark or any CSS-compatible color code) (default: tertiary)
       - A7_BRAND_COLOR=success
+      # Public origin of the exposed service
+      # - A7_PUBLIC_ORIGIN=https://my.domain.tld
     # ports:
     #   # ASSET:ASSET ↓
     #   - 45537:45537

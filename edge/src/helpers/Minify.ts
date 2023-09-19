@@ -1,7 +1,11 @@
 export const isJsURI = (uri: string) => uri.match(/\.m?js$/)?.length > 0
 export const isCssURI = (uri: string) => uri.match(/\.css$/)?.length > 0
 
-export const resolveNonMinifiedURI = (uri: string) => uri.replace(/\.min\.(m?js|css)$/, '.$1')
+const MINIFIED_ASSETS = /\.min\.(m?js|css)$/
+const NON_MINIFIED_ASSETS = /\.(m?js|css)$/
+export const isMinificationRequested = (uri: string) => uri.match(MINIFIED_ASSETS)
+export const resolveNonMinifiedURI = (uri: string) => uri.replace(MINIFIED_ASSETS, '.$1')
+export const resolveMinifiedURI = (uri: string) => uri.replace(NON_MINIFIED_ASSETS, '.min.$1')
 
 /**
  * Minify CSS
