@@ -140,10 +140,19 @@ export default function expand(r: NginxHTTPRequest): void {
     const needsRedirect = !isURIComplete
     r.log('DEBUG: ' + JSON.stringify({ isVersionPrecise, needsRedirect, isURIComplete }))
 
+    const isInternal = r.headersOut['X-A7-Internal'] === 'true'
+    r.headersOut['X-A7-Internal'] = undefined
+
+    r.headersOut['X-A7-Version-Precision'] = isVersionPrecise ? 'precise' : 'imprecise'
+    r.headersOut['X-A7-Needs-Redirect'] = needsRedirect.toString()
+    r.headersOut['X-A7-Resolution'] = A7_PATH_AUTO_RESOLVE ? 'resolve' : 'redirect'
+
     if (!needsRedirect) {
       // Handle minification cases
       if (isMinificationRequested(r.uri.toString())) {
         r.log('Minification requested')
+
+        r.headersOut['X-A7-Minification'] = 'requested'
 
         let source: string | void = undefined
         try {
@@ -155,15 +164,23 @@ export default function expand(r: NginxHTTPRequest): void {
         if (source) {
           const body = commentedSource(r, requestedAsset, source, 'raw')
           r.headersOut['Cache-Tag'] = 'asset'
-          r.headersOut['Cache-Control'] = 'public, immutable'
+          if (isInternal) {
+            r.headersOut['Cache-Control'] = 'public, max-age=120'
+          } else {
+            r.headersOut['Cache-Control'] = 'public, immutable, max-age=31536000'
+          }
           r.headersOut['Content-Length'] = body.length.toString()
-          r.headersOut.etag = etag(body.toString())
+          r.headersOut['X-A7-Minification'] += ', existing'
+          r.headersOut.Etag = etag(body.toString())
+          handleCors(r)
           r.return(200, body)
         } else {
           try {
             const sourceFilePath = resolveNonMinifiedURI(r.uri.toString())
             source = readFile(r, `${VOLUME_MOUNT_PATH}${sourceFilePath}`)
+            r.headersOut['X-A7-Minification'] += ', from_original'
           } catch (e) {
+            r.headersOut['X-A7-Minification'] += ', not_found'
             handleNotFound(r)
             return
           }
@@ -171,16 +188,19 @@ export default function expand(r: NginxHTTPRequest): void {
           // minify
           let minified = (source || '').toString()
           if (isJsURI(r.uri.toString())) {
+            r.headersOut['X-A7-Minification'] += ', js'
             minified = minifyJS(minified)
           } else if (isCssURI(r.uri.toString())) {
+            r.headersOut['X-A7-Minification'] += ', css'
             minified = minifyCSS(minified)
           }
 
           const body = commentedSource(r, requestedAsset, minified, 'minified')
           r.headersOut['Cache-Tag'] = 'minified asset'
-          r.headersOut['Cache-Control'] = 'public'
+          r.headersOut['Cache-Control'] = 'public, max-age=120'
           r.headersOut['Content-Length'] = body.length.toString()
-          r.headersOut.etag = etag(body.toString())
+          r.headersOut.Etag = etag(body.toString())
+          handleCors(r)
           r.return(200, body)
           return
         }
@@ -188,9 +208,14 @@ export default function expand(r: NginxHTTPRequest): void {
 
       const body = commentedSource(r, requestedAsset, readFile(r, `${VOLUME_MOUNT_PATH}${r.uri}`) as string, 'raw')
       r.headersOut['Cache-Tag'] = 'asset'
-      r.headersOut['Cache-Control'] = 'public, immutable'
+      if (isInternal) {
+        r.headersOut['Cache-Control'] = 'public, max-age=120'
+      } else {
+        r.headersOut['Cache-Control'] = 'public, immutable, max-age=31536000'
+      }
       r.headersOut['Content-Length'] = body.length.toString()
-      r.headersOut.etag = etag(body.toString())
+      r.headersOut.Etag = etag(body.toString())
+      handleCors(r)
       r.return(200, body)
       return
     }
@@ -198,9 +223,12 @@ export default function expand(r: NginxHTTPRequest): void {
     if (!isVersionPrecise) {
       const candidateAsset = findBestMatchingCandidate(r, requestedAsset)
 
+      r.headersOut['X-A7-Candidate'] = candidateAsset ? 'found' : 'not_found'
+
       if (!candidateAsset) {
         try {
           const raw = readFile(r, `${VOLUME_MOUNT_PATH}${r.uri}`)
+          handleCors(r)
           r.return(200, raw as string)
           return
         } catch (e) {
@@ -245,16 +273,22 @@ const handleNotFound = (r: NginxHTTPRequest) => {
   r.internalRedirect('/404.html')
 }
 
-const redirectOrResolve = (r: NginxHTTPRequest, path: string) => {
+const handleCors = (r: NginxHTTPRequest) => {
   if (A7_CORS_ALL) {
-    r.headersOut['access-control-allow-origin'] = '*'
-    r.headersOut['access-control-allow-headers'] = '*'
+    r.headersOut['Access-Control-Allow-Origin'] = '*'
+    r.headersOut['Access-Control-Allow-Headers'] = '*'
   }
+}
+
+const redirectOrResolve = (r: NginxHTTPRequest, path: string) => {
+  handleCors(r)
 
   if (A7_PATH_AUTO_RESOLVE) {
     r.log(`internal redirect: ${path}`)
+    r.headersOut['X-A7-Internal'] = 'true'
     r.internalRedirect(path)
   } else {
+    r.headersOut['Cache-Control'] = 'public, max-age=60'
     r.log(`302: ${path}`)
     r.return(302, path)
   }
