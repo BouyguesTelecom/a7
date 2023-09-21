@@ -136,7 +136,7 @@ In order to enforce this trait, the [`Cache-Control`](https://developer.mozilla.
 When requesting unknown or uncertain content, A7 tries its best to handle requests by:
 
 1. directly serving the requested content (for fully-qualified URLs);
-2. indirectly serving the requested content (for URLs with special or missing parts) through a [smart redirect](#adopt-smart-routing-conventions);
+2. indirectly serving the requested content (for URLs with special or missing parts) through a [smart redirect](#adopt-smart-routing-conventions) or can be configured (via `A7_PATH_AUTO_RESOLVE`) to serve them instead;
 3. serving a 404 status page by default.
 
 ### Adopt smart routing conventions
@@ -295,6 +295,7 @@ open http://localhost:45537
           - A7_CORS_ALL=true
           - A7_PATH_AUTO_EXPAND=true
           - A7_PATH_AUTO_EXPAND_INIT=false
+          - A7_PATH_AUTO_RESOLVE=false
           - A7_RUN_SCRIPTS_ONLY=false
           - A7_GET_REQUESTS_ONLY=true
           - A7_INTERNAL_API=true
