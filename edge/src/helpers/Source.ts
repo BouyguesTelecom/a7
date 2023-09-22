@@ -59,7 +59,7 @@ export const commentedSource = (
  *
  * Details:
  *   👮 CORS:  ${A7_CORS_ALL ? '✅ can be requested from any origin' : '⚠️ can be requested from restricted origins'}
- *   💁 Version resolution:  ${A7_PATH_AUTO_RESOLVE ? 'resolve and serve' : 'client-side redirect'}
+ *   💁 Asset resolution:  ${A7_PATH_AUTO_RESOLVE ? 'resolve and serve' : 'client-side redirect'}
  *
  */
 
