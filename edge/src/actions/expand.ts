@@ -145,7 +145,7 @@ export default function expand(r: NginxHTTPRequest): void {
 
     r.headersOut['X-A7-Version-Requested'] ||= requestedAsset.version
     r.headersOut['X-A7-Version-Precision'] ||= isVersionPrecise ? 'precise' : 'imprecise'
-    r.headersOut['X-A7-Resolution'] ||= A7_PATH_AUTO_RESOLVE ? 'resolve' : 'redirect'
+    r.headersOut['X-A7-Resolution'] ||= A7_PATH_AUTO_RESOLVE ? 'serve' : 'redirect'
 
     if (!needsRedirect) {
       // Handle minification cases
