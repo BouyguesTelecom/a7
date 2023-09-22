@@ -143,9 +143,9 @@ export default function expand(r: NginxHTTPRequest): void {
     const isInternal = r.headersOut['X-A7-Internal'] === 'true'
     r.headersOut['X-A7-Internal'] = undefined
 
-    r.headersOut['X-A7-Version-Precision'] = isVersionPrecise ? 'precise' : 'imprecise'
-    r.headersOut['X-A7-Needs-Redirect'] = needsRedirect.toString()
-    r.headersOut['X-A7-Resolution'] = A7_PATH_AUTO_RESOLVE ? 'resolve' : 'redirect'
+    r.headersOut['X-A7-Version-Requested'] ||= requestedAsset.version
+    r.headersOut['X-A7-Version-Precision'] ||= isVersionPrecise ? 'precise' : 'imprecise'
+    r.headersOut['X-A7-Resolution'] ||= A7_PATH_AUTO_RESOLVE ? 'resolve' : 'redirect'
 
     if (!needsRedirect) {
       // Handle minification cases
@@ -223,7 +223,7 @@ export default function expand(r: NginxHTTPRequest): void {
     if (!isVersionPrecise) {
       const candidateAsset = findBestMatchingCandidate(r, requestedAsset)
 
-      r.headersOut['X-A7-Candidate'] = candidateAsset ? 'found' : 'not_found'
+      r.headersOut['X-A7-Candidate'] = candidateAsset ? 'HIT' : 'MISS'
 
       if (!candidateAsset) {
         try {
@@ -235,6 +235,8 @@ export default function expand(r: NginxHTTPRequest): void {
           // ignore
         }
       }
+
+      r.headersOut['X-A7-Version-Resolved'] = candidateAsset.version
 
       const newPath = computeUriPath(r, requestedAsset, candidateAsset)
       if (isDirectory(r)) {
