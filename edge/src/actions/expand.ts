@@ -143,16 +143,17 @@ export default function expand(r: NginxHTTPRequest): void {
     const isInternal = r.headersOut['X-A7-Internal'] === 'true'
     r.headersOut['X-A7-Internal'] = undefined
 
-    r.headersOut['X-A7-Version-Requested'] ||= requestedAsset.version
-    r.headersOut['X-A7-Version-Precision'] ||= isVersionPrecise ? 'precise' : 'imprecise'
-    r.headersOut['X-A7-Resolution'] ||= A7_PATH_AUTO_RESOLVE ? 'serve' : 'redirect'
+    r.headersOut['X-Asset-Version-Requested'] ||= requestedAsset.version
+    r.headersOut['X-Asset-Version-Precision'] ||= isVersionPrecise ? 'precise' : 'imprecise'
+    r.headersOut['X-Asset-Resolution'] ||= A7_PATH_AUTO_RESOLVE ? 'serve' : 'redirect'
+    r.headersOut['X-Asset-Version'] = requestedAsset.version
 
     if (!needsRedirect) {
       // Handle minification cases
       if (isMinificationRequested(r.uri.toString())) {
         r.log('Minification requested')
 
-        r.headersOut['X-A7-Minification'] = 'requested'
+        r.headersOut['X-Asset-Minification'] = 'requested'
 
         let source: string | void = undefined
         try {
@@ -170,7 +171,7 @@ export default function expand(r: NginxHTTPRequest): void {
             r.headersOut['Cache-Control'] = 'public, immutable, max-age=31536000'
           }
           r.headersOut['Content-Length'] = body.length.toString()
-          r.headersOut['X-A7-Minification'] += ', existing'
+          r.headersOut['X-Asset-Minification'] += ', existing'
           r.headersOut.Etag = etag(body.toString())
           handleCors(r)
           r.return(200, body)
@@ -178,9 +179,9 @@ export default function expand(r: NginxHTTPRequest): void {
           try {
             const sourceFilePath = resolveNonMinifiedURI(r.uri.toString())
             source = readFile(r, `${VOLUME_MOUNT_PATH}${sourceFilePath}`)
-            r.headersOut['X-A7-Minification'] += ', from_original'
+            r.headersOut['X-Asset-Minification'] += ', from_original'
           } catch (e) {
-            r.headersOut['X-A7-Minification'] += ', not_found'
+            r.headersOut['X-Asset-Minification'] += ', not_found'
             handleNotFound(r)
             return
           }
@@ -188,10 +189,10 @@ export default function expand(r: NginxHTTPRequest): void {
           // minify
           let minified = (source || '').toString()
           if (isJsURI(r.uri.toString())) {
-            r.headersOut['X-A7-Minification'] += ', js'
+            r.headersOut['X-Asset-Minification'] += ', js'
             minified = minifyJS(minified)
           } else if (isCssURI(r.uri.toString())) {
-            r.headersOut['X-A7-Minification'] += ', css'
+            r.headersOut['X-Asset-Minification'] += ', css'
             minified = minifyCSS(minified)
           }
 
@@ -223,7 +224,7 @@ export default function expand(r: NginxHTTPRequest): void {
     if (!isVersionPrecise) {
       const candidateAsset = findBestMatchingCandidate(r, requestedAsset)
 
-      r.headersOut['X-A7-Candidate'] = candidateAsset ? 'HIT' : 'MISS'
+      r.headersOut['X-Asset-Version'] = candidateAsset.version
 
       if (!candidateAsset) {
         try {
@@ -235,8 +236,6 @@ export default function expand(r: NginxHTTPRequest): void {
           // ignore
         }
       }
-
-      r.headersOut['X-A7-Version-Resolved'] = candidateAsset.version
 
       const newPath = computeUriPath(r, requestedAsset, candidateAsset)
       if (isDirectory(r)) {
