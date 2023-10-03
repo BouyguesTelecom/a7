@@ -170,7 +170,7 @@ export default function expand(r: NginxHTTPRequest): void {
           } else {
             r.headersOut['Cache-Control'] = 'public, immutable, max-age=31536000'
           }
-          r.headersOut['Content-Length'] = body.length.toString()
+          r.headersOut['Content-Length'] = body.toUTF8().length.toString()
           r.headersOut['X-Asset-Minification'] += ', existing'
           r.headersOut.Etag = etag(body.toString())
           handleCors(r)
@@ -199,7 +199,7 @@ export default function expand(r: NginxHTTPRequest): void {
           const body = commentedSource(r, requestedAsset, minified, 'minified')
           r.headersOut['Cache-Tag'] = 'minified asset'
           r.headersOut['Cache-Control'] = 'public, max-age=120'
-          r.headersOut['Content-Length'] = body.length.toString()
+          r.headersOut['Content-Length'] = body.toUTF8().length.toString()
           r.headersOut.Etag = etag(body.toString())
           handleCors(r)
           r.return(200, body)
@@ -214,7 +214,7 @@ export default function expand(r: NginxHTTPRequest): void {
       } else {
         r.headersOut['Cache-Control'] = 'public, immutable, max-age=31536000'
       }
-      r.headersOut['Content-Length'] = body.length.toString()
+      r.headersOut['Content-Length'] = body.toUTF8().length.toString()
       r.headersOut.Etag = etag(body.toString())
       handleCors(r)
       r.return(200, body)
