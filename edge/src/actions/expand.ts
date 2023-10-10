@@ -130,7 +130,7 @@ function assetDefaultPath(r: NginxHTTPRequest, requestedAsset: Asset): string {
 export default function expand(r: NginxHTTPRequest): void {
   r.log(`----- expand: ${r.uri} -----`)
 
-  if (!['HEAD', 'GET'].includes(String(r.method))) {
+  if (r.method && !['HEAD', 'GET'].includes(String(r.method))) {
     r.error('Method not allowed')
     r.return(405)
     return

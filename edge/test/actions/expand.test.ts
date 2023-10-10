@@ -22,29 +22,32 @@
 import { expect } from 'chai'
 import expand from '../../src/actions/expand'
 
-const tests = [{
-  it: 'should handle fully qualified URI: /foo@1.3.0/path/to/file.js',
-  request: '/foo@1.3.0/path/to/file.js',
-  expectedHeaders: {
-    status: 302,
-    location: '/foo@1.3.0/path/to/file.js',
-    'access-control-allow-origin': '*',
-    'access-control-allow-headers': '*',
+const tests = [
+  {
+    it: 'should handle fully qualified URI: /foo@1.3.0/path/to/file.js',
+    request: '/foo@1.3.0/path/to/file.js',
+    expectedHeaders: {
+      status: 302,
+      location: '/foo@1.3.0/path/to/file.js',
+      'access-control-allow-origin': '*',
+      'access-control-allow-headers': '*',
+    },
   },
-}, {
-  it: 'should handle URI with missing path: /foo@1.3.0',
-  request: '/foo@1.3.0',
-  expectedHeaders: {
-    status: 302,
-    location: '/foo@1.3.0/path/to/file.js',
-    'access-control-allow-origin': '*',
-    'access-control-allow-headers': '*',
+  {
+    it: 'should handle URI with missing path: /foo@1.3.0',
+    request: '/foo@1.3.0',
+    expectedHeaders: {
+      status: 302,
+      location: '/foo@1.3.0/path/to/file.js',
+      'access-control-allow-origin': '*',
+      'access-control-allow-headers': '*',
+    },
   },
-}]
+]
 
 describe('actions', () => {
   describe('#expand', () => {
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it(test.it, () => {
         const { request } = test
 
@@ -61,11 +64,10 @@ describe('actions', () => {
           warn: (...args: any[]): void => {
             console.warn(...args)
           },
-          variables: <NginxVariables><any>{
+          variables: <NginxVariables>(<any>{
             serveFiles: true,
-          },
-          internalRedirect(uri: NjsStringLike) {
-          },
+          }),
+          internalRedirect(uri: NjsStringLike) {},
           return: (status: number, body?: NjsStringLike): void => {
             const result = [status, body]
             expect(result).to.equal(test.expectedHeaders)
