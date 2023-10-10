@@ -28,25 +28,29 @@ import { hash } from '../helpers/String'
 /**
  * List all the version numbers of an asset
  */
-function fetchAssetVersions (r: NginxHTTPRequest, requestedAsset: Asset): string[] {
+function fetchAssetVersions(r: NginxHTTPRequest, requestedAsset: Asset): string[] {
   const assetNameParser = new AssetNameParser()
   const assetComparator = new AssetComparator()
 
-  const assets = allStoredAssets(r).map(p => p.name).map(name => assetNameParser.parseFromStorageName(name))
+  const assets = allStoredAssets(r)
+    .map((p) => p.name)
+    .map((name) => assetNameParser.parseFromStorageName(name))
 
-  return assets
-    // only grab assets whose name correspond
-    .filter(asset => asset.name === requestedAsset.name)
-    // order by version
-    .sort(assetComparator.compare)
-    // keep only the version numbers
-    .map(asset => asset.version)
+  return (
+    assets
+      // only grab assets whose name correspond
+      .filter((asset) => asset.name === requestedAsset.name)
+      // order by version
+      .sort(assetComparator.compare)
+      // keep only the version numbers
+      .map((asset) => asset.version)
+  )
 }
 
 /**
  * Outputs the parsed request and available matching assets metadata, in JSON.
  */
-export default function respondWithAssetMeta (r: NginxHTTPRequest): void {
+export default function respondWithAssetMeta(r: NginxHTTPRequest): void {
   try {
     const assetNameParser = new AssetNameParser()
     const requestedAsset = assetNameParser.parseFromUrl(r.uri.toString())
@@ -64,6 +68,7 @@ export default function respondWithAssetMeta (r: NginxHTTPRequest): void {
       },
     }
 
+    r.headersOut['Content-Type'] = 'application/json'
     r.headersOut['ETag'] = hash(JSON.stringify(result))
 
     r.return(200, JSON.stringify(result))

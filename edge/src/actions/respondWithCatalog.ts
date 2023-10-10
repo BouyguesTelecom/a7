@@ -30,17 +30,14 @@ import { hash } from '../helpers/String'
 /**
  * List all the version numbers of an asset
  */
-function fetchAssets (r: NginxHTTPRequest, requestedAsset: Asset): AssetCatalog[] {
+function fetchAssets(r: NginxHTTPRequest, requestedAsset: Asset): AssetCatalog[] {
   const assetComparator = new AssetComparator()
 
-  const nameIsInCurrentDirectoryFilter = (asset: StoredAsset) => (
+  const nameIsInCurrentDirectoryFilter = (asset: StoredAsset) =>
     requestedAsset.name === undefined || asset.name.startsWith(requestedAsset.name)
-  )
   const orderByVersion = assetComparator.compare
 
-  const filteredAndSortedAssets = allStoredAssets(r)
-    .filter(nameIsInCurrentDirectoryFilter)
-    .sort(orderByVersion)
+  const filteredAndSortedAssets = allStoredAssets(r).filter(nameIsInCurrentDirectoryFilter).sort(orderByVersion)
   const enrichedAssets = enrichAssetsWithParsedVersions(r, filteredAndSortedAssets)
   const assetsWithLatest = assetCatalogWithLatestMarked(enrichedAssets)
 
@@ -50,7 +47,7 @@ function fetchAssets (r: NginxHTTPRequest, requestedAsset: Asset): AssetCatalog[
 /**
  * Outputs the catalog of assets within the current directory, in JSON.
  */
-export default function respondWithCatalog (r: NginxHTTPRequest): void {
+export default function respondWithCatalog(r: NginxHTTPRequest): void {
   try {
     const assetNameParser = new AssetNameParser()
     const requestedAsset = assetNameParser.parseFromUrl(r.uri.toString())
@@ -59,6 +56,7 @@ export default function respondWithCatalog (r: NginxHTTPRequest): void {
       assets,
     }
 
+    r.headersOut['Content-Type'] = 'application/json'
     r.headersOut['ETag'] = hash(JSON.stringify(result))
 
     r.return(200, JSON.stringify(result))
@@ -78,7 +76,7 @@ type KeyValue = {
  * Group an asset catalog array by a predicate an asset
  * @see Asset
  */
-function groupByArray (array: AssetCatalog[], predicate: Function): KeyValue[] {
+function groupByArray(array: AssetCatalog[], predicate: Function): KeyValue[] {
   return array.reduce((array, current) => {
     const v = predicate(current)
     const el = array.find((r: any) => r && r.key === v)
@@ -98,12 +96,12 @@ function groupByArray (array: AssetCatalog[], predicate: Function): KeyValue[] {
  * Enrich the asset objects with their parsed versions
  * @param assets Assets
  */
-function enrichAssetsWithParsedVersions (r: NginxHTTPRequest, assets: Asset[]): AssetCatalog[] {
+function enrichAssetsWithParsedVersions(r: NginxHTTPRequest, assets: Asset[]): AssetCatalog[] {
   const assetNameParser = new AssetNameParser()
 
   const result: AssetCatalog[] = []
 
-  assets.forEach(asset => {
+  assets.forEach((asset) => {
     try {
       result.push({
         path: `/${asset.name}`,
@@ -121,17 +119,18 @@ function enrichAssetsWithParsedVersions (r: NginxHTTPRequest, assets: Asset[]): 
  * Enrich an asset catalog by indicating which of the assets are the latest version.
  * @param assets assets
  */
-function assetCatalogWithLatestMarked (assets: AssetCatalog[]) {
+function assetCatalogWithLatestMarked(assets: AssetCatalog[]) {
   // mark latest assets
   const grouped = groupByArray(assets.reverse(), (e: AssetCatalog) => e.data.name)
-  grouped.forEach(group => {
+  grouped.forEach((group) => {
     if (group.key && Boolean(group.values.length)) {
       group.values[0].data.latest = true
     }
   })
 
   // recreate a flatten assets array
-  return Object.values(grouped).map(g => g.values).reduce(
-    (arr, elem) => arr.concat(elem), []
-  ).reverse()
+  return Object.values(grouped)
+    .map((g) => g.values)
+    .reduce((arr, elem) => arr.concat(elem), [])
+    .reverse()
 }

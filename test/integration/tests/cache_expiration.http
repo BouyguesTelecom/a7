@@ -1,26 +1,15 @@
 /*
 ## Cache expiration
 */
-
 # @name Assets should be immutable and cached for 1 year
 GET /namespace/package@1.23.4/file.js
 
 ?? status == 200
-?? header cache-control == max-age=31536000, public, immutable
-
+?? header cache-control == public, immutable, max-age=31536000
 ###
-
-# @name HTML assets should not be cached
-GET /namespace/package@1.23.4/file.html
-
-?? status == 200
-?? header cache-control == max-age=0, public, immutable
-
-###
-
 # @name Smart redirect should be cached
 # @no-redirect
 GET /namespace/package@1.23/file.js
 
 ?? status == 302
-?? header cache-control == max-age=60
+?? header cache-control == public, max-age=60

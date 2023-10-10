@@ -130,21 +130,32 @@ function assetDefaultPath(r: NginxHTTPRequest, requestedAsset: Asset): string {
 export default function expand(r: NginxHTTPRequest): void {
   r.log(`----- expand: ${r.uri} -----`)
 
+  if (!['HEAD', 'GET'].includes(String(r.method))) {
+    r.error('Method not allowed')
+    r.return(405)
+    return
+  }
+
   try {
     const assetNameParser = new AssetNameParser()
     const requestedAsset = assetNameParser.parseFromUrl(r.uri.toString())
 
     // The URI is either complete or needs a redirect
+    const isVersionDefined = requestedAsset.version !== undefined
     const isVersionPrecise = isVersionPreciseEnough(requestedAsset)
     const isURIComplete = Boolean(requestedAsset.path && isVersionPrecise)
-    const needsRedirect = !isURIComplete
-    r.log('DEBUG: ' + JSON.stringify({ isVersionPrecise, needsRedirect, isURIComplete }))
+    const needsRedirect = isVersionDefined && !isURIComplete
+    r.log('DEBUG: ' + JSON.stringify({ isVersionDefined, isVersionPrecise, needsRedirect, isURIComplete }))
 
     const isInternal = r.headersOut['X-A7-Internal'] === 'true'
     r.headersOut['X-A7-Internal'] = undefined
 
     r.headersOut['X-Asset-Version-Requested'] ||= requestedAsset.version
-    r.headersOut['X-Asset-Version-Precision'] ||= isVersionPrecise ? 'precise' : 'imprecise'
+    r.headersOut['X-Asset-Version-Precision'] ||= !isVersionDefined
+      ? 'undefined'
+      : isVersionPrecise
+      ? 'precise'
+      : 'imprecise'
     r.headersOut['X-Asset-Resolution'] ||= A7_PATH_AUTO_RESOLVE ? 'serve' : 'redirect'
     r.headersOut['X-Asset-Version'] = requestedAsset.version
 
@@ -214,7 +225,7 @@ export default function expand(r: NginxHTTPRequest): void {
       } else {
         r.headersOut['Cache-Control'] = 'public, immutable, max-age=31536000'
       }
-      r.headersOut['Content-Length'] = body.toUTF8().length.toString()
+      r.headersOut['Content-Length'] = body.toUTF8?.().length.toString()
       r.headersOut.Etag = etag(body.toString())
       handleCors(r)
       r.return(200, body)
