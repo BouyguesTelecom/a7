@@ -98,6 +98,19 @@ describe('AssetNameParser', () => {
       expect(parsedVersion.build).to.equal('5')
     })
 
+    it('should parse input with complete version (1.0.0+5-wow)', () => {
+      const parsedVersion = assetNameParser.parseFromStorageName('trilogy@1.0.0-rc1+5-wow')
+
+      expect(parsedVersion.valid).to.equal(true)
+      expect(parsedVersion.name).to.equal('trilogy')
+      expect(parsedVersion.version).to.equal('1.0.0-rc1+5-wow')
+      expect(parsedVersion.major).to.equal(1)
+      expect(parsedVersion.minor).to.equal(0)
+      expect(parsedVersion.patch).to.equal(0)
+      expect(parsedVersion.prerelease).to.equal('rc1')
+      expect(parsedVersion.build).to.equal('5-wow')
+    })
+
     it('should parse input with complete version and a dash inside the name', () => {
       const parsedVersion = assetNameParser.parseFromStorageName('trilogy-slider@0.8.1')
 
