@@ -59,11 +59,11 @@ export const BUILD = regex `
   \\+                           # plus sign
 
   (?<build>
-    [a-zA-Z\\d]+                  # alphanumerical chars
+    [a-zA-Z\\d-]+                 # alphanumerical chars and hyphens
 
     (?:                           # optional:
       \\.                         # <dot>
-      [a-zA-Z\\d]+                # alphanumerical chars
+      [a-zA-Z\\d-]+               # alphanumerical chars and hyphens
     )*
 
   )
