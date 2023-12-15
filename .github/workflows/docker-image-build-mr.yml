@@ -35,4 +35,4 @@ jobs:
         env:
           CUSTOM_VARIABLE: "test"
       - name: Run tests against services
-        run: ./test/integration/test.sh
+        run: ./test/integration/run.sh
