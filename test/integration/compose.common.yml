@@ -1,7 +1,7 @@
 services:
   a7:
-    # image: bouyguestelecom/a7:1.7.9
-    image: a7
+    image: bouyguestelecom/a7:snapshot
+    # image: a7
     environment:
       # Path to the assets root directory path (default: /assets)
       - A7_VOLUME_MOUNT_PATH=/assets

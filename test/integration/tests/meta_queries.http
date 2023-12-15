@@ -13,7 +13,7 @@ GET {{without_meta_queries}}/?meta
 # An error status code would be a nicer fit
 ?? status == 200
 ?? header content-type startsWith text/html
-###
+### @ERROR
 # @name Catalog API should list available package versions
 GET /package?meta
 
