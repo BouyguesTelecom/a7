@@ -31,7 +31,7 @@ jobs:
       - name: Setup services for testing purpose
         uses: isbang/compose-action@v1.5.1
         with:
-          compose-file: "./test/integration/docker-compose.yml"
+          compose-file: "./test/integration/compose.yml"
         env:
           CUSTOM_VARIABLE: "test"
       - name: Run tests against services
