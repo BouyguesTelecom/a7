@@ -29,7 +29,7 @@ jobs:
           tags: bouyguestelecom/a7:snapshot
           platforms: linux/amd64,linux/arm64
       - name: Setup services for testing purpose
-        - uses: isbang/compose-action@v1.5.1
+        uses: isbang/compose-action@v1.5.1
           with:
             compose-file: "./test/integration/docker-compose.yml"
           env:
