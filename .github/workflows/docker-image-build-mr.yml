@@ -30,9 +30,9 @@ jobs:
           platforms: linux/amd64,linux/arm64
       - name: Setup services for testing purpose
         uses: isbang/compose-action@v1.5.1
-          with:
-            compose-file: "./test/integration/docker-compose.yml"
-          env:
-            CUSTOM_VARIABLE: "test"
+        with:
+          compose-file: "./test/integration/docker-compose.yml"
+        env:
+          CUSTOM_VARIABLE: "test"
       - name: Run tests against services
         run: ./test/integration/test.sh
