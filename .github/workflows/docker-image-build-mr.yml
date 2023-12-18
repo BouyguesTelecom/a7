@@ -37,4 +37,4 @@ jobs:
       - name: Start docker compose
         run: cd ./test/integration && docker compose up -d && sleep 30 && docker ps && docker logs a7-default-1 && docker exec a7-default-1 curl localhost:45537/.catalog.json && curl localhost:45540/.catalog.json
       - name: Run tests against services
-        run: cd ./test/integration
+        run: cd ./test/integration && ./run.sh
