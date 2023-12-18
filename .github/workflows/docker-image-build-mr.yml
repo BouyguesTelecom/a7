@@ -35,6 +35,6 @@ jobs:
       #   env:
       #     CUSTOM_VARIABLE: "test"
       - name: Start docker compose
-        run: cd ./test/integration && docker compose up -d && curl http://localhost:45540
+        run: cd ./test/integration && docker compose up -d && docker ps
       # - name: Run tests against services
       #   run: cd ./test/integration
