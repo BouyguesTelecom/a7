@@ -44,3 +44,4 @@ jobs:
           name: http-yac-test-results
           path: ./test-output.json
           if-no-files-found: error
+        if: ${{ always() }}
