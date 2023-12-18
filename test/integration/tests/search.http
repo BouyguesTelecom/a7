@@ -5,6 +5,7 @@
 ### API
 */
 # @name Search endpoint is enabled
+# @ERROR
 GET /__api/search
 
 ?? status == 200

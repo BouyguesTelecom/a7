@@ -7,7 +7,7 @@ GET /package@1.3.0/dist/bundle.js
 ?? status == 200
 ?? header content-type startsWith text/javascript
 ?? duration < 50
-###
+### @ERROR
 # @name Handle an URI with missing path
 # @no-redirect
 GET /package@1.3.0
@@ -31,7 +31,7 @@ GET /package@1/dist/bundle.js
 ?? status == 302
 ?? header location == /package@1.3.0/dist/bundle.js
 ?? duration < 100
-###
+### @ERROR
 # @name Handle URI with incomplete semver (pre-release)
 # @no-redirect
 GET /package@1-snapshot/dist/bundle.js
