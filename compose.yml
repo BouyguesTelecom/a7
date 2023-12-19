@@ -44,3 +44,4 @@ services:
       - 45537:45537
     volumes:
       - ./test/integration/assets:/assets
+      - ./etc/nginx/edge:/etc/nginx/edge

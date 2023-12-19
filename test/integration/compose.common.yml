@@ -1,7 +1,7 @@
 services:
   a7:
-    # image: bouyguestelecom/a7:1.7.9
-    image: a7
+    image: bouyguestelecom/a7:snapshot
+    # image: a7
     environment:
       # Path to the assets root directory path (default: /assets)
       - A7_VOLUME_MOUNT_PATH=/assets
@@ -42,10 +42,10 @@ services:
     #   - 45537:45537
     volumes:
       # - ../../etc/nginx/conf.d:/etc/nginx/conf.d:rw
-      - ../../etc/nginx/edge:/etc/nginx/edge:ro
-      - ../../etc/nginx/includes:/etc/nginx/includes:ro
-      - ../../etc/nginx/mime.types:/etc/nginx/mime.types:ro
-      - ../../etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      # - ../../etc/nginx/edge:/etc/nginx/edge:ro
+      # - ../../etc/nginx/includes:/etc/nginx/includes:ro
+      # - ../../etc/nginx/mime.types:/etc/nginx/mime.types:ro
+      # - ../../etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./assets:/assets:ro
     labels:
       dash.icon: nginx
