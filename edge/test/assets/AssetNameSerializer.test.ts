@@ -19,7 +19,7 @@
  * under the License.
  */
 
-import { expect } from 'chai'
+import { describe, expect, it } from 'vitest'
 import AssetNameSerializer from '../../src/assets/AssetNameSerializer'
 
 const assetNameSerializer = new AssetNameSerializer()
@@ -75,4 +75,3 @@ describe('AssetNameSerializer', () => {
     })
   })
 })
-

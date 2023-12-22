@@ -19,7 +19,7 @@
  * under the License.
  */
 
-import { expect } from 'chai'
+import { describe, expect, it } from 'vitest'
 import AssetPredicate from '../../src/assets/AssetPredicate'
 import { VersionLevel } from '../../src/assets/VersionLevel'
 

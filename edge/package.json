@@ -4,8 +4,11 @@
   "description": "Content delivery server for your static assets",
   "license": "Apache-2.0",
   "scripts": {
-    "test": "cross-env TS_NODE_PROJECT=tsconfig.testing.json nyc ts-mocha -r ts-node/register test/**/*.test.[jt]s",
+    "test:old": "cross-env TS_NODE_PROJECT=tsconfig.testing.json nyc ts-mocha -r ts-node/register test/**/*.test.[jt]s",
+    "test": "vitest",
     "build": "npx rollup -c",
+    "debug": "cross-env DEBUG_MODE=true vitest --inspect-brk --no-file-parallelism -t",
+    "debug:expand": "npm run debug action=expand",
     "lint": "eslint src --ext .js,.ts"
   },
   "dependencies": {
@@ -28,7 +31,7 @@
     "@types/chai": "^4.2.11",
     "@types/etag": "^1.8.1",
     "@types/mocha": "^8.0.3",
-    "@types/node": "^14.0.5",
+    "@types/node": "^18.19.3",
     "@typescript-eslint/eslint-plugin": "^6.4.1",
     "@typescript-eslint/parser": "^6.4.1",
     "babel-preset-njs": "^0.7.0",
@@ -43,6 +46,7 @@
     "ts-mocha": "^10.0.0",
     "ts-node": "^8.10.1",
     "tslib": "^2.6.2",
-    "typescript": "^5.1.6"
+    "typescript": "^5.1.6",
+    "vitest": "^1.1.0"
   }
 }

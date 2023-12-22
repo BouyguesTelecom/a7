@@ -19,7 +19,7 @@
  * under the License.
  */
 
-import { expect } from 'chai'
+import { describe, expect, it } from 'vitest'
 import * as spec from '../../src/assets/AssetSpec'
 
 /**

@@ -5,3 +5,4 @@
 etc/nginx/edge/*
 
 test-output.json
+node_modules

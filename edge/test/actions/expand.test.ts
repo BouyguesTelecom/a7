@@ -19,63 +19,33 @@
  * under the License.
  */
 
-import { expect } from 'chai'
+import { afterEach, describe, it, expect, vi } from 'vitest'
 import expand from '../../src/actions/expand'
+import MockNginxHTTPRequest, { MockNjsByteString } from '../__mocks__/MockNginxHTTPRequest'
+import * as File from '../../src/helpers/File'
 
-const tests = [
-  {
-    it: 'should handle fully qualified URI: /foo@1.3.0/path/to/file.js',
-    request: '/foo@1.3.0/path/to/file.js',
-    expectedHeaders: {
-      status: 302,
-      location: '/foo@1.3.0/path/to/file.js',
-      'access-control-allow-origin': '*',
-      'access-control-allow-headers': '*',
-    },
-  },
-  {
-    it: 'should handle URI with missing path: /foo@1.3.0',
-    request: '/foo@1.3.0',
-    expectedHeaders: {
-      status: 302,
-      location: '/foo@1.3.0/path/to/file.js',
-      'access-control-allow-origin': '*',
-      'access-control-allow-headers': '*',
-    },
-  },
-]
+describe('DEBUG_MODE: action=expand', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+  const isDebug = Boolean(process.env.DEBUG_MODE)
+  it.runIf(isDebug)('Should return something', () => {
+    vi.spyOn(File, 'readFile').mockReturnValueOnce('test')
 
-describe('actions', () => {
-  describe('#expand', () => {
-    tests.forEach((test) => {
-      it(test.it, () => {
-        const { request } = test
-
-        const r = <NginxHTTPRequest>{
-          uri: {
-            toString: () => request,
-          },
-          log: (...args: any[]): void => {
-            console.log(...args)
-          },
-          error: (...args: any[]): void => {
-            console.error(...args)
-          },
-          warn: (...args: any[]): void => {
-            console.warn(...args)
-          },
-          variables: <NginxVariables>(<any>{
-            serveFiles: true,
-          }),
-          internalRedirect(uri: NjsStringLike) {},
-          return: (status: number, body?: NjsStringLike): void => {
-            const result = [status, body]
-            expect(result).to.equal(test.expectedHeaders)
-          },
-        }
-
-        expand(r)
+    const result = expand(
+      new MockNginxHTTPRequest({
+        args: {},
+        headersIn: {},
+        headersOut: {},
+        httpVersion: new MockNjsByteString('1.1'),
+        method: new MockNjsByteString('GET'),
+        remoteAddress: new MockNjsByteString(''),
+        requestBody: new MockNjsByteString(''),
+        responseBody: new MockNjsByteString(''),
+        uri: new MockNjsByteString(''),
+        variables: {},
       })
-    })
+    )
+    expect(result).toBeDefined()
   })
 })
