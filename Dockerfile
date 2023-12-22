@@ -48,7 +48,7 @@ WORKDIR /build/edge
 
 # Install app dependencies
 COPY edge/package*.json ./
-RUN npm ci --no-fund --no-audit
+RUN npm install --no-fund --no-audit
 
 # Copy edge sources and build it
 COPY edge /build/edge
