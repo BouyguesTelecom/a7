@@ -1,5 +1,5 @@
 export class MockNjsByteString extends String implements NjsByteString {
-  constructor(private str: string) {
+  constructor(private str?: string | MockNjsByteString) {
     super(str)
   }
 
@@ -12,19 +12,17 @@ export class MockNjsByteString extends String implements NjsByteString {
   }
 
   toString(): string {
-    return this.str
+    return typeof this.str === 'string' ? this.str : this.str.toString()
   }
 }
 
-type MockNginxHTTPRequestOpts = {
+export type MockNginxHTTPRequestOpts = {
   args: NginxHTTPArgs
   headersIn: NginxHeadersIn
-  headersOut: NginxHeadersOut
   httpVersion: NjsByteString
   method: NjsByteString
   remoteAddress: NjsByteString
   requestBody: NjsByteString
-  responseBody: NjsByteString
   uri: NjsByteString
   variables: NginxVariables
 }
@@ -46,27 +44,23 @@ export default class MockNginxHTTPRequest implements NginxHTTPRequest {
   constructor({
     args,
     headersIn,
-    headersOut,
     httpVersion,
     method,
     remoteAddress,
     requestBody,
-    responseBody,
     uri,
     variables,
   }: MockNginxHTTPRequestOpts) {
     this.args = args
     this.headersIn = headersIn
-    this.headersOut = headersOut
+    this.headersOut = {}
     this.httpVersion = httpVersion
     this.method = method
     this.remoteAddress = remoteAddress
     this.requestBody = requestBody
-    this.responseBody = responseBody
     this.uri = uri
     this.variables = variables
-    // assume status is 200 when the object is created
-    this.status = 200
+    this.status
   }
 
   error(message: NjsStringLike): void {
@@ -87,6 +81,7 @@ export default class MockNginxHTTPRequest implements NginxHTTPRequest {
 
   return(status: number, body?: NjsStringLike): void {
     this.status = status
+    this.responseBody = new MockNjsByteString(body)
     console.log(`Response status: ${status}, body: ${body}`)
   }
 

@@ -19,33 +19,25 @@
  * under the License.
  */
 
-import { afterEach, describe, it, expect, vi } from 'vitest'
-import expand from '../../src/actions/expand'
-import MockNginxHTTPRequest, { MockNjsByteString } from '../__mocks__/MockNginxHTTPRequest'
-import * as File from '../../src/helpers/File'
+import { MockNjsByteString } from '../__mocks__/MockNginxHTTPRequest'
+import { debugAction } from '../utils'
 
-describe('DEBUG_MODE: action=expand', () => {
-  afterEach(() => {
-    vi.restoreAllMocks()
-  })
-  const isDebug = Boolean(process.env.DEBUG_MODE)
-  it.runIf(isDebug)('Should return something', () => {
-    vi.spyOn(File, 'readFile').mockReturnValueOnce('test')
-
-    const result = expand(
-      new MockNginxHTTPRequest({
-        args: {},
-        headersIn: {},
-        headersOut: {},
-        httpVersion: new MockNjsByteString('1.1'),
-        method: new MockNjsByteString('GET'),
-        remoteAddress: new MockNjsByteString(''),
-        requestBody: new MockNjsByteString(''),
-        responseBody: new MockNjsByteString(''),
-        uri: new MockNjsByteString(''),
-        variables: {},
-      })
-    )
-    expect(result).toBeDefined()
-  })
+debugAction({
+  name: 'expand',
+  input: {
+    args: {},
+    headersIn: {},
+    httpVersion: new MockNjsByteString('1.1'),
+    method: new MockNjsByteString('GET'),
+    remoteAddress: new MockNjsByteString(''),
+    requestBody: new MockNjsByteString(''),
+    uri: new MockNjsByteString(''),
+    variables: {},
+  },
+  output: {
+    responseBody: new MockNjsByteString('string'),
+    status: 200,
+    headersOut: {},
+  },
+  fileContent: 'string',
 })
