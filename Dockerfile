@@ -3,7 +3,7 @@
 ## Ideally, we would just have started with `FROM nginx:stable-alpine`
 ## But when reality checks in, we have "special needs" such as zipping asset directories on-the-fly.
 ## Because we're special, ain't we? ʕ♥ᴥ♥ʔ
-FROM node:14-alpine AS nginx-builder
+FROM node:18-alpine AS nginx-builder
 
 ARG NGINX_VERSION="1.24.0"
 ARG NGINX_SOURCE="http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz"
@@ -42,13 +42,13 @@ RUN CONFARGS=$(nginx -V 2>&1 | sed -n -e 's/^.*arguments: //p') \
 
 
 ## STEP 2: Build the edge project.
-FROM node:14-alpine AS edge-builder
+FROM node:18-alpine AS edge-builder
 
 WORKDIR /build/edge
 
 # Install app dependencies
 COPY edge/package*.json ./
-RUN npm install --no-fund --no-audit
+RUN npm ci --no-fund --no-audit
 
 # Copy edge sources and build it
 COPY edge /build/edge
