@@ -54,7 +54,8 @@ export default defineConfig({
         typescript(),
       ],
       output: {
-        file: '../etc/nginx/edge/a7.js',
+        dir: '../etc/nginx/edge',
+        entryFileNames: 'a7.js',
         format: 'es',
       },
     },
