@@ -6,6 +6,7 @@
   "scripts": {
     "test:old": "cross-env TS_NODE_PROJECT=tsconfig.testing.json nyc ts-mocha -r ts-node/register test/**/*.test.[jt]s",
     "test": "vitest",
+    "build:old": "npx rollup -c",
     "build": "vite build",
     "debug": "cross-env DEBUG_MODE=true vitest --inspect-brk --no-file-parallelism -t",
     "debug:expand": "npm run debug action=expand",

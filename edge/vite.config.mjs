@@ -22,17 +22,26 @@ const njsExternals = ['crypto', 'fs', 'querystring', 'xml', 'zlib']
  */
 const fixExportDefault = () => ({
   name: 'fix-export-default',
-  renderChunk: (code) => ({
-    code: code.replace(/\bexport { (\S+) as default };/, 'export default $1;'),
-    map: null,
-  }),
+  generateBundle(_, bundle) {
+    for (const chunk of Object.values(bundle)) {
+      if (chunk.type === 'chunk') {
+        chunk.code = chunk.code.replace(/export {\s*(\S+) as default\s*};/mig, 'export default $1;')
+      }
+    }
+  },
 })
 
+/** @type {import('vite').UserConfig} */
 export default defineConfig({
   build: {
+    // minify: false,
+    lib: {
+      entry: 'src/main.ts',
+      formats: ['es'],
+    },
     /** @type {import('rollup').RollupOptions} */
     rollupOptions: {
-      input: 'src/main.ts',
+      // input: 'src/main.ts',
       external: njsExternals,
       plugins: [
         // Transpile TypeScript sources to JS.
@@ -50,8 +59,8 @@ export default defineConfig({
         commonjs(),
         json(),
         // Fix syntax of the default export.
-        fixExportDefault(),
         typescript(),
+        fixExportDefault(),
       ],
       output: {
         dir: '../etc/nginx/edge',
