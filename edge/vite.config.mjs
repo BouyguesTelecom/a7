@@ -34,10 +34,17 @@ const fixExportDefault = () => ({
 /** @type {import('vite').UserConfig} */
 export default defineConfig({
   build: {
-    // minify: false,
+
     lib: {
       entry: 'src/main.ts',
       formats: ['es'],
+    },
+    // We use terser and this option to prevent it from transforming catch(err) to catch when err is not used
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        unused: false,
+      },
     },
     /** @type {import('rollup').RollupOptions} */
     rollupOptions: {
