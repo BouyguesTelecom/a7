@@ -52,7 +52,7 @@ export default class AssetComparator {
     }
 
     if (asset1.prerelease !== asset2.prerelease) {
-      return compare(asset1.prerelease, asset2.prerelease)
+      return compare(asset2.prerelease, asset1.prerelease)
     }
 
     if (asset1.build !== asset2.build) {

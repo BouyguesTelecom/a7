@@ -382,4 +382,55 @@ describe('AssetPredicate', () => {
 
     expect(assetPredicate.matches(existingAsset)).to.equal(true)
   })
+
+  it('should not match if the existing asset has prerelease and not the requested asset', () => {
+    const assetPredicate = new AssetPredicate({
+      name: 'package',
+      versionLevel: VersionLevel.PRERELEASE,
+      major: 1,
+      prerelease: 'snapshot',
+      build: '20201203171530',
+    })
+
+    const existingAsset = {
+      name: 'package',
+      major: 1,
+      minor: 2,
+      patch: 0,
+      version: '1.2.0',
+    }
+
+    expect(assetPredicate.matches(existingAsset)).to.equal(false)
+  })
+
+  it('should not match if the existing asset doesnt have and the requested asset does', () => {
+    const assetPredicate = new AssetPredicate({
+      name: 'package',
+      namespace: undefined,
+      scope: undefined,
+      subname: 'package',
+      version: '1-snapshot',
+      major: 1,
+      minor: NaN,
+      patch: NaN,
+      prerelease: 'snapshot',
+      build: undefined,
+      path: '/dist/bundle.js',
+      valid: true,
+      latest: false,
+      versionLevel: VersionLevel.PRERELEASE,
+    })
+
+    const existingAsset = {
+      major: 1,
+      minor: 3,
+      name: 'package',
+      patch: 0,
+      subname: 'package',
+      valid: true,
+      version: '1.3.0',
+    }
+
+    expect(assetPredicate.matches(existingAsset)).to.equal(false)
+  })
 })
