@@ -1,6 +1,6 @@
 services:
   a7:
-    image: bouyguestelecom/a7:snapshot
+    image: bouyguestelecom/a7:coconuts
     # image: a7
     environment:
       # Path to the assets root directory path (default: /assets)
