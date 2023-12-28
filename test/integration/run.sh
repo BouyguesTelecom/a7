@@ -6,6 +6,11 @@ echo "Tests results details will be available under artifact 'http-yac-test-resu
 
 hasFailedTests=$(cat ./test-output.json | jq -r '.summary.failedTests')
 
+if [ -z "$hasFailedTests" ]; then
+  echo "Failed to parse test results"
+  exit 1
+fi
+
 if [ $hasFailedTests -gt 0 ]; then
   exit 1
 fi

@@ -101,4 +101,4 @@ COPY scripts/test-service.sh /docker-entrypoint.d/40-test-service.sh
 COPY scripts/stop-service.sh /docker-entrypoint.d/99-stop-service.sh
 
 # Test the nginx configuration at build time
-# RUN /docker-entrypoint.d/40-test-service.sh
+RUN /docker-entrypoint.d/40-test-service.sh
