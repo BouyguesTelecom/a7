@@ -131,6 +131,7 @@ export default function expand(r: NginxHTTPRequest): void {
   r.log(`----- expand: ${r.uri} -----`)
 
   r.return(500)
+  return
   if (r.method && !['HEAD', 'GET'].includes(String(r.method))) {
     r.error('Method not allowed')
     r.return(405)
