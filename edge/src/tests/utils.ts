@@ -1,25 +1,22 @@
 import { afterEach, describe, it, expect, vi } from 'vitest'
-import expand from '../src/actions/expand'
+import actions from '../main'
 import MockNginxHTTPRequest, { MockNginxHTTPRequestOpts } from './__mocks__/MockNginxHTTPRequest'
-import * as File from '../src/helpers/File'
 
 export type DebugActionOpts = {
-  name: string
+  name: Exclude<keyof typeof actions, 'evaluators'>
   input: MockNginxHTTPRequestOpts
   output: Partial<MockNginxHTTPRequest>
   fileContent?: string
 }
-export function debugAction({ name, input, output, fileContent }: DebugActionOpts) {
+export function debugAction({ name, input, output }: DebugActionOpts) {
   const isDebug = Boolean(process.env.DEBUG_MODE)
   describe(`DEBUG_MODE: action=${name}`, () => {
     afterEach(() => {
       vi.restoreAllMocks()
     })
     it.runIf(isDebug)('Should return something', () => {
-      vi.spyOn(File, 'readFile').mockReturnValueOnce(fileContent ?? 'test')
-
       const httpReq = new MockNginxHTTPRequest(input)
-      expand(httpReq)
+      actions[name](httpReq)
       expect(httpReq).toMatchObject(output)
     })
   })

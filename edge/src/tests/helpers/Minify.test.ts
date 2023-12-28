@@ -20,7 +20,7 @@
  */
 
 import { describe, expect, it } from 'vitest'
-import { isCssURI, isJsURI, minifyCSS, minifyJS, resolveNonMinifiedURI } from '../../src/helpers/Minify'
+import { isCssURI, isJsURI, minifyCSS, minifyJS, resolveNonMinifiedURI } from '@/helpers/Minify'
 
 describe('Minify', () => {
   describe('URI', () => {

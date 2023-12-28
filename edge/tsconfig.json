@@ -3,7 +3,7 @@
     "module": "es6",
     "baseUrl": ".",
     "paths": {
-      "~/*": ["src/*"]
+      "@/*": ["src/*"]
     },
     "preserveConstEnums": true,
     "noImplicitAny": true,

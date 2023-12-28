@@ -20,8 +20,8 @@
  */
 
 import { describe, expect, it } from 'vitest'
-import AssetNameParser from '../../src/assets/AssetNameParser'
-import { VersionLevel } from '../../src/assets/VersionLevel'
+import AssetNameParser from '@/assets/AssetNameParser'
+import { VersionLevel } from '@/assets/VersionLevel'
 
 const assetNameParser = new AssetNameParser()
 

@@ -9,10 +9,12 @@
       "autoAttachChildProcesses": true,
       "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
       "program": "${workspaceRoot}/edge/node_modules/vitest/vitest.mjs",
-      "args": ["run", "${workspaceRoot}/edge/test/actions/expand.test.ts"],
+      "args": ["run", "${workspaceRoot}/edge/src/tests/actions/expand.test.ts"],
+      "cwd": "${workspaceFolder}/edge",
       "smartStep": true,
       "env": {
-        "DEBUG_MODE": "true"
+        "DEBUG_MODE": "true",
+        "A7_VOLUME_MOUNT_PATH": "${workspaceRoot}/test/integration/assets"
       },
       "console": "integratedTerminal"
     }

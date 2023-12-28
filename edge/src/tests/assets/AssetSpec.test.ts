@@ -20,95 +20,82 @@
  */
 
 import { describe, expect, it } from 'vitest'
-import * as spec from '../../src/assets/AssetSpec'
+import * as spec from '@/assets/AssetSpec'
 
 /**
  * Apply a regular expression against a string and extract its named captures
  * @param input Input string
  * @param expression
  */
-function extractStrict (expression: string, input: string): object {
+function extractStrict(expression: string, input: string): object {
   return input.match(new RegExp(`^(?<captured>${expression})$`))?.groups
 }
 
 describe('AssetSpec', () => {
   describe('#NAME_PART', () => {
     it('should handle valid names (one letter)', () => {
-      expect(extractStrict(spec.NAME_PART, 'x'))
-        .to.deep.include({
-          captured: 'x',
-        })
+      expect(extractStrict(spec.NAME_PART, 'x')).to.deep.include({
+        captured: 'x',
+      })
     })
 
     it('should handle valid names (simple name)', () => {
-      expect(extractStrict(spec.NAME_PART, 'name'))
-        .to.deep.include({
-          captured: 'name',
-        })
+      expect(extractStrict(spec.NAME_PART, 'name')).to.deep.include({
+        captured: 'name',
+      })
     })
 
     it('should handle valid names (simple name with an hyphen)', () => {
-      expect(extractStrict(spec.NAME_PART, 'with-hyphen'))
-        .to.deep.include({
-          captured: 'with-hyphen',
-        })
+      expect(extractStrict(spec.NAME_PART, 'with-hyphen')).to.deep.include({
+        captured: 'with-hyphen',
+      })
     })
 
     it('should handle valid names (simple name with an underscore)', () => {
-      expect(extractStrict(spec.NAME_PART, 'with_underscore'))
-        .to.deep.include({
-          captured: 'with_underscore',
-        })
+      expect(extractStrict(spec.NAME_PART, 'with_underscore')).to.deep.include({
+        captured: 'with_underscore',
+      })
     })
 
     it('should handle valid names (with scope)', () => {
-      expect(extractStrict(spec.FULLY_QUALIFIED_NAME, '@scope/name'))
-        .to.deep.include({
-          captured: '@scope/name',
-        })
-      expect(extractStrict(spec.NAME_PART, 'name'))
-        .to.deep.include({
-          captured: 'name',
-        })
+      expect(extractStrict(spec.FULLY_QUALIFIED_NAME, '@scope/name')).to.deep.include({
+        captured: '@scope/name',
+      })
+      expect(extractStrict(spec.NAME_PART, 'name')).to.deep.include({
+        captured: 'name',
+      })
     })
 
     it('should handle valid names (with namespace)', () => {
-      expect(extractStrict(spec.FULLY_QUALIFIED_NAME, 'namespace/name'))
-        .to.deep.include({
-          captured: 'namespace/name',
-        })
+      expect(extractStrict(spec.FULLY_QUALIFIED_NAME, 'namespace/name')).to.deep.include({
+        captured: 'namespace/name',
+      })
     })
 
     it('should handle valid names (with deep namespace)', () => {
-      expect(extractStrict(spec.FULLY_QUALIFIED_NAME, 'very/deep/and/nested/namespace/name'))
-        .to.deep.include({
-          captured: 'very/deep/and/nested/namespace/name',
-        })
+      expect(extractStrict(spec.FULLY_QUALIFIED_NAME, 'very/deep/and/nested/namespace/name')).to.deep.include({
+        captured: 'very/deep/and/nested/namespace/name',
+      })
     })
 
     it('should handle invalid names (empty)', () => {
-      expect(extractStrict(spec.NAME_PART, ''))
-        .to.be.undefined
+      expect(extractStrict(spec.NAME_PART, '')).to.be.undefined
     })
 
     it('should handle invalid names (starts with a digit)', () => {
-      expect(extractStrict(spec.NAME_PART, '1starts-with-digit'))
-        .to.be.undefined
+      expect(extractStrict(spec.NAME_PART, '1starts-with-digit')).to.be.undefined
     })
 
     it('should handle invalid names (has a leading hyphen)', () => {
-      expect(extractStrict(spec.NAME_PART, '-has-leading-hyphen'))
-        .to.be.undefined
+      expect(extractStrict(spec.NAME_PART, '-has-leading-hyphen')).to.be.undefined
     })
 
     it('should handle invalid names (has a leading underscore)', () => {
-      expect(extractStrict(spec.NAME_PART, '_leading-underscore'))
-        .to.be.undefined
+      expect(extractStrict(spec.NAME_PART, '_leading-underscore')).to.be.undefined
     })
 
     it('should handle tralala', () => {
-      expect(extractStrict(spec.STORAGE_VERSION, '_leading-underscore'))
-        .to.be.undefined
+      expect(extractStrict(spec.STORAGE_VERSION, '_leading-underscore')).to.be.undefined
     })
   })
 })

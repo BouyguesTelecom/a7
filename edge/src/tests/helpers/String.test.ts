@@ -19,25 +19,22 @@
  * under the License.
  */
 
-import { MockNjsByteString } from '../__mocks__/MockNginxHTTPRequest'
-import { debugAction } from '../utils'
+import { describe, expect, it } from 'vitest'
+import { hash } from '@/helpers/String'
 
-debugAction({
-  name: 'expand',
-  input: {
-    args: {},
-    headersIn: {},
-    httpVersion: new MockNjsByteString('1.1'),
-    method: new MockNjsByteString('GET'),
-    remoteAddress: new MockNjsByteString(''),
-    requestBody: new MockNjsByteString(''),
-    uri: new MockNjsByteString(''),
-    variables: {},
-  },
-  output: {
-    responseBody: new MockNjsByteString('string'),
-    status: 200,
-    headersOut: {},
-  },
-  fileContent: 'string',
+describe('String', () => {
+  describe('#hash', () => {
+    it('same strings should have the same hash', () => {
+      const string1 = 'content1'
+      const string2 = 'content1'
+
+      expect(hash(string1)).toStrictEqual(hash(string2))
+    })
+
+    it('empty string should have a hash', () => {
+      const emptyString = ''
+
+      expect(hash(emptyString)).to.be.a('string')
+    })
+  })
 })

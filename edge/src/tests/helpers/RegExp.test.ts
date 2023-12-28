@@ -20,7 +20,7 @@
  */
 
 import { describe, expect, it } from 'vitest'
-import { parseRegexpTemplateString as regex } from '../../src/helpers/RegExp'
+import { parseRegexpTemplateString as regex } from '@/helpers/RegExp'
 
 const regxpTests = [
   {

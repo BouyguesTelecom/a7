@@ -20,7 +20,7 @@
  */
 
 import { describe, expect, it } from 'vitest'
-import AssetNameSerializer from '../../src/assets/AssetNameSerializer'
+import AssetNameSerializer from '@/assets/AssetNameSerializer'
 
 const assetNameSerializer = new AssetNameSerializer()
 

@@ -20,8 +20,8 @@
  */
 
 import { describe, expect, it } from 'vitest'
-import { isVersionSemverComplete, isVersionPreciseEnough } from '../../src/helpers/Version'
-import Version from '../../src/assets/Version'
+import { isVersionSemverComplete, isVersionPreciseEnough } from '@/helpers/Version'
+import Version from '@/assets/Version'
 
 describe('Version', () => {
   describe('#isVersionSemverComplete', () => {

@@ -5,6 +5,7 @@ import commonjs from '@rollup/plugin-commonjs'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import typescript from '@rollup/plugin-typescript'
 import json from '@rollup/plugin-json'
+import tsconfigPaths from 'vite-tsconfig-paths'
 
 // List of njs built-in modules.
 //
@@ -33,6 +34,7 @@ const fixExportDefault = () => ({
 
 /** @type {import('vite').UserConfig} */
 export default defineConfig({
+  plugins: [tsconfigPaths()],
   build: {
 
     lib: {

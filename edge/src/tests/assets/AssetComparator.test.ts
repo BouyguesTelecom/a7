@@ -20,8 +20,8 @@
  */
 
 import { describe, expect, it } from 'vitest'
-import AssetComparator from '../../src/assets/AssetComparator'
-import Asset from '../../src/assets/Asset'
+import AssetComparator from '@/assets/AssetComparator'
+import Asset from '@/assets/Asset'
 
 const assetComparator = new AssetComparator()
 

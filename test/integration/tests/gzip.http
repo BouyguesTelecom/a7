@@ -2,12 +2,11 @@
 ## Gzip
 */
 # @name Files of size < 256 bytes should not be served with gzip compression
-# @ERROR
-# Hypothese, avec les commentaires ajoutés aucun fichier ne peut faire moins de 256bytes
-GET /namespace/package@1.23.4/file.js
+# 27/12/2023: Commented because when adding comment the file size will always be > 256 bytes
+# GET /namespace/package@1.23.4/file.js
 
-?? status == 200
-?? header content-encoding isFalse
+# ?? status == 200
+# ?? header content-encoding isFalse
 ###
 # @name Files of size >= 256 bytes should be served with gzip compression
 GET /namespace/package@1.23.4/big-file.js

@@ -24,7 +24,7 @@ import expand from './actions/expand'
 import respondWithAssetMeta from './actions/respondWithAssetMeta'
 import respondWithCatalog from './actions/respondWithCatalog'
 import manageFile from './actions/manageFile'
-import { evaluators } from '~/log/logEvaluations'
+import { evaluators } from '@/log/logEvaluations'
 
 export default {
   mountPathFromEnv,
