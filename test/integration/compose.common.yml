@@ -1,6 +1,6 @@
 services:
   a7:
-    image: bouyguestelecom/a7:coconuts
+    image: ${IMAGE_TAG:-bouyguestelecom/a7:bloue}
     # image: a7
     environment:
       # Path to the assets root directory path (default: /assets)
