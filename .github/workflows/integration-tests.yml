@@ -1,4 +1,4 @@
-name: Verify that docker image builds
+name: Run Integration Tests
 
 on:
   push:
