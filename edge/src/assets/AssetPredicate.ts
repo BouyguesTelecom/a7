@@ -38,11 +38,6 @@ export default class AssetPredicate {
       return false
     }
 
-    // If version is snapshot and existing asset is not snapshot, do not match
-    // if (this.requestedAsset.prerelease && !existingAsset.prerelease) {
-    //   return false
-    // }
-
     const { versionLevel } = this.requestedAsset
 
     if (versionLevel === VersionLevel.LATEST) {
