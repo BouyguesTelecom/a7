@@ -34,8 +34,6 @@ jobs:
           platforms: linux/amd64
       - name: echo image.name
         run: echo ${{ needs.docker_build.outputs.metadata.image.name }}
-      - name: echo [image.name]
-        run: echo ${{ needs.docker_build.outputs.metadata["image.name"] }}
       - name: Setup services for testing purpose
         run: export IMAGE_TAG=${{ needs.docker_build.outputs.metadata.image.name }} && cd ./test/integration && docker compose up -d
       - name: Run tests against services
