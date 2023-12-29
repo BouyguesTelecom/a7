@@ -31,7 +31,7 @@ jobs:
           tags: localhost:5000/test/a7:latest
           platforms: linux/amd64
       - name: Setup services for testing purpose
-        run: export IMAGE_TAG=localhost:5000/test/a7:latest && cd ./test/integration && cat compose.common.yml && docker compose up -d
+        run: export IMAGE_TAG=localhost:5000/test/a7:latest && cd ./test/integration && docker compose up -d
       - name: Run tests against services
         run: cd ./test/integration && ./run.sh
       - name: Publish Test Results
