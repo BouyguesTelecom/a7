@@ -33,7 +33,7 @@ jobs:
           tags: localhost:5000/test/a7:latest
           platforms: linux/amd64
       - name: Setup services for testing purpose
-        run: export IMAGE_TAG=${{ steps.docker_build.outputs.metadata.image.name }} && cd ./test/integration && docker compose up -d
+        run: export IMAGE_TAG=$(${{ steps.docker_build.outputs.metadata }} | jq '."image.name"') && cd ./test/integration && docker compose up -d
       - name: Run tests against services
         run: cd ./test/integration && ./run.sh
       - name: Publish Test Results
