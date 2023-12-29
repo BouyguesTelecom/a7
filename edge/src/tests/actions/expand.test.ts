@@ -31,11 +31,11 @@ debugAction({
     method: new MockNjsByteString('GET'),
     remoteAddress: new MockNjsByteString(''),
     requestBody: new MockNjsByteString(''),
-    uri: new MockNjsByteString('/package@1-snapshot/dist/bundle.js'),
+    uri: new MockNjsByteString('/package@1.3.0'),
     variables: {},
   },
   output: {
-    responseBody: new MockNjsByteString('/package@1.3.0-snapshot.20201203171530/dist/bundle.js'),
+    responseBody: new MockNjsByteString('/package@1.3.0/dist/bundle.js'),
     status: 302,
     headersOut: {},
   },
