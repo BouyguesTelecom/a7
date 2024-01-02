@@ -19,9 +19,9 @@
  * under the License.
  */
 
-import { expect } from 'chai'
-import { isVersionSemverComplete, isVersionPreciseEnough } from '../../src/helpers/Version'
-import Version from '../../src/assets/Version'
+import { describe, expect, it } from 'vitest'
+import { isVersionSemverComplete, isVersionPreciseEnough } from '@/helpers/Version'
+import Version from '@/assets/Version'
 
 describe('Version', () => {
   describe('#isVersionSemverComplete', () => {
@@ -30,7 +30,7 @@ describe('Version', () => {
         major: 1,
       }
 
-      expect(isVersionSemverComplete(version)).to.equal(false)
+      expect(isVersionSemverComplete(version)).toStrictEqual(false)
     })
 
     it('should not detect semver complete when a version is minor', () => {
@@ -39,7 +39,7 @@ describe('Version', () => {
         minor: 1,
       }
 
-      expect(isVersionSemverComplete(version)).to.equal(false)
+      expect(isVersionSemverComplete(version)).toStrictEqual(false)
     })
 
     it('should not detect semver complete when one property is null', () => {
@@ -49,7 +49,7 @@ describe('Version', () => {
         patch: null,
       }
 
-      expect(isVersionSemverComplete(version)).to.equal(false)
+      expect(isVersionSemverComplete(version)).toStrictEqual(false)
     })
 
     it('should detect semver complete when a version is patch', () => {
@@ -59,7 +59,7 @@ describe('Version', () => {
         patch: 1,
       }
 
-      expect(isVersionSemverComplete(version)).to.equal(true)
+      expect(isVersionSemverComplete(version)).toStrictEqual(true)
     })
 
     it('should detect semver complete when patch is zero', () => {
@@ -69,15 +69,13 @@ describe('Version', () => {
         patch: 0,
       }
 
-      expect(isVersionSemverComplete(version)).to.equal(true)
+      expect(isVersionSemverComplete(version)).toStrictEqual(true)
     })
 
     it('should not detect semver complete when version is not provided', () => {
-      expect(isVersionSemverComplete(null)).to.equal(false)
+      expect(isVersionSemverComplete(null)).toStrictEqual(false)
     })
   })
-
-
 
   describe('#isVersionPreciseEnough', () => {
     it('should not detect latest as precise enough', () => {
@@ -85,7 +83,7 @@ describe('Version', () => {
         latest: false,
       }
 
-      expect(isVersionPreciseEnough(version)).to.equal(false)
+      expect(isVersionPreciseEnough(version)).toStrictEqual(false)
     })
   })
 })

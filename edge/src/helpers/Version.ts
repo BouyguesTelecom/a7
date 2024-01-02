@@ -19,7 +19,7 @@
  * under the License.
  */
 
-import Version from '~/assets/Version'
+import Version from '@/assets/Version'
 
 /**
  * Checks if the given version is semver-acceptable and fully qualified

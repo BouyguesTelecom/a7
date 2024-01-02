@@ -1,0 +1,44 @@
+name: Run Integration Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: network=host
+      - name: Build and push on local registry
+        id: docker_build
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: localhost:5000/test/a7:latest
+          platforms: linux/amd64
+      - name: Setup services for testing purpose
+        run: export IMAGE_TAG=localhost:5000/test/a7:latest && cd ./test/integration && docker compose up -d
+      - name: Run tests against services
+        run: cd ./test/integration && ./run.sh
+      - name: Publish Test Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: http-yac-test-results
+          path: ./test/integration/test-output.json
+          if-no-files-found: error
+        if: ${{ always() }}

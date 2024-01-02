@@ -19,18 +19,24 @@
  * under the License.
  */
 
-import mountPathFromEnv from './actions/mountPathFromEnv'
-import expand from './actions/expand'
-import respondWithAssetMeta from './actions/respondWithAssetMeta'
-import respondWithCatalog from './actions/respondWithCatalog'
-import manageFile from './actions/manageFile'
-import { evaluators } from '@/log/logEvaluations'
+import { MockNjsByteString } from '../__mocks__/MockNginxHTTPRequest'
+import { debugAction } from '../utils'
 
-export default {
-  mountPathFromEnv,
-  expand,
-  respondWithAssetMeta,
-  respondWithCatalog,
-  manageFile,
-  evaluators,
-}
+debugAction({
+  name: 'expand',
+  input: {
+    args: {},
+    headersIn: {},
+    httpVersion: new MockNjsByteString('1.1'),
+    method: new MockNjsByteString('GET'),
+    remoteAddress: new MockNjsByteString(''),
+    requestBody: new MockNjsByteString(''),
+    uri: new MockNjsByteString('/package@1.3.0'),
+    variables: {},
+  },
+  output: {
+    responseBody: new MockNjsByteString('string'),
+    status: 200,
+    headersOut: {},
+  },
+})

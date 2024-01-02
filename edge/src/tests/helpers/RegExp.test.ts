@@ -19,8 +19,8 @@
  * under the License.
  */
 
-import { expect } from 'chai'
-import { parseRegexpTemplateString as regex } from '../../src/helpers/RegExp'
+import { describe, expect, it } from 'vitest'
+import { parseRegexpTemplateString as regex } from '@/helpers/RegExp'
 
 const regxpTests = [
   {
@@ -78,7 +78,7 @@ describe('RegExp', () => {
   describe('#parseRegexpTemplateString', () => {
     regxpTests.forEach((test) => {
       it(test.it, () => {
-        expect(test.input).to.equal(test.expected)
+        expect(test.input).toStrictEqual(test.expected)
       })
     })
   })
