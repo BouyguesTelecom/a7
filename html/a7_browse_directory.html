@@ -38,16 +38,60 @@
     download: 'tri-download'
   };
 
+  function hasSeveralPackages(data) {
+    // Create an empty object to store the package names
+    var packages = data.reduce((acc, curr) => {
+      const name = curr.name.split('@')[0];
+      acc[name] = acc[name] ? [...acc[name], curr] : [curr];
+      return acc;
+    }, {});
+    return Object.keys(packages || []).length > 1;
+  }
+
   fetchJsonDirectoryThen(function (meta) {
-    meta.unshift({
+    var currentDirectory = window.location.pathname.split('/').filter(element => element.trim() !== '').pop();
+    var params = new URLSearchParams(new URL(window.location.href).search);
+    var packageValue = params.get("package");
+
+    var isPackageDirectory = hasSeveralPackages(meta)
+    var files = []
+    if (isPackageDirectory && !packageValue) {
+      const directories = meta.reduce((acc, curr) => {
+        const name = curr.name.split('@')[0];
+        acc[name] = acc[name] ? [...acc[name], curr] : [curr];
+        if (!acc[name].isPackageFolder) {
+          acc[name].isPackageFolder = curr.name.indexOf('@') !== -1
+        }
+        return acc;
+      }, {});
+
+      files = Object.keys(directories).map(function (data) {
+        return {
+          name: data,
+          type: 'directory',
+          root: true,
+          isPackageFolder: directories[data].isPackageFolder
+        }
+      });
+    } else {
+      files = packageValue === null ? meta : meta.filter(function (data) {
+        return data.name.indexOf(packageValue) !== -1;
+      });
+    }
+
+    files.unshift({
       name: '..',
       type: 'directory',
       root: true
     });
-    meta.forEach(function (data) {
+
+    files.forEach(function (data) {
       var link = data.name + (data.type === 'directory' ? '/' : '');
       var rawLink = pathname.replace(/^\/browse\//, '/') + link;
-      var viewLink = pathname.replace(/^\/(browse\/)?/, '/browse/') + link;
+      var viewLink = pathname.replace(/^\/(browse\/)?/, '/browse/') + (data.isPackageFolder && data.name !== '..' ? `?package=${data.name}` : link);
+      if (packageValue && data.name === '..') {
+        viewLink = pathname.replace(/^\/(browse\/)?/, '/browse/');
+      }
       var downloadLink = rawLink + '.zip';
 
       var tr = document.createElement('tr');
@@ -71,25 +115,18 @@
         date.title = new Date(data.mtime).toISOString();
         date.className = 'has-text-grey-dark';
       }
-      var actions = document.createElement('td');
-      actions.className = 'has-text-right';
-      actions.innerHTML = '';
-      actions.innerHTML += '<a href="'
-        + (data.type === 'directory' ? downloadLink : rawLink)
-        + '" title="Download"><span class="icon is-small"><i class="' + iconMapping.download + '"></i></span></a>';
-      // if (!data.root) {
-      //   actions.innerHTML += '<a class="button link is-plain is-small" href="' + viewLink + '" title="Browse ' + data.type + '"><span class="icon is-small"><i class="' + iconMapping.view + '"></i></span></a>';
-      //   if (data.type === 'directory') {
-      //     actions.innerHTML += '<a class="button link is-plain is-small" href="' + downloadLink + '" title="Download"><span class="icon is-small"><i class="' + iconMapping.download + '"></i></span></a>';
-      //   } else {
-      //     actions.innerHTML += '<a class="button link is-plain is-small" href="' + rawLink + '" title="Raw file"><span class="icon is-small"><i class="' + iconMapping.raw + '"></i></span></a>';
-      //   }
-      //   actions.innerHTML = '<span class="buttons">' + actions.innerHTML + '</span>';
-      // }
       tr.appendChild(name);
       tr.appendChild(size);
       tr.appendChild(date);
-      tr.appendChild(actions);
+      if (!isPackageDirectory) {
+        var actions = document.createElement('td');
+        actions.className = 'has-text-right';
+        actions.innerHTML = '';
+        actions.innerHTML += '<a href="'
+          + (data.type === 'directory' ? downloadLink : rawLink)
+          + '" title="Download"><span class="icon is-small"><i class="' + iconMapping.download + '"></i></span></a>';
+        tr.appendChild(actions);
+      }
       document.querySelector('table.table > tbody').appendChild(tr);
     });
   });
