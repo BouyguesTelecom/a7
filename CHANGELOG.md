@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Adding debug action mode for local debug (#87)
 - Integration tests are now run on each commit as a workflow (#86)
+- Init CHANGELOG.md (#89)
 
 ### Changed
 
