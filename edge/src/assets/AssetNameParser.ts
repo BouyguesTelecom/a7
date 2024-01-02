@@ -107,6 +107,12 @@ export default class AssetNameParser {
       return VersionLevel.LATEST
     }
 
+    // major will always be true for a valid asset o it will always prevail
+    // over prerelease when minor or patch is not set
+    if (version.prerelease) {
+      return VersionLevel.PRERELEASE
+    }
+
     const levels = {
       major: !isNaN(version.major),
       minor: !isNaN(version.minor),

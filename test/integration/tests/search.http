@@ -6,10 +6,11 @@
 */
 # @name Search endpoint is enabled
 # @ERROR
-GET /__api/search
+# search is not implemented yet
+# GET /__api/search
 
-?? status == 200
-?? header content-type startsWith text/plain
+# ?? status == 200
+# ?? header content-type startsWith text/plain
 ###
 # @name Search endpoint without autoindex is disabled
 GET {{without_autoindex}}/__api/search

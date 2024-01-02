@@ -46,8 +46,15 @@ export default class AssetPredicate {
 
     const match = {
       major: existingAsset.major === this.requestedAsset.major,
-      minor: existingAsset.minor === this.requestedAsset.minor || this.requestedAsset.minor === undefined,
-      patch: existingAsset.patch === this.requestedAsset.patch || this.requestedAsset.patch === undefined,
+      minor:
+        // Check if requestedAsset.minor exists and matches or if requestedAsset.minor is undefined or NaN
+        existingAsset.minor === this.requestedAsset.minor ||
+        Number.isNaN(this.requestedAsset.minor) ||
+        this.requestedAsset.minor === undefined,
+      patch:
+        existingAsset.patch === this.requestedAsset.patch ||
+        Number.isNaN(this.requestedAsset.patch) ||
+        this.requestedAsset.patch === undefined,
       prerelease: existingAsset.prerelease?.startsWith(this.requestedAsset.prerelease) || false,
       build: existingAsset.build?.startsWith(this.requestedAsset.build) || false,
     }
