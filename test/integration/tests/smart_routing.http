@@ -7,13 +7,13 @@ GET /package@1.3.0/dist/bundle.js
 ?? status == 200
 ?? header content-type startsWith text/javascript
 ?? duration < 50
-### @ERROR Missing path would imply 302 from code (Best option would be 307 or 308 i think)
+
 # @name Handle an URI with missing path
 # @no-redirect
 
-GET /package@1.3.0
+GET /package@1.3.0/
 
-?? status == 302
+?? status == 200
 ?? header location == /package@1.3.0/dist/bundle.js
 ?? duration < 100
 ###
@@ -32,6 +32,7 @@ GET /package@1/dist/bundle.js
 ?? status == 302
 ?? header location == /package@1.3.0/dist/bundle.js
 ?? duration < 100
+
 ### @ERROR
 # @name Handle URI with incomplete semver (pre-release)
 # @no-redirect
