@@ -36,7 +36,6 @@ const fixExportDefault = () => ({
 export default defineConfig({
   plugins: [tsconfigPaths()],
   build: {
-
     lib: {
       entry: 'src/main.ts',
       formats: ['es'],

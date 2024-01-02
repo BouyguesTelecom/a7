@@ -35,8 +35,8 @@ debugAction({
     variables: {},
   },
   output: {
-    responseBody: new MockNjsByteString('string'),
-    status: 200,
+    responseBody: new MockNjsByteString('/package@1.3.0/dist/bundle.js'),
+    status: 302,
     headersOut: {},
   },
 })
