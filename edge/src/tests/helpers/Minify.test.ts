@@ -19,8 +19,8 @@
  * under the License.
  */
 
-import { expect } from 'chai'
-import { isCssURI, isJsURI, minifyCSS, minifyJS, resolveNonMinifiedURI } from '../../src/helpers/Minify'
+import { describe, expect, it } from 'vitest'
+import { isCssURI, isJsURI, minifyCSS, minifyJS, resolveNonMinifiedURI } from '@/helpers/Minify'
 
 describe('Minify', () => {
   describe('URI', () => {
@@ -35,7 +35,7 @@ describe('Minify', () => {
       }
 
       Object.entries(mappings).forEach(([minified, nonMinified]) => {
-        expect(resolveNonMinifiedURI(minified)).to.equal(nonMinified)
+        expect(resolveNonMinifiedURI(minified)).toStrictEqual(nonMinified)
       })
     })
   })
@@ -46,10 +46,10 @@ describe('Minify', () => {
       const invalid = ['https://example.com/foo.js', 'https://example.com/foo.min.js', 'https://example.com/foo']
 
       valid.forEach((uri) => {
-        expect(isCssURI(uri)).to.be.true
+        expect(isCssURI(uri)).toStrictEqual(true)
       })
       invalid.forEach((uri) => {
-        expect(isCssURI(uri)).to.be.false
+        expect(isCssURI(uri)).toStrictEqual(false)
       })
     })
 
@@ -68,7 +68,7 @@ describe('Minify', () => {
       `
       const expected = 'body{color:#000;background:#fff;margin:.5em}'
 
-      expect(minifyCSS(input)).to.equal(expected)
+      expect(minifyCSS(input)).toStrictEqual(expected)
     })
   })
 
@@ -78,10 +78,10 @@ describe('Minify', () => {
       const invalid = ['https://example.com/foo.css', 'https://example.com/foo.min.css', 'https://example.com/foo']
 
       valid.forEach((uri) => {
-        expect(isJsURI(uri)).to.be.true
+        expect(isJsURI(uri)).toStrictEqual(true)
       })
       invalid.forEach((uri) => {
-        expect(isJsURI(uri)).to.be.false
+        expect(isJsURI(uri)).toStrictEqual(false)
       })
     })
 
@@ -102,9 +102,11 @@ describe('Minify', () => {
           return 'test';
         }
       `
-      const expected = `const foo = { bar: 'baz'}; console.log(foo); function test() { return 'test'}`
 
-      expect(minifyJS(input)).to.equal(expected)
+      // eslint-disable-next-line
+      const expected = "const foo = { bar: 'baz'}; console.log(foo); function test() { return 'test'}"
+
+      expect(minifyJS(input)).toStrictEqual(expected)
     })
   })
 })

@@ -19,8 +19,8 @@
  * under the License.
  */
 
-import { expect } from 'chai'
-import {hash} from '../../src/helpers/String'
+import { describe, expect, it } from 'vitest'
+import { hash } from '@/helpers/String'
 
 describe('String', () => {
   describe('#hash', () => {
@@ -28,7 +28,7 @@ describe('String', () => {
       const string1 = 'content1'
       const string2 = 'content1'
 
-      expect(hash(string1)).to.equal(hash(string2))
+      expect(hash(string1)).toStrictEqual(hash(string2))
     })
 
     it('empty string should have a hash', () => {

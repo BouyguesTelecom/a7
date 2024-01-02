@@ -3,7 +3,7 @@
     "module": "es6",
     "baseUrl": ".",
     "paths": {
-      "~/*": ["src/*"]
+      "@/*": ["src/*"]
     },
     "preserveConstEnums": true,
     "noImplicitAny": true,
@@ -14,14 +14,9 @@
     "esModuleInterop": false,
     "target": "es5",
     "moduleResolution": "node",
-    "lib": [
-      "es2020"
-    ],
+    "lib": ["es2020"],
     "rootDir": "./",
-    "types": [
-      "mocha",
-      "node"
-    ]
+    "types": ["node"]
   },
   "include": [
     "./**/*.ts"

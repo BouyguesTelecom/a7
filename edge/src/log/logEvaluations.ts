@@ -19,7 +19,7 @@
  * under the License.
  */
 
-import AssetNameParser from '~/assets/AssetNameParser'
+import AssetNameParser from '@/assets/AssetNameParser'
 
 const assetNameParser = new AssetNameParser()
 

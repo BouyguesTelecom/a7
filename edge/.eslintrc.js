@@ -19,13 +19,13 @@
  * under the License.
  */
 
+
 module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
   env: {
     'browser': true,
     'es6': true,
-    'mocha': true,
   },
   plugins: [
     '@typescript-eslint',

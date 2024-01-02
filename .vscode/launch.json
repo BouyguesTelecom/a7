@@ -1,0 +1,22 @@
+{
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Action: Expand",
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "program": "${workspaceRoot}/edge/node_modules/vitest/vitest.mjs",
+      "args": ["run", "${workspaceRoot}/edge/src/tests/actions/expand.test.ts"],
+      "cwd": "${workspaceFolder}/edge",
+      "smartStep": true,
+      "env": {
+        "DEBUG_MODE": "true",
+        "A7_VOLUME_MOUNT_PATH": "${workspaceRoot}/test/integration/assets"
+      },
+      "console": "integratedTerminal"
+    }
+  ]
+}

@@ -19,9 +19,9 @@
  * under the License.
  */
 
-import { expect } from 'chai'
-import AssetPredicate from '../../src/assets/AssetPredicate'
-import { VersionLevel } from '../../src/assets/VersionLevel'
+import { describe, expect, it } from 'vitest'
+import AssetPredicate from '@/assets/AssetPredicate'
+import { VersionLevel } from '@/assets/VersionLevel'
 
 describe('AssetPredicate', () => {
   describe('#matches()', () => {

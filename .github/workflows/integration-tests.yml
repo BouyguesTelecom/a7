@@ -1,4 +1,4 @@
-name: Verify that docker image builds
+name: Run Integration Tests
 
 on:
   push:
@@ -29,12 +29,6 @@ jobs:
           tags: bouyguestelecom/a7:snapshot
           platforms: linux/amd64,linux/arm64
       - name: Setup services for testing purpose
-        uses: isbang/compose-action@v1.5.1
-        with:
-          compose-file: "./test/integration/compose.yml"
-        env:
-          CUSTOM_VARIABLE: "test"
-      - name: Start docker compose
         run: cd ./test/integration && docker compose up -d
       - name: Run tests against services
         run: cd ./test/integration && ./run.sh
