@@ -16,5 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fixed integration tests that were failing (#88)
 
+## [1.8.7] - 2023-11-13
+
 [Unreleased]: https://github.com/bouyguestelecom/a7/compare/v0.1.0...HEAD
 [0.0.1]: https://github.com/bouyguestelecom/a7/releases/tag/v0.1.0
