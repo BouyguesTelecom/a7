@@ -39,13 +39,7 @@
   };
 
   function hasSeveralPackages(data) {
-    // Create an empty object to store the package names
-    var packages = data.reduce((acc, curr) => {
-      const name = curr.name.split('@')[0];
-      acc[name] = acc[name] ? [...acc[name], curr] : [curr];
-      return acc;
-    }, {});
-    return Object.keys(packages || []).length > 1;
+    return Array.from(new Set(data.map((p) => p.name.split('@')[0]))).length > 1;
   }
 
   fetchJsonDirectoryThen(function (meta) {
