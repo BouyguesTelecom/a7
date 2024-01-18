@@ -10,7 +10,8 @@
     "doctor": "npx qnm doctor"
   },
   "dependencies": {
-    "etag": "^1.8.1"
+    "etag": "^1.8.1",
+    "string-natural-compare": "^3.0.1"
   },
   "engines": {
     "node": ">= 18.12"
@@ -28,6 +29,7 @@
     "@types/babel__core": "^7.20.1",
     "@types/etag": "^1.8.1",
     "@types/node": "^18.19.3",
+    "@types/string-natural-compare": "^3.0.4",
     "@typescript-eslint/eslint-plugin": "^6.4.1",
     "@typescript-eslint/parser": "^6.4.1",
     "babel-preset-njs": "^0.7.0",

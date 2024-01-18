@@ -32,6 +32,26 @@ GET /package?meta
   })
 }}
 ###
+# @name Catalog API should be sort using "natural sorting"
+GET /package?meta
+
+?? status == 200
+?? header content-type startsWith application/json
+# ?? response.parsedBody.requested.asset.name == package
+{{
+  const { equal, ok } = require('assert')
+  const out = JSON.parse(response.body)
+  test('test', () => {
+    equal(out.requested.asset.name, 'package')
+    ok(out.available.versions.indexOf('109.0.1-rc17') == 0)
+    ok(out.available.versions.indexOf('109.0.1-rc1') == 1)
+    ok(out.available.versions.indexOf('1.3.0-snapshot.20201203171530') == 2)
+    ok(out.available.versions.indexOf('1.3.0') == 3)
+    ok(out.available.versions.indexOf('1.2.3') == 4)
+    ok(out.available.versions.indexOf('1.2.1') == 5)
+  })
+}}
+###
 # @name Catalog API should not list versions of an unknown package
 GET /unknown?meta
 
