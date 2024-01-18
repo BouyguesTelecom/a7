@@ -21,7 +21,6 @@
 
 import Asset from './Asset'
 import { compare } from '../helpers/String'
-
 /**
  * Compare which one of two assets has priority
  */

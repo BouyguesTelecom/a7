@@ -12,5 +12,7 @@ if [ -z "$hasFailedTests" ]; then
 fi
 
 if [ $hasFailedTests -gt 0 ]; then
+  echo "Failed tests :"
+  cat ./test-output.json | jq '.requests[] | select(.summary.failedTests != 0) | .name'
   exit 1
 fi
