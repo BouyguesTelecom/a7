@@ -19,17 +19,18 @@
  * under the License.
  */
 
+import AssetComparator from '../assets/AssetComparator'
 import Asset from '../assets/Asset'
 import AssetNameParser from '../assets/AssetNameParser'
 import { allStoredAssets } from '../datasource/datasource'
 import { hash } from '../helpers/String'
-import naturalCompare from 'string-natural-compare'
 
 /**
  * List all the version numbers of an asset
  */
 function fetchAssetVersions(r: NginxHTTPRequest, requestedAsset: Asset): string[] {
   const assetNameParser = new AssetNameParser()
+  const assetComparator = new AssetComparator()
 
   const assets = allStoredAssets(r)
     .map((p) => p.name)
@@ -40,7 +41,7 @@ function fetchAssetVersions(r: NginxHTTPRequest, requestedAsset: Asset): string[
       // only grab assets whose name correspond
       .filter((asset) => asset.name === requestedAsset.name)
       // order by version using "natural sorting"
-      .sort((asset1, asset2) => naturalCompare(asset2.version, asset1.version))
+      .sort(assetComparator.compare)
       // keep only the version numbers
       .map((asset) => asset.version)
   )

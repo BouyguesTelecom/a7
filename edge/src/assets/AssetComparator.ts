@@ -20,7 +20,7 @@
  */
 
 import Asset from './Asset'
-import { compare } from '../helpers/String'
+import naturalCompare from 'string-natural-compare'
 /**
  * Compare which one of two assets has priority
  */
@@ -50,12 +50,39 @@ export default class AssetComparator {
       return asset2.patch - asset1.patch
     }
 
-    if (asset1.prerelease !== asset2.prerelease) {
-      return compare(asset2.prerelease, asset1.prerelease)
+    // Compare pre-release segments
+    if (asset1.prerelease && asset2.prerelease) {
+      // 1.0.0-alpha.3 > 1.0.0-alpha.3+baz
+      if (asset1.prerelease === asset2.prerelease && !asset1.build) {
+        return -1
+      }
+
+      // 1.0.0-alpha.3+2 > 1.0.0-alpha.3+1
+      if (asset1.prerelease === asset2.prerelease && asset1.build && asset2.build) {
+        return naturalCompare(asset2.build, asset1.build)
+      }
+      return naturalCompare(asset2.prerelease, asset1.prerelease)
     }
 
-    if (asset1.build !== asset2.build) {
-      return compare(asset2.build, asset1.build)
+    if (asset2.prerelease) {
+      return -1
+    }
+
+    if (asset1.prerelease) {
+      return 1
+    }
+
+    // Compare build segments
+    if (asset1.build && asset2.build) {
+      return naturalCompare(asset2.build, asset1.build)
+    }
+
+    if (asset2.build) {
+      return -1
+    }
+
+    if (asset1.build) {
+      return 1
     }
 
     return 0

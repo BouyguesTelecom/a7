@@ -46,7 +46,7 @@ GET /package@1-snapshot/dist/bundle.js
 GET /package@latest/dist/bundle.js
 
 ?? status == 302
-?? header location == /package@109.0.1-rc9/dist/bundle.js
+?? header location == /package@109.0.1-rc17/dist/bundle.js
 ?? duration < 100
 ###
 # @name Fetch the latest version of an asset
