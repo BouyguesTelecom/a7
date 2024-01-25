@@ -19,8 +19,8 @@
  * under the License.
  */
 
-import Asset from '../assets/Asset'
 import AssetComparator from '../assets/AssetComparator'
+import Asset from '../assets/Asset'
 import AssetNameParser from '../assets/AssetNameParser'
 import { allStoredAssets } from '../datasource/datasource'
 import { hash } from '../helpers/String'
@@ -40,7 +40,7 @@ function fetchAssetVersions(r: NginxHTTPRequest, requestedAsset: Asset): string[
     assets
       // only grab assets whose name correspond
       .filter((asset) => asset.name === requestedAsset.name)
-      // order by version
+      // order by version using "natural sorting"
       .sort(assetComparator.compare)
       // keep only the version numbers
       .map((asset) => asset.version)
