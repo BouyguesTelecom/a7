@@ -61,9 +61,7 @@
 
       files = Object.keys(directories).map(function (data) {
         return {
-          name: data,
-          type: 'directory',
-          root: true,
+          ...(directories[data][0] || {}),
           isPackageFolder: directories[data].isPackageFolder
         }
       });
