@@ -60,6 +60,13 @@
       }, {});
 
       files = Object.keys(directories).map(function (data) {
+        if (directories[data].length > 1) {
+          return {
+            name: data,
+            type: 'directory',
+            isPackageFolder: true
+          }
+        }
         return {
           ...(directories[data][0] || {}),
           isPackageFolder: directories[data].isPackageFolder
