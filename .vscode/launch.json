@@ -17,6 +17,26 @@
         "A7_VOLUME_MOUNT_PATH": "${workspaceRoot}/test/integration/assets"
       },
       "console": "integratedTerminal"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Action: RespondWithCatalog",
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "program": "${workspaceRoot}/edge/node_modules/vitest/vitest.mjs",
+      "args": [
+        "run",
+        "${workspaceRoot}/edge/src/tests/actions/respondWithCatalog.test.ts",
+        "--silent=false"
+      ],
+      "cwd": "${workspaceFolder}/edge",
+      "smartStep": true,
+      "env": {
+        "DEBUG_MODE": "true",
+        "A7_VOLUME_MOUNT_PATH": "${workspaceRoot}/test/integration/assets"
+      },
+      "console": "integratedTerminal"
     }
   ]
 }

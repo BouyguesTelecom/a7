@@ -67,31 +67,6 @@ export default function respondWithCatalog(r: NginxHTTPRequest): void {
   }
 }
 
-type KeyValue = {
-  key: String
-  values: AssetCatalog[]
-}
-
-/**
- * Group an asset catalog array by a predicate an asset
- * @see Asset
- */
-function groupByArray(array: AssetCatalog[], predicate: Function): KeyValue[] {
-  return array.reduce((array, current) => {
-    const v = predicate(current)
-    const el = array.find((r: any) => r && r.key === v)
-    if (el) {
-      el.values.push(current)
-    } else {
-      array.push({
-        key: v,
-        values: [current],
-      })
-    }
-    return array
-  }, [])
-}
-
 /**
  * Enrich the asset objects with their parsed versions
  * @param assets Assets
@@ -119,18 +94,36 @@ function enrichAssetsWithParsedVersions(r: NginxHTTPRequest, assets: Asset[]): A
  * Enrich an asset catalog by indicating which of the assets are the latest version.
  * @param assets assets
  */
-function assetCatalogWithLatestMarked(assets: AssetCatalog[]) {
-  // mark latest assets
-  const grouped = groupByArray(assets.reverse(), (e: AssetCatalog) => e.data.name)
-  grouped.forEach((group) => {
-    if (group.key && Boolean(group.values.length)) {
-      group.values[0].data.latest = true
+export function assetCatalogWithLatestMarked(assets: AssetCatalog[]) {
+  const grouped: { [key: string]: AssetCatalog[] } = {}
+  // Group assets by name and mark the latest asset
+  for (let i = assets.length - 1; i >= 0; i--) {
+    const asset = assets[i]
+    const name = asset.data.name
+    if (!grouped[name]) {
+      grouped[name] = []
     }
-  })
+    if (grouped[name].length === 0) {
+      asset.data.latest = true
+    }
+    grouped[name].push(asset)
+  }
 
-  // recreate a flatten assets array
-  return Object.values(grouped)
-    .map((g) => g.values)
-    .reduce((arr, elem) => arr.concat(elem), [])
-    .reverse()
+  // Flatten the grouped assets into a single array
+  const result = flatten<AssetCatalog>(Object.values(grouped))
+
+  return result
+}
+
+function flat(arr: Array<unknown>, target: Array<unknown>) {
+  arr.forEach(function (el) {
+    if (Array.isArray(el)) flat(el, target)
+    else target.push(el)
+  })
+}
+
+function flatten<T>(arr: Array<unknown>): Array<T> {
+  const flattened: Array<T> = []
+  flat(arr, flattened)
+  return flattened
 }
