@@ -42,44 +42,41 @@ if (!__ENV.BASE_URL || !__ENV.STAGE_DURATION || !__ENV.AVERAGE_LOAD_ITER_PER_SEC
   throw new Error('One or more environment variables are not specified');
 }
 
+const STAGE_DURATION_WITH_UNIT = STAGE_DURATION + 's';
 
-
-const STAGE_DURATION_IN_SEC = STAGE_DURATION + 's';
-const URL = `${BASE_URL}/package@1.3.0-snapshot.20201203171530/dist/bundle.js`;
-const URL_CATALOG = `${BASE_URL}/?catalog`
 
 
 const averageLoadStages = [
-  // With this executor it will increase from 0 to `AVERAGE_LOAD_ITER_PER_SEC` iterations/s within the first `STAGE_DURATION_IN_SEC`
+  // With this executor it will increase from 0 to `AVERAGE_LOAD_ITER_PER_SEC` iterations/s within the first `STAGE_DURATION_WITH_UNIT`
   // Then will go from AVERAGE_LOAD_ITER_VARIATION iter/s to AVERAGE_LOAD_ITER_VARIATION + AVERAGE_LOAD_ITER_PER_SEC iter/s within the next 30secs
   // then will stay at 100 iter/s for 30secs
   // finally will go from 100 iter/s to 50 iter/s within the next 30secs
   // it only reaches the target at the end of the duration
-  { duration: __ENV.STAGE_DURATION_IN_SEC, target: __ENV.AVERAGE_LOAD_ITER_PER_SEC },
-  { duration: __ENV.STAGE_DURATION_IN_SEC, target: __ENV.AVERAGE_LOAD_ITER_VARIATION + AVERAGE_LOAD_ITER_PER_SEC },
-  { duration: __ENV.STAGE_DURATION_IN_SEC, target: __ENV.AVERAGE_LOAD_ITER_PER_SEC - AVERAGE_LOAD_ITER_VARIATION },
-  { duration: __ENV.STAGE_DURATION_IN_SEC, target: __ENV.AVERAGE_LOAD_ITER_PER_SEC },
+  { duration: __ENV.STAGE_DURATION_WITH_UNIT, target: __ENV.AVERAGE_LOAD_ITER_PER_SEC },
+  { duration: __ENV.STAGE_DURATION_WITH_UNIT, target: __ENV.AVERAGE_LOAD_ITER_VARIATION + AVERAGE_LOAD_ITER_PER_SEC },
+  { duration: __ENV.STAGE_DURATION_WITH_UNIT, target: __ENV.AVERAGE_LOAD_ITER_PER_SEC - AVERAGE_LOAD_ITER_VARIATION },
+  { duration: __ENV.STAGE_DURATION_WITH_UNIT, target: __ENV.AVERAGE_LOAD_ITER_PER_SEC },
 ]
 
 const autoscalingStages = [
-  { duration: __ENV.STAGE_DURATION_IN_SEC, target: 20 },
-  { duration: __ENV.STAGE_DURATION_IN_SEC, target: 50 },
-  { duration: __ENV.STAGE_DURATION_IN_SEC, target: 100 },
-  { duration: __ENV.STAGE_DURATION_IN_SEC, target: 50 },
-  { duration: __ENV.STAGE_DURATION_IN_SEC, target: 20 },
+  { duration: __ENV.STAGE_DURATION_WITH_UNIT, target: 20 },
+  { duration: __ENV.STAGE_DURATION_WITH_UNIT, target: 50 },
+  { duration: __ENV.STAGE_DURATION_WITH_UNIT, target: 100 },
+  { duration: __ENV.STAGE_DURATION_WITH_UNIT, target: 50 },
+  { duration: __ENV.STAGE_DURATION_WITH_UNIT, target: 20 },
 
 ]
 
 const stressLoadStages = new Array(Math.round((STRESS_LOAD_MAX_ITER_PER_SEC - STRESS_LOAD_MIN_ITER_PER_SEC)) / 10).fill(0).map((_, i) => {
-  return { duration: STAGE_DURATION_IN_SEC, target: STRESS_LOAD_MIN_ITER_PER_SEC + i * 10 }
+  return { duration: STAGE_DURATION_WITH_UNIT, target: STRESS_LOAD_MIN_ITER_PER_SEC + i * 10 }
 })
 
 console.log({ stressLoadStages })
 
 // const stressLoadStages = [
-//   { duration: __ENV.STAGE_DURATION_IN_SEC, target: 20 },
-//   { duration: __ENV.STAGE_DURATION_IN_SEC, target: 30 },
-//   { duration: __ENV.STAGE_DURATION_IN_SEC, target: 40 },
+//   { duration: __ENV.STAGE_DURATION_WITH_UNIT, target: 20 },
+//   { duration: __ENV.STAGE_DURATION_WITH_UNIT, target: 30 },
+//   { duration: __ENV.STAGE_DURATION_WITH_UNIT, target: 40 },
 // ]
 
 export const options = {
@@ -121,7 +118,7 @@ export const options = {
   },
 };
 
-export function setup() {
+export function _setup() {
   const res = http.get(URL_CATALOG);
   check(res, { 'status was 200': (r) => r.status == 200 });
   // make sure catalog fetch takes less than 10s
@@ -129,7 +126,7 @@ export function setup() {
 
 }
 
-export function main() {
+export function _main() {
   const res = http.get(URL);
   check(res, { 'status was 200': (r) => r.status == 200 });
 }
