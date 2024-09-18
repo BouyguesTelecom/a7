@@ -1,6 +1,25 @@
 
 # Performance Metrics Documentation
 
+## How to use it
+
+The default to use it is by running the docker image `bouyguestelecom/a7-perf`
+If no command is provided the average load test will be executed.
+
+There 3 k6 scripts available in the image:
+
+- `average-load.js`
+- `stressload.js`
+- `autoscaling.js`
+
+to run another script you can use the following command (adjust the env variable for your needs):
+
+```bash
+docker run bouyguestelecom/a7-perf k6 run <script_name>
+```
+
+## Env variables
+
 | Metric Name                          | Description                                                                 | Required | Default |
 |--------------------------------------|-----------------------------------------------------------------------------|----------|---------|
 | **BASE_URL**                         | The base URL for the application, used for API calls and resource fetching. | Yes      | N/A     |
